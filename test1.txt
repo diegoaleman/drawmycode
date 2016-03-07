@@ -1,0 +1,13 @@
+begin program ejemplo2;
+{
+	func int prueba(x:int)
+	{
+
+	};
+
+	func void main() 
+	{
+		num = 1;
+	};
+};
+end;
