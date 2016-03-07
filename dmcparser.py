@@ -17,13 +17,14 @@ import sys
 from dmclex import tokens
 
 def p_programa(p):
-	'''programa : BEGIN PROGRAM ID SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END'''
+	'''programa : BEGIN PROGRAM ID SEMICOLON a LBRACKET main b RBRACKET SEMICOLON END'''
 	p[0] = "Success"
 
 
 def p_a(p):
 	'''a : vars
 			|'''
+
 
 def p_vars(p):
 	'''vars : VAR c'''
@@ -92,7 +93,7 @@ def p_k(p):
 			|'''
 
 def p_bloque(p):
-	'''bloque : LBRACKET l RBRACKET SEMICOLON'''
+	'''bloque : LBRACKET l RBRACKET'''
 
 def p_l(p):
 	'''l : estatuto l

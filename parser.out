@@ -3,7 +3,7 @@ Created by PLY version 3.8 (http://www.dabeaz.com/ply)
 Grammar
 
 Rule 0     S' -> programa
-Rule 1     programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END
+Rule 1     programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET main b RBRACKET SEMICOLON END
 Rule 2     a -> vars
 Rule 3     a -> <empty>
 Rule 4     vars -> VAR c
@@ -36,7 +36,7 @@ Rule 30    j -> <empty>
 Rule 31    main -> FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON
 Rule 32    k -> vars
 Rule 33    k -> <empty>
-Rule 34    bloque -> LBRACKET l RBRACKET SEMICOLON
+Rule 34    bloque -> LBRACKET l RBRACKET
 Rule 35    l -> estatuto l
 Rule 36    l -> <empty>
 Rule 37    estatuto -> asignacion
@@ -181,7 +181,7 @@ RBRACKET             : 1 34
 RETURN               : 104
 RPARENTHESIS         : 21 31 76 90 93 94 99 107 115 116 117 130 131
 RSQUAREBRACKET       : 15 15 16 16 45 45 87 87
-SEMICOLON            : 1 1 5 21 31 34 44 90 93 94 99 107 115 116 117 130 131
+SEMICOLON            : 1 1 5 21 31 44 90 93 94 99 107 115 116 117 130 131
 SQUARE               : 119
 STAR                 : 121
 STARTFILL            : 130
@@ -272,7 +272,7 @@ Parsing method: LALR
 state 0
 
     (0) S' -> . programa
-    (1) programa -> . BEGIN PROGRAM ID SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END
+    (1) programa -> . BEGIN PROGRAM ID SEMICOLON a LBRACKET main b RBRACKET SEMICOLON END
 
     BEGIN           shift and go to state 1
 
@@ -280,7 +280,7 @@ state 0
 
 state 1
 
-    (1) programa -> BEGIN . PROGRAM ID SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END
+    (1) programa -> BEGIN . PROGRAM ID SEMICOLON a LBRACKET main b RBRACKET SEMICOLON END
 
     PROGRAM         shift and go to state 3
 
@@ -293,21 +293,21 @@ state 2
 
 state 3
 
-    (1) programa -> BEGIN PROGRAM . ID SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END
+    (1) programa -> BEGIN PROGRAM . ID SEMICOLON a LBRACKET main b RBRACKET SEMICOLON END
 
     ID              shift and go to state 4
 
 
 state 4
 
-    (1) programa -> BEGIN PROGRAM ID . SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END
+    (1) programa -> BEGIN PROGRAM ID . SEMICOLON a LBRACKET main b RBRACKET SEMICOLON END
 
     SEMICOLON       shift and go to state 5
 
 
 state 5
 
-    (1) programa -> BEGIN PROGRAM ID SEMICOLON . a LBRACKET b main RBRACKET SEMICOLON END
+    (1) programa -> BEGIN PROGRAM ID SEMICOLON . a LBRACKET main b RBRACKET SEMICOLON END
     (2) a -> . vars
     (3) a -> .
     (4) vars -> . VAR c
@@ -320,7 +320,7 @@ state 5
 
 state 6
 
-    (1) programa -> BEGIN PROGRAM ID SEMICOLON a . LBRACKET b main RBRACKET SEMICOLON END
+    (1) programa -> BEGIN PROGRAM ID SEMICOLON a . LBRACKET main b RBRACKET SEMICOLON END
 
     LBRACKET        shift and go to state 9
 
@@ -354,18 +354,12 @@ state 8
 
 state 9
 
-    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET . b main RBRACKET SEMICOLON END
-    (19) b -> . funcion b
-    (20) b -> .
-    (21) funcion -> . FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON
+    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET . main b RBRACKET SEMICOLON END
+    (31) main -> . FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON
 
-  ! shift/reduce conflict for FUNC resolved as shift
-    FUNC            shift and go to state 17
+    FUNC            shift and go to state 16
 
-  ! FUNC            [ reduce using rule 20 (b -> .) ]
-
-    b                              shift and go to state 16
-    funcion                        shift and go to state 18
+    main                           shift and go to state 17
 
 state 10
 
@@ -378,14 +372,14 @@ state 11
 
     (6) f -> d . COLON tipo
 
-    COLON           shift and go to state 19
+    COLON           shift and go to state 18
 
 
 state 12
 
     (5) c -> f . SEMICOLON e
 
-    SEMICOLON       shift and go to state 20
+    SEMICOLON       shift and go to state 19
 
 
 state 13
@@ -399,7 +393,7 @@ state 14
 
     (14) matrix -> mataux . COLON INT
 
-    COLON           shift and go to state 21
+    COLON           shift and go to state 20
 
 
 state 15
@@ -410,50 +404,31 @@ state 15
     (16) mataux -> ID . LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux
 
     COLON           reduce using rule 8 (d -> ID .)
-    COMMA           shift and go to state 23
-    LSQUAREBRACKET  shift and go to state 22
+    COMMA           shift and go to state 22
+    LSQUAREBRACKET  shift and go to state 21
 
 
 state 16
 
-    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET b . main RBRACKET SEMICOLON END
-    (31) main -> . FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON
+    (31) main -> FUNC . VOID MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON
 
-    FUNC            shift and go to state 24
+    VOID            shift and go to state 23
 
-    main                           shift and go to state 25
 
 state 17
 
-    (21) funcion -> FUNC . g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON
-    (22) g -> . INT
-    (23) g -> . BOOL
-    (24) g -> . FLOAT
-    (25) g -> . VOID
-
-    INT             shift and go to state 27
-    BOOL            shift and go to state 30
-    FLOAT           shift and go to state 29
-    VOID            shift and go to state 28
-
-    g                              shift and go to state 26
-
-state 18
-
-    (19) b -> funcion . b
+    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET main . b RBRACKET SEMICOLON END
     (19) b -> . funcion b
     (20) b -> .
     (21) funcion -> . FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON
 
-  ! shift/reduce conflict for FUNC resolved as shift
-    FUNC            shift and go to state 17
+    RBRACKET        reduce using rule 20 (b -> .)
+    FUNC            shift and go to state 25
 
-  ! FUNC            [ reduce using rule 20 (b -> .) ]
+    b                              shift and go to state 24
+    funcion                        shift and go to state 26
 
-    b                              shift and go to state 31
-    funcion                        shift and go to state 18
-
-state 19
+state 18
 
     (6) f -> d COLON . tipo
     (10) tipo -> . INT
@@ -461,14 +436,14 @@ state 19
     (12) tipo -> . BOOL
     (13) tipo -> . STRING
 
-    INT             shift and go to state 33
-    FLOAT           shift and go to state 34
-    BOOL            shift and go to state 35
-    STRING          shift and go to state 36
+    INT             shift and go to state 28
+    FLOAT           shift and go to state 29
+    BOOL            shift and go to state 30
+    STRING          shift and go to state 31
 
-    tipo                           shift and go to state 32
+    tipo                           shift and go to state 27
 
-state 20
+state 19
 
     (5) c -> f SEMICOLON . e
     (17) e -> . c
@@ -485,159 +460,145 @@ state 20
     LBRACKET        reduce using rule 18 (e -> .)
     ID              shift and go to state 15
 
-    c                              shift and go to state 37
-    e                              shift and go to state 38
+    c                              shift and go to state 32
+    e                              shift and go to state 33
     matrix                         shift and go to state 13
     f                              shift and go to state 12
     mataux                         shift and go to state 14
     d                              shift and go to state 11
 
-state 21
+state 20
 
     (14) matrix -> mataux COLON . INT
 
-    INT             shift and go to state 39
+    INT             shift and go to state 34
 
 
-state 22
+state 21
 
     (15) mataux -> ID LSQUAREBRACKET . CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET
     (16) mataux -> ID LSQUAREBRACKET . CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux
 
-    CTEINT          shift and go to state 40
+    CTEINT          shift and go to state 35
 
 
-state 23
+state 22
 
     (9) d -> ID COMMA . d
     (8) d -> . ID
     (9) d -> . ID COMMA d
 
-    ID              shift and go to state 41
+    ID              shift and go to state 36
 
-    d                              shift and go to state 42
+    d                              shift and go to state 37
+
+state 23
+
+    (31) main -> FUNC VOID . MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON
+
+    MAIN            shift and go to state 38
+
 
 state 24
 
-    (31) main -> FUNC . VOID MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON
+    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET main b . RBRACKET SEMICOLON END
 
-    VOID            shift and go to state 43
+    RBRACKET        shift and go to state 39
 
 
 state 25
 
-    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET b main . RBRACKET SEMICOLON END
+    (21) funcion -> FUNC . g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON
+    (22) g -> . INT
+    (23) g -> . BOOL
+    (24) g -> . FLOAT
+    (25) g -> . VOID
 
-    RBRACKET        shift and go to state 44
+    INT             shift and go to state 41
+    BOOL            shift and go to state 44
+    FLOAT           shift and go to state 43
+    VOID            shift and go to state 42
 
+    g                              shift and go to state 40
 
 state 26
 
-    (21) funcion -> FUNC g . ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON
+    (19) b -> funcion . b
+    (19) b -> . funcion b
+    (20) b -> .
+    (21) funcion -> . FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON
 
-    ID              shift and go to state 45
+    RBRACKET        reduce using rule 20 (b -> .)
+    FUNC            shift and go to state 25
 
+    b                              shift and go to state 45
+    funcion                        shift and go to state 26
 
 state 27
-
-    (22) g -> INT .
-
-    ID              reduce using rule 22 (g -> INT .)
-
-
-state 28
-
-    (25) g -> VOID .
-
-    ID              reduce using rule 25 (g -> VOID .)
-
-
-state 29
-
-    (24) g -> FLOAT .
-
-    ID              reduce using rule 24 (g -> FLOAT .)
-
-
-state 30
-
-    (23) g -> BOOL .
-
-    ID              reduce using rule 23 (g -> BOOL .)
-
-
-state 31
-
-    (19) b -> funcion b .
-
-    FUNC            reduce using rule 19 (b -> funcion b .)
-
-
-state 32
 
     (6) f -> d COLON tipo .
 
     SEMICOLON       reduce using rule 6 (f -> d COLON tipo .)
 
 
-state 33
+state 28
 
     (10) tipo -> INT .
 
+    SEMICOLON       reduce using rule 10 (tipo -> INT .)
     COMMA           reduce using rule 10 (tipo -> INT .)
     RPARENTHESIS    reduce using rule 10 (tipo -> INT .)
-    SEMICOLON       reduce using rule 10 (tipo -> INT .)
 
 
-state 34
+state 29
 
     (11) tipo -> FLOAT .
 
+    SEMICOLON       reduce using rule 11 (tipo -> FLOAT .)
     COMMA           reduce using rule 11 (tipo -> FLOAT .)
     RPARENTHESIS    reduce using rule 11 (tipo -> FLOAT .)
-    SEMICOLON       reduce using rule 11 (tipo -> FLOAT .)
 
 
-state 35
+state 30
 
     (12) tipo -> BOOL .
 
+    SEMICOLON       reduce using rule 12 (tipo -> BOOL .)
     COMMA           reduce using rule 12 (tipo -> BOOL .)
     RPARENTHESIS    reduce using rule 12 (tipo -> BOOL .)
-    SEMICOLON       reduce using rule 12 (tipo -> BOOL .)
 
 
-state 36
+state 31
 
     (13) tipo -> STRING .
 
+    SEMICOLON       reduce using rule 13 (tipo -> STRING .)
     COMMA           reduce using rule 13 (tipo -> STRING .)
     RPARENTHESIS    reduce using rule 13 (tipo -> STRING .)
-    SEMICOLON       reduce using rule 13 (tipo -> STRING .)
 
 
-state 37
+state 32
 
     (17) e -> c .
 
     LBRACKET        reduce using rule 17 (e -> c .)
 
 
-state 38
+state 33
 
     (5) c -> f SEMICOLON e .
 
     LBRACKET        reduce using rule 5 (c -> f SEMICOLON e .)
 
 
-state 39
+state 34
 
     (14) matrix -> mataux COLON INT .
 
     SEMICOLON       reduce using rule 14 (matrix -> mataux COLON INT .)
 
 
-state 40
+state 35
 
     (15) mataux -> ID LSQUAREBRACKET CTEINT . RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET
     (16) mataux -> ID LSQUAREBRACKET CTEINT . RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux
@@ -645,41 +606,76 @@ state 40
     RSQUAREBRACKET  shift and go to state 46
 
 
-state 41
+state 36
 
     (8) d -> ID .
     (9) d -> ID . COMMA d
 
     COLON           reduce using rule 8 (d -> ID .)
-    COMMA           shift and go to state 23
+    COMMA           shift and go to state 22
 
 
-state 42
+state 37
 
     (9) d -> ID COMMA d .
 
     COLON           reduce using rule 9 (d -> ID COMMA d .)
 
 
-state 43
+state 38
 
-    (31) main -> FUNC VOID . MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON
+    (31) main -> FUNC VOID MAIN . LPARENTHESIS RPARENTHESIS k bloque SEMICOLON
 
-    MAIN            shift and go to state 47
+    LPARENTHESIS    shift and go to state 47
 
 
-state 44
+state 39
 
-    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET b main RBRACKET . SEMICOLON END
+    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET main b RBRACKET . SEMICOLON END
 
     SEMICOLON       shift and go to state 48
 
 
+state 40
+
+    (21) funcion -> FUNC g . ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON
+
+    ID              shift and go to state 49
+
+
+state 41
+
+    (22) g -> INT .
+
+    ID              reduce using rule 22 (g -> INT .)
+
+
+state 42
+
+    (25) g -> VOID .
+
+    ID              reduce using rule 25 (g -> VOID .)
+
+
+state 43
+
+    (24) g -> FLOAT .
+
+    ID              reduce using rule 24 (g -> FLOAT .)
+
+
+state 44
+
+    (23) g -> BOOL .
+
+    ID              reduce using rule 23 (g -> BOOL .)
+
+
 state 45
 
-    (21) funcion -> FUNC g ID . LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON
+    (19) b -> funcion b .
 
-    LPARENTHESIS    shift and go to state 49
+    RBRACKET        reduce using rule 19 (b -> funcion b .)
 
 
 state 46
@@ -692,83 +688,34 @@ state 46
 
 state 47
 
-    (31) main -> FUNC VOID MAIN . LPARENTHESIS RPARENTHESIS k bloque SEMICOLON
+    (31) main -> FUNC VOID MAIN LPARENTHESIS . RPARENTHESIS k bloque SEMICOLON
 
-    LPARENTHESIS    shift and go to state 51
+    RPARENTHESIS    shift and go to state 51
 
 
 state 48
 
-    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET b main RBRACKET SEMICOLON . END
+    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET main b RBRACKET SEMICOLON . END
 
     END             shift and go to state 52
 
 
 state 49
 
-    (21) funcion -> FUNC g ID LPARENTHESIS . h RPARENTHESIS a bloque SEMICOLON
-    (26) h -> . param
-    (27) h -> .
-    (28) param -> . ID COLON tipo j
+    (21) funcion -> FUNC g ID . LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON
 
-    RPARENTHESIS    reduce using rule 27 (h -> .)
-    ID              shift and go to state 55
+    LPARENTHESIS    shift and go to state 53
 
-    h                              shift and go to state 53
-    param                          shift and go to state 54
 
 state 50
 
     (15) mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET . CTEINT RSQUAREBRACKET
     (16) mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET . CTEINT RSQUAREBRACKET COMMA mataux
 
-    CTEINT          shift and go to state 56
+    CTEINT          shift and go to state 54
 
 
 state 51
-
-    (31) main -> FUNC VOID MAIN LPARENTHESIS . RPARENTHESIS k bloque SEMICOLON
-
-    RPARENTHESIS    shift and go to state 57
-
-
-state 52
-
-    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END .
-
-    $end            reduce using rule 1 (programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END .)
-
-
-state 53
-
-    (21) funcion -> FUNC g ID LPARENTHESIS h . RPARENTHESIS a bloque SEMICOLON
-
-    RPARENTHESIS    shift and go to state 58
-
-
-state 54
-
-    (26) h -> param .
-
-    RPARENTHESIS    reduce using rule 26 (h -> param .)
-
-
-state 55
-
-    (28) param -> ID . COLON tipo j
-
-    COLON           shift and go to state 59
-
-
-state 56
-
-    (15) mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT . RSQUAREBRACKET
-    (16) mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT . RSQUAREBRACKET COMMA mataux
-
-    RSQUAREBRACKET  shift and go to state 60
-
-
-state 57
 
     (31) main -> FUNC VOID MAIN LPARENTHESIS RPARENTHESIS . k bloque SEMICOLON
     (32) k -> . vars
@@ -778,36 +725,73 @@ state 57
     LBRACKET        reduce using rule 33 (k -> .)
     VAR             shift and go to state 8
 
-    k                              shift and go to state 61
-    vars                           shift and go to state 62
+    k                              shift and go to state 55
+    vars                           shift and go to state 56
+
+state 52
+
+    (1) programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET main b RBRACKET SEMICOLON END .
+
+    $end            reduce using rule 1 (programa -> BEGIN PROGRAM ID SEMICOLON a LBRACKET main b RBRACKET SEMICOLON END .)
+
+
+state 53
+
+    (21) funcion -> FUNC g ID LPARENTHESIS . h RPARENTHESIS a bloque SEMICOLON
+    (26) h -> . param
+    (27) h -> .
+    (28) param -> . ID COLON tipo j
+
+    RPARENTHESIS    reduce using rule 27 (h -> .)
+    ID              shift and go to state 59
+
+    h                              shift and go to state 57
+    param                          shift and go to state 58
+
+state 54
+
+    (15) mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT . RSQUAREBRACKET
+    (16) mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT . RSQUAREBRACKET COMMA mataux
+
+    RSQUAREBRACKET  shift and go to state 60
+
+
+state 55
+
+    (31) main -> FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k . bloque SEMICOLON
+    (34) bloque -> . LBRACKET l RBRACKET
+
+    LBRACKET        shift and go to state 61
+
+    bloque                         shift and go to state 62
+
+state 56
+
+    (32) k -> vars .
+
+    LBRACKET        reduce using rule 32 (k -> vars .)
+
+
+state 57
+
+    (21) funcion -> FUNC g ID LPARENTHESIS h . RPARENTHESIS a bloque SEMICOLON
+
+    RPARENTHESIS    shift and go to state 63
+
 
 state 58
 
-    (21) funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS . a bloque SEMICOLON
-    (2) a -> . vars
-    (3) a -> .
-    (4) vars -> . VAR c
+    (26) h -> param .
 
-    LBRACKET        reduce using rule 3 (a -> .)
-    VAR             shift and go to state 8
+    RPARENTHESIS    reduce using rule 26 (h -> param .)
 
-    a                              shift and go to state 63
-    vars                           shift and go to state 7
 
 state 59
 
-    (28) param -> ID COLON . tipo j
-    (10) tipo -> . INT
-    (11) tipo -> . FLOAT
-    (12) tipo -> . BOOL
-    (13) tipo -> . STRING
+    (28) param -> ID . COLON tipo j
 
-    INT             shift and go to state 33
-    FLOAT           shift and go to state 34
-    BOOL            shift and go to state 35
-    STRING          shift and go to state 36
+    COLON           shift and go to state 64
 
-    tipo                           shift and go to state 64
 
 state 60
 
@@ -820,53 +804,7 @@ state 60
 
 state 61
 
-    (31) main -> FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k . bloque SEMICOLON
-    (34) bloque -> . LBRACKET l RBRACKET SEMICOLON
-
-    LBRACKET        shift and go to state 66
-
-    bloque                         shift and go to state 67
-
-state 62
-
-    (32) k -> vars .
-
-    LBRACKET        reduce using rule 32 (k -> vars .)
-
-
-state 63
-
-    (21) funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS a . bloque SEMICOLON
-    (34) bloque -> . LBRACKET l RBRACKET SEMICOLON
-
-    LBRACKET        shift and go to state 66
-
-    bloque                         shift and go to state 68
-
-state 64
-
-    (28) param -> ID COLON tipo . j
-    (29) j -> . COMMA param
-    (30) j -> .
-
-    COMMA           shift and go to state 70
-    RPARENTHESIS    reduce using rule 30 (j -> .)
-
-    j                              shift and go to state 69
-
-state 65
-
-    (16) mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA . mataux
-    (15) mataux -> . ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET
-    (16) mataux -> . ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux
-
-    ID              shift and go to state 72
-
-    mataux                         shift and go to state 71
-
-state 66
-
-    (34) bloque -> LBRACKET . l RBRACKET SEMICOLON
+    (34) bloque -> LBRACKET . l RBRACKET
     (35) l -> . estatuto l
     (36) l -> .
     (37) estatuto -> . asignacion
@@ -891,13 +829,13 @@ state 66
     (115) linewidthp -> . LINEWIDTH LPARENTHESIS exp RPARENTHESIS SEMICOLON
 
     RBRACKET        reduce using rule 36 (l -> .)
-    ID              shift and go to state 88
-    IF              shift and go to state 89
-    WHILE           shift and go to state 76
-    PRINT           shift and go to state 77
-    LPARENTHESIS    shift and go to state 86
-    RETURN          shift and go to state 73
-    RANDOM          shift and go to state 85
+    ID              shift and go to state 81
+    IF              shift and go to state 82
+    WHILE           shift and go to state 69
+    PRINT           shift and go to state 70
+    LPARENTHESIS    shift and go to state 79
+    RETURN          shift and go to state 66
+    RANDOM          shift and go to state 78
     LINECOLOR       reduce using rule 110 (al -> .)
     STARTFILL       reduce using rule 110 (al -> .)
     LINE            reduce using rule 110 (al -> .)
@@ -906,68 +844,68 @@ state 66
     STAR            reduce using rule 110 (al -> .)
     TRIANGLE        reduce using rule 110 (al -> .)
     ARC             reduce using rule 110 (al -> .)
-    LINEWIDTH       shift and go to state 92
+    LINEWIDTH       shift and go to state 85
 
-    ak                             shift and go to state 74
-    aj                             shift and go to state 75
-    al                             shift and go to state 87
-    ciclo                          shift and go to state 78
-    llamadafunc                    shift and go to state 79
-    estatuto                       shift and go to state 80
-    condicion                      shift and go to state 81
-    specialfunc                    shift and go to state 82
-    return                         shift and go to state 83
-    linewidthp                     shift and go to state 84
-    asignacion                     shift and go to state 90
-    l                              shift and go to state 91
-    escritura                      shift and go to state 93
+    ak                             shift and go to state 67
+    aj                             shift and go to state 68
+    al                             shift and go to state 80
+    ciclo                          shift and go to state 71
+    llamadafunc                    shift and go to state 72
+    estatuto                       shift and go to state 73
+    condicion                      shift and go to state 74
+    specialfunc                    shift and go to state 75
+    return                         shift and go to state 76
+    linewidthp                     shift and go to state 77
+    asignacion                     shift and go to state 83
+    l                              shift and go to state 84
+    escritura                      shift and go to state 86
 
-state 67
+state 62
 
     (31) main -> FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k bloque . SEMICOLON
 
-    SEMICOLON       shift and go to state 94
+    SEMICOLON       shift and go to state 87
 
 
-state 68
+state 63
 
-    (21) funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque . SEMICOLON
+    (21) funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS . a bloque SEMICOLON
+    (2) a -> . vars
+    (3) a -> .
+    (4) vars -> . VAR c
 
-    SEMICOLON       shift and go to state 95
+    LBRACKET        reduce using rule 3 (a -> .)
+    VAR             shift and go to state 8
 
+    a                              shift and go to state 88
+    vars                           shift and go to state 7
 
-state 69
+state 64
 
-    (28) param -> ID COLON tipo j .
+    (28) param -> ID COLON . tipo j
+    (10) tipo -> . INT
+    (11) tipo -> . FLOAT
+    (12) tipo -> . BOOL
+    (13) tipo -> . STRING
 
-    RPARENTHESIS    reduce using rule 28 (param -> ID COLON tipo j .)
+    INT             shift and go to state 28
+    FLOAT           shift and go to state 29
+    BOOL            shift and go to state 30
+    STRING          shift and go to state 31
 
+    tipo                           shift and go to state 89
 
-state 70
+state 65
 
-    (29) j -> COMMA . param
-    (28) param -> . ID COLON tipo j
+    (16) mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA . mataux
+    (15) mataux -> . ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET
+    (16) mataux -> . ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux
 
-    ID              shift and go to state 55
+    ID              shift and go to state 91
 
-    param                          shift and go to state 96
+    mataux                         shift and go to state 90
 
-state 71
-
-    (16) mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux .
-
-    COLON           reduce using rule 16 (mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux .)
-
-
-state 72
-
-    (15) mataux -> ID . LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET
-    (16) mataux -> ID . LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux
-
-    LSQUAREBRACKET  shift and go to state 22
-
-
-state 73
+state 66
 
     (104) return -> RETURN . exp
     (63) exp -> . termino ab
@@ -983,25 +921,25 @@ state 73
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 104
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 99
+    factor                         shift and go to state 100
 
-state 74
+state 67
 
     (106) specialfunc -> ak .
 
@@ -1024,7 +962,7 @@ state 74
     RBRACKET        reduce using rule 106 (specialfunc -> ak .)
 
 
-state 75
+state 68
 
     (105) specialfunc -> aj .
 
@@ -1047,21 +985,21 @@ state 75
     RBRACKET        reduce using rule 105 (specialfunc -> aj .)
 
 
-state 76
+state 69
 
     (93) ciclo -> WHILE . LPARENTHESIS expresion RPARENTHESIS bloque SEMICOLON
 
-    LPARENTHESIS    shift and go to state 108
+    LPARENTHESIS    shift and go to state 103
 
 
-state 77
+state 70
 
     (94) escritura -> PRINT . LPARENTHESIS ah RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 109
+    LPARENTHESIS    shift and go to state 104
 
 
-state 78
+state 71
 
     (39) estatuto -> ciclo .
 
@@ -1084,7 +1022,7 @@ state 78
     RBRACKET        reduce using rule 39 (estatuto -> ciclo .)
 
 
-state 79
+state 72
 
     (41) estatuto -> llamadafunc .
 
@@ -1107,7 +1045,7 @@ state 79
     RBRACKET        reduce using rule 41 (estatuto -> llamadafunc .)
 
 
-state 80
+state 73
 
     (35) l -> estatuto . l
     (35) l -> . estatuto l
@@ -1134,13 +1072,13 @@ state 80
     (115) linewidthp -> . LINEWIDTH LPARENTHESIS exp RPARENTHESIS SEMICOLON
 
     RBRACKET        reduce using rule 36 (l -> .)
-    ID              shift and go to state 88
-    IF              shift and go to state 89
-    WHILE           shift and go to state 76
-    PRINT           shift and go to state 77
-    LPARENTHESIS    shift and go to state 86
-    RETURN          shift and go to state 73
-    RANDOM          shift and go to state 85
+    ID              shift and go to state 81
+    IF              shift and go to state 82
+    WHILE           shift and go to state 69
+    PRINT           shift and go to state 70
+    LPARENTHESIS    shift and go to state 79
+    RETURN          shift and go to state 66
+    RANDOM          shift and go to state 78
     LINECOLOR       reduce using rule 110 (al -> .)
     STARTFILL       reduce using rule 110 (al -> .)
     LINE            reduce using rule 110 (al -> .)
@@ -1149,23 +1087,23 @@ state 80
     STAR            reduce using rule 110 (al -> .)
     TRIANGLE        reduce using rule 110 (al -> .)
     ARC             reduce using rule 110 (al -> .)
-    LINEWIDTH       shift and go to state 92
+    LINEWIDTH       shift and go to state 85
 
-    ak                             shift and go to state 74
-    aj                             shift and go to state 75
-    al                             shift and go to state 87
-    ciclo                          shift and go to state 78
-    llamadafunc                    shift and go to state 79
-    estatuto                       shift and go to state 80
-    condicion                      shift and go to state 81
-    specialfunc                    shift and go to state 82
-    return                         shift and go to state 83
-    linewidthp                     shift and go to state 84
-    asignacion                     shift and go to state 90
-    l                              shift and go to state 110
-    escritura                      shift and go to state 93
+    ak                             shift and go to state 67
+    aj                             shift and go to state 68
+    al                             shift and go to state 80
+    ciclo                          shift and go to state 71
+    llamadafunc                    shift and go to state 72
+    estatuto                       shift and go to state 73
+    condicion                      shift and go to state 74
+    specialfunc                    shift and go to state 75
+    return                         shift and go to state 76
+    linewidthp                     shift and go to state 77
+    asignacion                     shift and go to state 83
+    l                              shift and go to state 105
+    escritura                      shift and go to state 86
 
-state 81
+state 74
 
     (38) estatuto -> condicion .
 
@@ -1188,7 +1126,7 @@ state 81
     RBRACKET        reduce using rule 38 (estatuto -> condicion .)
 
 
-state 82
+state 75
 
     (42) estatuto -> specialfunc .
 
@@ -1211,7 +1149,7 @@ state 82
     RBRACKET        reduce using rule 42 (estatuto -> specialfunc .)
 
 
-state 83
+state 76
 
     (43) estatuto -> return .
 
@@ -1234,7 +1172,7 @@ state 83
     RBRACKET        reduce using rule 43 (estatuto -> return .)
 
 
-state 84
+state 77
 
     (109) al -> linewidthp .
 
@@ -1248,14 +1186,14 @@ state 84
     ARC             reduce using rule 109 (al -> linewidthp .)
 
 
-state 85
+state 78
 
     (107) aj -> RANDOM . LPARENTHESIS exp COMMA exp RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 111
+    LPARENTHESIS    shift and go to state 106
 
 
-state 86
+state 79
 
     (99) llamadafunc -> LPARENTHESIS . t RPARENTHESIS SEMICOLON
     (100) t -> . u
@@ -1276,27 +1214,27 @@ state 86
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
     RPARENTHESIS    reduce using rule 101 (t -> .)
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    u                              shift and go to state 112
-    t                              shift and go to state 113
-    exp                            shift and go to state 114
-    factor                         shift and go to state 105
-    termino                        shift and go to state 103
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    u                              shift and go to state 107
+    t                              shift and go to state 108
+    exp                            shift and go to state 109
+    factor                         shift and go to state 100
+    termino                        shift and go to state 98
 
-state 87
+state 80
 
     (108) ak -> al . am an
     (111) am -> . linecolorp
@@ -1310,30 +1248,30 @@ state 87
     STAR            reduce using rule 112 (am -> .)
     TRIANGLE        reduce using rule 112 (am -> .)
     ARC             reduce using rule 112 (am -> .)
-    LINECOLOR       shift and go to state 117
+    LINECOLOR       shift and go to state 112
 
-    linecolorp                     shift and go to state 115
-    am                             shift and go to state 116
+    linecolorp                     shift and go to state 110
+    am                             shift and go to state 111
 
-state 88
+state 81
 
     (44) asignacion -> ID . aa EQUAL expresion SEMICOLON
     (45) aa -> . LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
     (46) aa -> .
 
-    LSQUAREBRACKET  shift and go to state 119
+    LSQUAREBRACKET  shift and go to state 114
     EQUAL           reduce using rule 46 (aa -> .)
 
-    aa                             shift and go to state 118
+    aa                             shift and go to state 113
 
-state 89
+state 82
 
     (90) condicion -> IF . LPARENTHESIS expresion RPARENTHESIS bloque s SEMICOLON
 
-    LPARENTHESIS    shift and go to state 120
+    LPARENTHESIS    shift and go to state 115
 
 
-state 90
+state 83
 
     (37) estatuto -> asignacion .
 
@@ -1356,21 +1294,21 @@ state 90
     RBRACKET        reduce using rule 37 (estatuto -> asignacion .)
 
 
-state 91
+state 84
 
-    (34) bloque -> LBRACKET l . RBRACKET SEMICOLON
+    (34) bloque -> LBRACKET l . RBRACKET
 
-    RBRACKET        shift and go to state 121
+    RBRACKET        shift and go to state 116
 
 
-state 92
+state 85
 
     (115) linewidthp -> LINEWIDTH . LPARENTHESIS exp RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 122
+    LPARENTHESIS    shift and go to state 117
 
 
-state 93
+state 86
 
     (40) estatuto -> escritura .
 
@@ -1393,28 +1331,50 @@ state 93
     RBRACKET        reduce using rule 40 (estatuto -> escritura .)
 
 
-state 94
+state 87
 
     (31) main -> FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON .
 
+    FUNC            reduce using rule 31 (main -> FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON .)
     RBRACKET        reduce using rule 31 (main -> FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON .)
 
 
-state 95
+state 88
 
-    (21) funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON .
+    (21) funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS a . bloque SEMICOLON
+    (34) bloque -> . LBRACKET l RBRACKET
 
-    FUNC            reduce using rule 21 (funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON .)
+    LBRACKET        shift and go to state 61
+
+    bloque                         shift and go to state 118
+
+state 89
+
+    (28) param -> ID COLON tipo . j
+    (29) j -> . COMMA param
+    (30) j -> .
+
+    COMMA           shift and go to state 120
+    RPARENTHESIS    reduce using rule 30 (j -> .)
+
+    j                              shift and go to state 119
+
+state 90
+
+    (16) mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux .
+
+    COLON           reduce using rule 16 (mataux -> ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux .)
 
 
-state 96
+state 91
 
-    (29) j -> COMMA param .
+    (15) mataux -> ID . LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET
+    (16) mataux -> ID . LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux
 
-    RPARENTHESIS    reduce using rule 29 (j -> COMMA param .)
+    LSQUAREBRACKET  shift and go to state 21
 
 
-state 97
+state 92
 
     (73) factor -> ad .
 
@@ -1423,26 +1383,11 @@ state 97
     PLUS            reduce using rule 73 (factor -> ad .)
     MINUS           reduce using rule 73 (factor -> ad .)
     COMMA           reduce using rule 73 (factor -> ad .)
-    GREATERTHAN     reduce using rule 73 (factor -> ad .)
-    LESSTHAN        reduce using rule 73 (factor -> ad .)
-    NOTEQUAL        reduce using rule 73 (factor -> ad .)
-    LESSEQUAL       reduce using rule 73 (factor -> ad .)
-    GREATEREQUAL    reduce using rule 73 (factor -> ad .)
-    EQUALEQUAL      reduce using rule 73 (factor -> ad .)
-    AND             reduce using rule 73 (factor -> ad .)
-    OR              reduce using rule 73 (factor -> ad .)
-    LPARENTHESIS    reduce using rule 73 (factor -> ad .)
-    CTEINT          reduce using rule 73 (factor -> ad .)
-    CTEFLOAT        reduce using rule 73 (factor -> ad .)
-    CTEBOOL         reduce using rule 73 (factor -> ad .)
-    CTESTRING       reduce using rule 73 (factor -> ad .)
     ID              reduce using rule 73 (factor -> ad .)
-    RPARENTHESIS    reduce using rule 73 (factor -> ad .)
-    RSQUAREBRACKET  reduce using rule 73 (factor -> ad .)
-    SEMICOLON       reduce using rule 73 (factor -> ad .)
     IF              reduce using rule 73 (factor -> ad .)
     WHILE           reduce using rule 73 (factor -> ad .)
     PRINT           reduce using rule 73 (factor -> ad .)
+    LPARENTHESIS    reduce using rule 73 (factor -> ad .)
     RETURN          reduce using rule 73 (factor -> ad .)
     RANDOM          reduce using rule 73 (factor -> ad .)
     LINEWIDTH       reduce using rule 73 (factor -> ad .)
@@ -1455,9 +1400,24 @@ state 97
     TRIANGLE        reduce using rule 73 (factor -> ad .)
     ARC             reduce using rule 73 (factor -> ad .)
     RBRACKET        reduce using rule 73 (factor -> ad .)
+    RPARENTHESIS    reduce using rule 73 (factor -> ad .)
+    GREATERTHAN     reduce using rule 73 (factor -> ad .)
+    LESSTHAN        reduce using rule 73 (factor -> ad .)
+    NOTEQUAL        reduce using rule 73 (factor -> ad .)
+    LESSEQUAL       reduce using rule 73 (factor -> ad .)
+    GREATEREQUAL    reduce using rule 73 (factor -> ad .)
+    EQUALEQUAL      reduce using rule 73 (factor -> ad .)
+    AND             reduce using rule 73 (factor -> ad .)
+    OR              reduce using rule 73 (factor -> ad .)
+    CTEINT          reduce using rule 73 (factor -> ad .)
+    CTEFLOAT        reduce using rule 73 (factor -> ad .)
+    CTEBOOL         reduce using rule 73 (factor -> ad .)
+    CTESTRING       reduce using rule 73 (factor -> ad .)
+    RSQUAREBRACKET  reduce using rule 73 (factor -> ad .)
+    SEMICOLON       reduce using rule 73 (factor -> ad .)
 
 
-state 98
+state 93
 
     (77) ae -> ag . varcte
     (82) varcte -> . CTEINT
@@ -1466,15 +1426,15 @@ state 98
     (85) varcte -> . CTESTRING
     (86) varcte -> . ID r
 
-    CTEINT          shift and go to state 126
-    CTEFLOAT        shift and go to state 127
-    CTEBOOL         shift and go to state 125
-    CTESTRING       shift and go to state 123
-    ID              shift and go to state 128
+    CTEINT          shift and go to state 124
+    CTEFLOAT        shift and go to state 125
+    CTEBOOL         shift and go to state 123
+    CTESTRING       shift and go to state 121
+    ID              shift and go to state 126
 
-    varcte                         shift and go to state 124
+    varcte                         shift and go to state 122
 
-state 99
+state 94
 
     (75) factor -> af .
 
@@ -1483,26 +1443,11 @@ state 99
     PLUS            reduce using rule 75 (factor -> af .)
     MINUS           reduce using rule 75 (factor -> af .)
     COMMA           reduce using rule 75 (factor -> af .)
-    GREATERTHAN     reduce using rule 75 (factor -> af .)
-    LESSTHAN        reduce using rule 75 (factor -> af .)
-    NOTEQUAL        reduce using rule 75 (factor -> af .)
-    LESSEQUAL       reduce using rule 75 (factor -> af .)
-    GREATEREQUAL    reduce using rule 75 (factor -> af .)
-    EQUALEQUAL      reduce using rule 75 (factor -> af .)
-    AND             reduce using rule 75 (factor -> af .)
-    OR              reduce using rule 75 (factor -> af .)
-    LPARENTHESIS    reduce using rule 75 (factor -> af .)
-    CTEINT          reduce using rule 75 (factor -> af .)
-    CTEFLOAT        reduce using rule 75 (factor -> af .)
-    CTEBOOL         reduce using rule 75 (factor -> af .)
-    CTESTRING       reduce using rule 75 (factor -> af .)
     ID              reduce using rule 75 (factor -> af .)
-    RPARENTHESIS    reduce using rule 75 (factor -> af .)
-    RSQUAREBRACKET  reduce using rule 75 (factor -> af .)
-    SEMICOLON       reduce using rule 75 (factor -> af .)
     IF              reduce using rule 75 (factor -> af .)
     WHILE           reduce using rule 75 (factor -> af .)
     PRINT           reduce using rule 75 (factor -> af .)
+    LPARENTHESIS    reduce using rule 75 (factor -> af .)
     RETURN          reduce using rule 75 (factor -> af .)
     RANDOM          reduce using rule 75 (factor -> af .)
     LINEWIDTH       reduce using rule 75 (factor -> af .)
@@ -1515,9 +1460,24 @@ state 99
     TRIANGLE        reduce using rule 75 (factor -> af .)
     ARC             reduce using rule 75 (factor -> af .)
     RBRACKET        reduce using rule 75 (factor -> af .)
+    RPARENTHESIS    reduce using rule 75 (factor -> af .)
+    GREATERTHAN     reduce using rule 75 (factor -> af .)
+    LESSTHAN        reduce using rule 75 (factor -> af .)
+    NOTEQUAL        reduce using rule 75 (factor -> af .)
+    LESSEQUAL       reduce using rule 75 (factor -> af .)
+    GREATEREQUAL    reduce using rule 75 (factor -> af .)
+    EQUALEQUAL      reduce using rule 75 (factor -> af .)
+    AND             reduce using rule 75 (factor -> af .)
+    OR              reduce using rule 75 (factor -> af .)
+    CTEINT          reduce using rule 75 (factor -> af .)
+    CTEFLOAT        reduce using rule 75 (factor -> af .)
+    CTEBOOL         reduce using rule 75 (factor -> af .)
+    CTESTRING       reduce using rule 75 (factor -> af .)
+    RSQUAREBRACKET  reduce using rule 75 (factor -> af .)
+    SEMICOLON       reduce using rule 75 (factor -> af .)
 
 
-state 100
+state 95
 
     (78) af -> llamadafunc .
 
@@ -1525,15 +1485,17 @@ state 100
     DIVISION        reduce using rule 78 (af -> llamadafunc .)
     PLUS            reduce using rule 78 (af -> llamadafunc .)
     MINUS           reduce using rule 78 (af -> llamadafunc .)
-    RSQUAREBRACKET  reduce using rule 78 (af -> llamadafunc .)
-    RPARENTHESIS    reduce using rule 78 (af -> llamadafunc .)
     COMMA           reduce using rule 78 (af -> llamadafunc .)
+    RPARENTHESIS    reduce using rule 78 (af -> llamadafunc .)
+    RSQUAREBRACKET  reduce using rule 78 (af -> llamadafunc .)
     GREATERTHAN     reduce using rule 78 (af -> llamadafunc .)
     LESSTHAN        reduce using rule 78 (af -> llamadafunc .)
     NOTEQUAL        reduce using rule 78 (af -> llamadafunc .)
     LESSEQUAL       reduce using rule 78 (af -> llamadafunc .)
     GREATEREQUAL    reduce using rule 78 (af -> llamadafunc .)
     EQUALEQUAL      reduce using rule 78 (af -> llamadafunc .)
+    AND             reduce using rule 78 (af -> llamadafunc .)
+    OR              reduce using rule 78 (af -> llamadafunc .)
     LPARENTHESIS    reduce using rule 78 (af -> llamadafunc .)
     CTEINT          reduce using rule 78 (af -> llamadafunc .)
     CTEFLOAT        reduce using rule 78 (af -> llamadafunc .)
@@ -1541,8 +1503,6 @@ state 100
     CTESTRING       reduce using rule 78 (af -> llamadafunc .)
     ID              reduce using rule 78 (af -> llamadafunc .)
     SEMICOLON       reduce using rule 78 (af -> llamadafunc .)
-    AND             reduce using rule 78 (af -> llamadafunc .)
-    OR              reduce using rule 78 (af -> llamadafunc .)
     IF              reduce using rule 78 (af -> llamadafunc .)
     WHILE           reduce using rule 78 (af -> llamadafunc .)
     PRINT           reduce using rule 78 (af -> llamadafunc .)
@@ -1560,7 +1520,7 @@ state 100
     RBRACKET        reduce using rule 78 (af -> llamadafunc .)
 
 
-state 101
+state 96
 
     (76) ad -> LPARENTHESIS . expresion RPARENTHESIS
     (99) llamadafunc -> LPARENTHESIS . t RPARENTHESIS SEMICOLON
@@ -1584,29 +1544,29 @@ state 101
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
     RPARENTHESIS    reduce using rule 101 (t -> .)
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    expresion                      shift and go to state 129
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    specialexp                     shift and go to state 130
-    llamadafunc                    shift and go to state 100
-    u                              shift and go to state 112
-    t                              shift and go to state 113
-    exp                            shift and go to state 131
-    factor                         shift and go to state 105
-    termino                        shift and go to state 103
+    expresion                      shift and go to state 127
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    specialexp                     shift and go to state 128
+    llamadafunc                    shift and go to state 95
+    u                              shift and go to state 107
+    t                              shift and go to state 108
+    exp                            shift and go to state 129
+    factor                         shift and go to state 100
+    termino                        shift and go to state 98
 
-state 102
+state 97
 
     (79) ag -> PLUS .
 
@@ -1617,7 +1577,7 @@ state 102
     ID              reduce using rule 79 (ag -> PLUS .)
 
 
-state 103
+state 98
 
     (63) exp -> termino . ab
     (64) ab -> . ab2 exp
@@ -1660,16 +1620,16 @@ state 103
     CTESTRING       reduce using rule 65 (ab -> .)
     RSQUAREBRACKET  reduce using rule 65 (ab -> .)
     SEMICOLON       reduce using rule 65 (ab -> .)
-    PLUS            shift and go to state 134
-    MINUS           shift and go to state 135
+    PLUS            shift and go to state 132
+    MINUS           shift and go to state 133
 
   ! PLUS            [ reduce using rule 65 (ab -> .) ]
   ! MINUS           [ reduce using rule 65 (ab -> .) ]
 
-    ab2                            shift and go to state 133
-    ab                             shift and go to state 132
+    ab2                            shift and go to state 131
+    ab                             shift and go to state 130
 
-state 104
+state 99
 
     (104) return -> RETURN exp .
 
@@ -1692,7 +1652,7 @@ state 104
     RBRACKET        reduce using rule 104 (return -> RETURN exp .)
 
 
-state 105
+state 100
 
     (68) termino -> factor . ac
     (69) ac -> . ac2 termino
@@ -1735,13 +1695,13 @@ state 105
     CTESTRING       reduce using rule 70 (ac -> .)
     RSQUAREBRACKET  reduce using rule 70 (ac -> .)
     SEMICOLON       reduce using rule 70 (ac -> .)
-    PRODUCT         shift and go to state 138
-    DIVISION        shift and go to state 136
+    PRODUCT         shift and go to state 136
+    DIVISION        shift and go to state 134
 
-    ac2                            shift and go to state 139
-    ac                             shift and go to state 137
+    ac2                            shift and go to state 137
+    ac                             shift and go to state 135
 
-state 106
+state 101
 
     (74) factor -> ae .
 
@@ -1750,26 +1710,11 @@ state 106
     PLUS            reduce using rule 74 (factor -> ae .)
     MINUS           reduce using rule 74 (factor -> ae .)
     COMMA           reduce using rule 74 (factor -> ae .)
-    GREATERTHAN     reduce using rule 74 (factor -> ae .)
-    LESSTHAN        reduce using rule 74 (factor -> ae .)
-    NOTEQUAL        reduce using rule 74 (factor -> ae .)
-    LESSEQUAL       reduce using rule 74 (factor -> ae .)
-    GREATEREQUAL    reduce using rule 74 (factor -> ae .)
-    EQUALEQUAL      reduce using rule 74 (factor -> ae .)
-    AND             reduce using rule 74 (factor -> ae .)
-    OR              reduce using rule 74 (factor -> ae .)
-    LPARENTHESIS    reduce using rule 74 (factor -> ae .)
-    CTEINT          reduce using rule 74 (factor -> ae .)
-    CTEFLOAT        reduce using rule 74 (factor -> ae .)
-    CTEBOOL         reduce using rule 74 (factor -> ae .)
-    CTESTRING       reduce using rule 74 (factor -> ae .)
     ID              reduce using rule 74 (factor -> ae .)
-    RPARENTHESIS    reduce using rule 74 (factor -> ae .)
-    RSQUAREBRACKET  reduce using rule 74 (factor -> ae .)
-    SEMICOLON       reduce using rule 74 (factor -> ae .)
     IF              reduce using rule 74 (factor -> ae .)
     WHILE           reduce using rule 74 (factor -> ae .)
     PRINT           reduce using rule 74 (factor -> ae .)
+    LPARENTHESIS    reduce using rule 74 (factor -> ae .)
     RETURN          reduce using rule 74 (factor -> ae .)
     RANDOM          reduce using rule 74 (factor -> ae .)
     LINEWIDTH       reduce using rule 74 (factor -> ae .)
@@ -1782,9 +1727,24 @@ state 106
     TRIANGLE        reduce using rule 74 (factor -> ae .)
     ARC             reduce using rule 74 (factor -> ae .)
     RBRACKET        reduce using rule 74 (factor -> ae .)
+    RPARENTHESIS    reduce using rule 74 (factor -> ae .)
+    GREATERTHAN     reduce using rule 74 (factor -> ae .)
+    LESSTHAN        reduce using rule 74 (factor -> ae .)
+    NOTEQUAL        reduce using rule 74 (factor -> ae .)
+    LESSEQUAL       reduce using rule 74 (factor -> ae .)
+    GREATEREQUAL    reduce using rule 74 (factor -> ae .)
+    EQUALEQUAL      reduce using rule 74 (factor -> ae .)
+    AND             reduce using rule 74 (factor -> ae .)
+    OR              reduce using rule 74 (factor -> ae .)
+    CTEINT          reduce using rule 74 (factor -> ae .)
+    CTEFLOAT        reduce using rule 74 (factor -> ae .)
+    CTEBOOL         reduce using rule 74 (factor -> ae .)
+    CTESTRING       reduce using rule 74 (factor -> ae .)
+    RSQUAREBRACKET  reduce using rule 74 (factor -> ae .)
+    SEMICOLON       reduce using rule 74 (factor -> ae .)
 
 
-state 107
+state 102
 
     (80) ag -> MINUS .
 
@@ -1795,7 +1755,7 @@ state 107
     ID              reduce using rule 80 (ag -> MINUS .)
 
 
-state 108
+state 103
 
     (93) ciclo -> WHILE LPARENTHESIS . expresion RPARENTHESIS bloque SEMICOLON
     (47) expresion -> . specialexp m n
@@ -1813,27 +1773,27 @@ state 108
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    expresion                      shift and go to state 140
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    specialexp                     shift and go to state 130
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 141
-    factor                         shift and go to state 105
+    expresion                      shift and go to state 138
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    specialexp                     shift and go to state 128
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 139
+    factor                         shift and go to state 100
 
-state 109
+state 104
 
     (94) escritura -> PRINT LPARENTHESIS . ah RPARENTHESIS SEMICOLON
     (95) ah -> . expresion ai
@@ -1854,10 +1814,10 @@ state 109
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
   ! shift/reduce conflict for CTESTRING resolved as shift
-    CTESTRING       shift and go to state 142
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    CTESTRING       shift and go to state 140
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
@@ -1865,26 +1825,26 @@ state 109
 
   ! CTESTRING       [ reduce using rule 81 (ag -> .) ]
 
-    expresion                      shift and go to state 144
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    ah                             shift and go to state 143
-    llamadafunc                    shift and go to state 100
-    specialexp                     shift and go to state 130
-    termino                        shift and go to state 103
-    exp                            shift and go to state 141
-    factor                         shift and go to state 105
+    expresion                      shift and go to state 142
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    ah                             shift and go to state 141
+    llamadafunc                    shift and go to state 95
+    specialexp                     shift and go to state 128
+    termino                        shift and go to state 98
+    exp                            shift and go to state 139
+    factor                         shift and go to state 100
 
-state 110
+state 105
 
     (35) l -> estatuto l .
 
     RBRACKET        reduce using rule 35 (l -> estatuto l .)
 
 
-state 111
+state 106
 
     (107) aj -> RANDOM LPARENTHESIS . exp COMMA exp RPARENTHESIS SEMICOLON
     (63) exp -> . termino ab
@@ -1900,48 +1860,48 @@ state 111
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 145
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 143
+    factor                         shift and go to state 100
 
-state 112
+state 107
 
     (100) t -> u .
 
     RPARENTHESIS    reduce using rule 100 (t -> u .)
 
 
-state 113
+state 108
 
     (99) llamadafunc -> LPARENTHESIS t . RPARENTHESIS SEMICOLON
 
-    RPARENTHESIS    shift and go to state 146
+    RPARENTHESIS    shift and go to state 144
 
 
-state 114
+state 109
 
     (102) u -> exp .
     (103) u -> exp . COMMA u
 
     RPARENTHESIS    reduce using rule 102 (u -> exp .)
-    COMMA           shift and go to state 147
+    COMMA           shift and go to state 145
 
 
-state 115
+state 110
 
     (111) am -> linecolorp .
 
@@ -1954,7 +1914,7 @@ state 115
     ARC             reduce using rule 111 (am -> linecolorp .)
 
 
-state 116
+state 111
 
     (108) ak -> al am . an
     (113) an -> . dibuja
@@ -1968,34 +1928,34 @@ state 116
     (122) v -> . TRIANGLE triangleparam
     (123) v -> . ARC arcparam
 
-    STARTFILL       shift and go to state 152
-    LINE            shift and go to state 151
-    SQUARE          shift and go to state 154
-    CIRCLE          shift and go to state 158
-    STAR            shift and go to state 150
-    TRIANGLE        shift and go to state 148
-    ARC             shift and go to state 156
+    STARTFILL       shift and go to state 150
+    LINE            shift and go to state 149
+    SQUARE          shift and go to state 152
+    CIRCLE          shift and go to state 156
+    STAR            shift and go to state 148
+    TRIANGLE        shift and go to state 146
+    ARC             shift and go to state 154
 
-    an                             shift and go to state 149
-    startfillp                     shift and go to state 153
-    dibuja                         shift and go to state 155
-    v                              shift and go to state 157
+    an                             shift and go to state 147
+    startfillp                     shift and go to state 151
+    dibuja                         shift and go to state 153
+    v                              shift and go to state 155
 
-state 117
+state 112
 
     (116) linecolorp -> LINECOLOR . LPARENTHESIS exp RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 159
+    LPARENTHESIS    shift and go to state 157
 
 
-state 118
+state 113
 
     (44) asignacion -> ID aa . EQUAL expresion SEMICOLON
 
-    EQUAL           shift and go to state 160
+    EQUAL           shift and go to state 158
 
 
-state 119
+state 114
 
     (45) aa -> LSQUAREBRACKET . exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
     (63) exp -> . termino ab
@@ -2011,25 +1971,25 @@ state 119
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 161
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 159
+    factor                         shift and go to state 100
 
-state 120
+state 115
 
     (90) condicion -> IF LPARENTHESIS . expresion RPARENTHESIS bloque s SEMICOLON
     (47) expresion -> . specialexp m n
@@ -2047,34 +2007,35 @@ state 120
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    expresion                      shift and go to state 162
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    specialexp                     shift and go to state 130
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 141
-    factor                         shift and go to state 105
+    expresion                      shift and go to state 160
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    specialexp                     shift and go to state 128
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 139
+    factor                         shift and go to state 100
 
-state 121
+state 116
 
-    (34) bloque -> LBRACKET l RBRACKET . SEMICOLON
+    (34) bloque -> LBRACKET l RBRACKET .
 
-    SEMICOLON       shift and go to state 163
+    SEMICOLON       reduce using rule 34 (bloque -> LBRACKET l RBRACKET .)
+    ELSE            reduce using rule 34 (bloque -> LBRACKET l RBRACKET .)
 
 
-state 122
+state 117
 
     (115) linewidthp -> LINEWIDTH LPARENTHESIS . exp RPARENTHESIS SEMICOLON
     (63) exp -> . termino ab
@@ -2090,25 +2051,48 @@ state 122
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 164
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 161
+    factor                         shift and go to state 100
 
-state 123
+state 118
+
+    (21) funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque . SEMICOLON
+
+    SEMICOLON       shift and go to state 162
+
+
+state 119
+
+    (28) param -> ID COLON tipo j .
+
+    RPARENTHESIS    reduce using rule 28 (param -> ID COLON tipo j .)
+
+
+state 120
+
+    (29) j -> COMMA . param
+    (28) param -> . ID COLON tipo j
+
+    ID              shift and go to state 59
+
+    param                          shift and go to state 163
+
+state 121
 
     (85) varcte -> CTESTRING .
 
@@ -2151,7 +2135,7 @@ state 123
     SEMICOLON       reduce using rule 85 (varcte -> CTESTRING .)
 
 
-state 124
+state 122
 
     (77) ae -> ag varcte .
 
@@ -2159,8 +2143,6 @@ state 124
     DIVISION        reduce using rule 77 (ae -> ag varcte .)
     PLUS            reduce using rule 77 (ae -> ag varcte .)
     MINUS           reduce using rule 77 (ae -> ag varcte .)
-    COMMA           reduce using rule 77 (ae -> ag varcte .)
-    RPARENTHESIS    reduce using rule 77 (ae -> ag varcte .)
     GREATERTHAN     reduce using rule 77 (ae -> ag varcte .)
     LESSTHAN        reduce using rule 77 (ae -> ag varcte .)
     NOTEQUAL        reduce using rule 77 (ae -> ag varcte .)
@@ -2175,7 +2157,8 @@ state 124
     CTEBOOL         reduce using rule 77 (ae -> ag varcte .)
     CTESTRING       reduce using rule 77 (ae -> ag varcte .)
     ID              reduce using rule 77 (ae -> ag varcte .)
-    SEMICOLON       reduce using rule 77 (ae -> ag varcte .)
+    COMMA           reduce using rule 77 (ae -> ag varcte .)
+    RPARENTHESIS    reduce using rule 77 (ae -> ag varcte .)
     IF              reduce using rule 77 (ae -> ag varcte .)
     WHILE           reduce using rule 77 (ae -> ag varcte .)
     PRINT           reduce using rule 77 (ae -> ag varcte .)
@@ -2192,9 +2175,10 @@ state 124
     ARC             reduce using rule 77 (ae -> ag varcte .)
     RBRACKET        reduce using rule 77 (ae -> ag varcte .)
     RSQUAREBRACKET  reduce using rule 77 (ae -> ag varcte .)
+    SEMICOLON       reduce using rule 77 (ae -> ag varcte .)
 
 
-state 125
+state 123
 
     (84) varcte -> CTEBOOL .
 
@@ -2237,7 +2221,7 @@ state 125
     SEMICOLON       reduce using rule 84 (varcte -> CTEBOOL .)
 
 
-state 126
+state 124
 
     (82) varcte -> CTEINT .
 
@@ -2280,7 +2264,7 @@ state 126
     SEMICOLON       reduce using rule 82 (varcte -> CTEINT .)
 
 
-state 127
+state 125
 
     (83) varcte -> CTEFLOAT .
 
@@ -2323,7 +2307,7 @@ state 127
     SEMICOLON       reduce using rule 83 (varcte -> CTEFLOAT .)
 
 
-state 128
+state 126
 
     (86) varcte -> ID . r
     (87) r -> . LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
@@ -2332,7 +2316,7 @@ state 128
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
   ! shift/reduce conflict for LPARENTHESIS resolved as shift
-    LSQUAREBRACKET  shift and go to state 165
+    LSQUAREBRACKET  shift and go to state 164
     PRODUCT         reduce using rule 89 (r -> .)
     DIVISION        reduce using rule 89 (r -> .)
     PLUS            reduce using rule 89 (r -> .)
@@ -2369,21 +2353,21 @@ state 128
     CTESTRING       reduce using rule 89 (r -> .)
     RSQUAREBRACKET  reduce using rule 89 (r -> .)
     SEMICOLON       reduce using rule 89 (r -> .)
-    LPARENTHESIS    shift and go to state 86
+    LPARENTHESIS    shift and go to state 79
 
   ! LPARENTHESIS    [ reduce using rule 89 (r -> .) ]
 
-    r                              shift and go to state 167
-    llamadafunc                    shift and go to state 166
+    r                              shift and go to state 166
+    llamadafunc                    shift and go to state 165
 
-state 129
+state 127
 
     (76) ad -> LPARENTHESIS expresion . RPARENTHESIS
 
-    RPARENTHESIS    shift and go to state 168
+    RPARENTHESIS    shift and go to state 167
 
 
-state 130
+state 128
 
     (47) expresion -> specialexp . m n
     (48) m -> . o specialexp
@@ -2402,13 +2386,13 @@ state 130
     RPARENTHESIS    reduce using rule 49 (m -> .)
     COMMA           reduce using rule 49 (m -> .)
     SEMICOLON       reduce using rule 49 (m -> .)
-    AND             shift and go to state 169
-    OR              shift and go to state 172
+    AND             shift and go to state 168
+    OR              shift and go to state 171
 
-    m                              shift and go to state 170
-    o                              shift and go to state 171
+    m                              shift and go to state 169
+    o                              shift and go to state 170
 
-state 131
+state 129
 
     (54) specialexp -> exp . p
     (102) u -> exp .
@@ -2423,7 +2407,7 @@ state 131
     (62) q -> . EQUALEQUAL
 
   ! reduce/reduce conflict for RPARENTHESIS resolved using rule 56 (p -> .)
-    COMMA           shift and go to state 147
+    COMMA           shift and go to state 145
     AND             reduce using rule 56 (p -> .)
     OR              reduce using rule 56 (p -> .)
     LPARENTHESIS    reduce using rule 56 (p -> .)
@@ -2435,27 +2419,45 @@ state 131
     CTESTRING       reduce using rule 56 (p -> .)
     ID              reduce using rule 56 (p -> .)
     RPARENTHESIS    reduce using rule 56 (p -> .)
-    GREATERTHAN     shift and go to state 175
-    LESSTHAN        shift and go to state 178
-    NOTEQUAL        shift and go to state 173
-    LESSEQUAL       shift and go to state 179
-    GREATEREQUAL    shift and go to state 174
-    EQUALEQUAL      shift and go to state 180
+    GREATERTHAN     shift and go to state 174
+    LESSTHAN        shift and go to state 177
+    NOTEQUAL        shift and go to state 172
+    LESSEQUAL       shift and go to state 178
+    GREATEREQUAL    shift and go to state 173
+    EQUALEQUAL      shift and go to state 179
 
   ! RPARENTHESIS    [ reduce using rule 102 (u -> exp .) ]
 
-    q                              shift and go to state 176
-    p                              shift and go to state 177
+    q                              shift and go to state 175
+    p                              shift and go to state 176
 
-state 132
+state 130
 
     (63) exp -> termino ab .
 
+    GREATERTHAN     reduce using rule 63 (exp -> termino ab .)
+    LESSTHAN        reduce using rule 63 (exp -> termino ab .)
+    NOTEQUAL        reduce using rule 63 (exp -> termino ab .)
+    LESSEQUAL       reduce using rule 63 (exp -> termino ab .)
+    GREATEREQUAL    reduce using rule 63 (exp -> termino ab .)
+    EQUALEQUAL      reduce using rule 63 (exp -> termino ab .)
+    AND             reduce using rule 63 (exp -> termino ab .)
+    OR              reduce using rule 63 (exp -> termino ab .)
+    LPARENTHESIS    reduce using rule 63 (exp -> termino ab .)
+    PLUS            reduce using rule 63 (exp -> termino ab .)
+    MINUS           reduce using rule 63 (exp -> termino ab .)
+    CTEINT          reduce using rule 63 (exp -> termino ab .)
+    CTEFLOAT        reduce using rule 63 (exp -> termino ab .)
+    CTEBOOL         reduce using rule 63 (exp -> termino ab .)
+    CTESTRING       reduce using rule 63 (exp -> termino ab .)
     ID              reduce using rule 63 (exp -> termino ab .)
+    RPARENTHESIS    reduce using rule 63 (exp -> termino ab .)
+    COMMA           reduce using rule 63 (exp -> termino ab .)
+    SEMICOLON       reduce using rule 63 (exp -> termino ab .)
+    RSQUAREBRACKET  reduce using rule 63 (exp -> termino ab .)
     IF              reduce using rule 63 (exp -> termino ab .)
     WHILE           reduce using rule 63 (exp -> termino ab .)
     PRINT           reduce using rule 63 (exp -> termino ab .)
-    LPARENTHESIS    reduce using rule 63 (exp -> termino ab .)
     RETURN          reduce using rule 63 (exp -> termino ab .)
     RANDOM          reduce using rule 63 (exp -> termino ab .)
     LINEWIDTH       reduce using rule 63 (exp -> termino ab .)
@@ -2468,27 +2470,9 @@ state 132
     TRIANGLE        reduce using rule 63 (exp -> termino ab .)
     ARC             reduce using rule 63 (exp -> termino ab .)
     RBRACKET        reduce using rule 63 (exp -> termino ab .)
-    COMMA           reduce using rule 63 (exp -> termino ab .)
-    RPARENTHESIS    reduce using rule 63 (exp -> termino ab .)
-    GREATERTHAN     reduce using rule 63 (exp -> termino ab .)
-    LESSTHAN        reduce using rule 63 (exp -> termino ab .)
-    NOTEQUAL        reduce using rule 63 (exp -> termino ab .)
-    LESSEQUAL       reduce using rule 63 (exp -> termino ab .)
-    GREATEREQUAL    reduce using rule 63 (exp -> termino ab .)
-    EQUALEQUAL      reduce using rule 63 (exp -> termino ab .)
-    AND             reduce using rule 63 (exp -> termino ab .)
-    OR              reduce using rule 63 (exp -> termino ab .)
-    PLUS            reduce using rule 63 (exp -> termino ab .)
-    MINUS           reduce using rule 63 (exp -> termino ab .)
-    CTEINT          reduce using rule 63 (exp -> termino ab .)
-    CTEFLOAT        reduce using rule 63 (exp -> termino ab .)
-    CTEBOOL         reduce using rule 63 (exp -> termino ab .)
-    CTESTRING       reduce using rule 63 (exp -> termino ab .)
-    RSQUAREBRACKET  reduce using rule 63 (exp -> termino ab .)
-    SEMICOLON       reduce using rule 63 (exp -> termino ab .)
 
 
-state 133
+state 131
 
     (64) ab -> ab2 . exp
     (63) exp -> . termino ab
@@ -2504,25 +2488,25 @@ state 133
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 181
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 180
+    factor                         shift and go to state 100
 
-state 134
+state 132
 
     (66) ab2 -> PLUS .
 
@@ -2536,7 +2520,7 @@ state 134
     ID              reduce using rule 66 (ab2 -> PLUS .)
 
 
-state 135
+state 133
 
     (67) ab2 -> MINUS .
 
@@ -2550,7 +2534,7 @@ state 135
     ID              reduce using rule 67 (ab2 -> MINUS .)
 
 
-state 136
+state 134
 
     (72) ac2 -> DIVISION .
 
@@ -2564,20 +2548,33 @@ state 136
     ID              reduce using rule 72 (ac2 -> DIVISION .)
 
 
-state 137
+state 135
 
     (68) termino -> factor ac .
 
     PLUS            reduce using rule 68 (termino -> factor ac .)
     MINUS           reduce using rule 68 (termino -> factor ac .)
-    RPARENTHESIS    reduce using rule 68 (termino -> factor ac .)
     COMMA           reduce using rule 68 (termino -> factor ac .)
-    RSQUAREBRACKET  reduce using rule 68 (termino -> factor ac .)
+    AND             reduce using rule 68 (termino -> factor ac .)
+    OR              reduce using rule 68 (termino -> factor ac .)
+    LPARENTHESIS    reduce using rule 68 (termino -> factor ac .)
+    CTEINT          reduce using rule 68 (termino -> factor ac .)
+    CTEFLOAT        reduce using rule 68 (termino -> factor ac .)
+    CTEBOOL         reduce using rule 68 (termino -> factor ac .)
+    CTESTRING       reduce using rule 68 (termino -> factor ac .)
     ID              reduce using rule 68 (termino -> factor ac .)
+    RPARENTHESIS    reduce using rule 68 (termino -> factor ac .)
+    SEMICOLON       reduce using rule 68 (termino -> factor ac .)
+    RSQUAREBRACKET  reduce using rule 68 (termino -> factor ac .)
+    GREATERTHAN     reduce using rule 68 (termino -> factor ac .)
+    LESSTHAN        reduce using rule 68 (termino -> factor ac .)
+    NOTEQUAL        reduce using rule 68 (termino -> factor ac .)
+    LESSEQUAL       reduce using rule 68 (termino -> factor ac .)
+    GREATEREQUAL    reduce using rule 68 (termino -> factor ac .)
+    EQUALEQUAL      reduce using rule 68 (termino -> factor ac .)
     IF              reduce using rule 68 (termino -> factor ac .)
     WHILE           reduce using rule 68 (termino -> factor ac .)
     PRINT           reduce using rule 68 (termino -> factor ac .)
-    LPARENTHESIS    reduce using rule 68 (termino -> factor ac .)
     RETURN          reduce using rule 68 (termino -> factor ac .)
     RANDOM          reduce using rule 68 (termino -> factor ac .)
     LINEWIDTH       reduce using rule 68 (termino -> factor ac .)
@@ -2590,22 +2587,9 @@ state 137
     TRIANGLE        reduce using rule 68 (termino -> factor ac .)
     ARC             reduce using rule 68 (termino -> factor ac .)
     RBRACKET        reduce using rule 68 (termino -> factor ac .)
-    GREATERTHAN     reduce using rule 68 (termino -> factor ac .)
-    LESSTHAN        reduce using rule 68 (termino -> factor ac .)
-    NOTEQUAL        reduce using rule 68 (termino -> factor ac .)
-    LESSEQUAL       reduce using rule 68 (termino -> factor ac .)
-    GREATEREQUAL    reduce using rule 68 (termino -> factor ac .)
-    EQUALEQUAL      reduce using rule 68 (termino -> factor ac .)
-    AND             reduce using rule 68 (termino -> factor ac .)
-    OR              reduce using rule 68 (termino -> factor ac .)
-    CTEINT          reduce using rule 68 (termino -> factor ac .)
-    CTEFLOAT        reduce using rule 68 (termino -> factor ac .)
-    CTEBOOL         reduce using rule 68 (termino -> factor ac .)
-    CTESTRING       reduce using rule 68 (termino -> factor ac .)
-    SEMICOLON       reduce using rule 68 (termino -> factor ac .)
 
 
-state 138
+state 136
 
     (71) ac2 -> PRODUCT .
 
@@ -2619,7 +2603,7 @@ state 138
     ID              reduce using rule 71 (ac2 -> PRODUCT .)
 
 
-state 139
+state 137
 
     (69) ac -> ac2 . termino
     (68) termino -> . factor ac
@@ -2634,31 +2618,31 @@ state 139
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 182
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 181
+    factor                         shift and go to state 100
 
-state 140
+state 138
 
     (93) ciclo -> WHILE LPARENTHESIS expresion . RPARENTHESIS bloque SEMICOLON
 
-    RPARENTHESIS    shift and go to state 183
+    RPARENTHESIS    shift and go to state 182
 
 
-state 141
+state 139
 
     (54) specialexp -> exp . p
     (55) p -> . q exp
@@ -2683,60 +2667,60 @@ state 141
     RPARENTHESIS    reduce using rule 56 (p -> .)
     COMMA           reduce using rule 56 (p -> .)
     SEMICOLON       reduce using rule 56 (p -> .)
-    GREATERTHAN     shift and go to state 175
-    LESSTHAN        shift and go to state 178
-    NOTEQUAL        shift and go to state 173
-    LESSEQUAL       shift and go to state 179
-    GREATEREQUAL    shift and go to state 174
-    EQUALEQUAL      shift and go to state 180
+    GREATERTHAN     shift and go to state 174
+    LESSTHAN        shift and go to state 177
+    NOTEQUAL        shift and go to state 172
+    LESSEQUAL       shift and go to state 178
+    GREATEREQUAL    shift and go to state 173
+    EQUALEQUAL      shift and go to state 179
 
-    q                              shift and go to state 176
-    p                              shift and go to state 177
+    q                              shift and go to state 175
+    p                              shift and go to state 176
 
-state 142
+state 140
 
     (96) ah -> CTESTRING . ai
     (97) ai -> . COMMA ah
     (98) ai -> .
 
-    COMMA           shift and go to state 185
+    COMMA           shift and go to state 184
     RPARENTHESIS    reduce using rule 98 (ai -> .)
 
-    ai                             shift and go to state 184
+    ai                             shift and go to state 183
 
-state 143
+state 141
 
     (94) escritura -> PRINT LPARENTHESIS ah . RPARENTHESIS SEMICOLON
 
-    RPARENTHESIS    shift and go to state 186
+    RPARENTHESIS    shift and go to state 185
 
 
-state 144
+state 142
 
     (95) ah -> expresion . ai
     (97) ai -> . COMMA ah
     (98) ai -> .
 
-    COMMA           shift and go to state 185
+    COMMA           shift and go to state 184
     RPARENTHESIS    reduce using rule 98 (ai -> .)
 
-    ai                             shift and go to state 187
+    ai                             shift and go to state 186
 
-state 145
+state 143
 
     (107) aj -> RANDOM LPARENTHESIS exp . COMMA exp RPARENTHESIS SEMICOLON
 
-    COMMA           shift and go to state 188
+    COMMA           shift and go to state 187
 
 
-state 146
+state 144
 
     (99) llamadafunc -> LPARENTHESIS t RPARENTHESIS . SEMICOLON
 
-    SEMICOLON       shift and go to state 189
+    SEMICOLON       shift and go to state 188
 
 
-state 147
+state 145
 
     (103) u -> exp COMMA . u
     (102) u -> . exp
@@ -2754,35 +2738,35 @@ state 147
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    u                              shift and go to state 190
-    termino                        shift and go to state 103
-    exp                            shift and go to state 114
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    u                              shift and go to state 189
+    termino                        shift and go to state 98
+    exp                            shift and go to state 109
+    factor                         shift and go to state 100
 
-state 148
+state 146
 
     (122) v -> TRIANGLE . triangleparam
     (128) triangleparam -> . LPARENTHESIS exp COMMA exp COMMA exp
 
-    LPARENTHESIS    shift and go to state 191
+    LPARENTHESIS    shift and go to state 190
 
-    triangleparam                  shift and go to state 192
+    triangleparam                  shift and go to state 191
 
-state 149
+state 147
 
     (108) ak -> al am an .
 
@@ -2805,32 +2789,32 @@ state 149
     RBRACKET        reduce using rule 108 (ak -> al am an .)
 
 
-state 150
+state 148
 
     (121) v -> STAR . starparam
     (127) starparam -> . LPARENTHESIS exp COMMA exp COMMA exp
 
-    LPARENTHESIS    shift and go to state 193
+    LPARENTHESIS    shift and go to state 192
 
-    starparam                      shift and go to state 194
+    starparam                      shift and go to state 193
 
-state 151
+state 149
 
     (118) v -> LINE . lineparam
     (124) lineparam -> . LPARENTHESIS exp COMMA exp COMMA exp COMMA exp
 
-    LPARENTHESIS    shift and go to state 196
+    LPARENTHESIS    shift and go to state 195
 
-    lineparam                      shift and go to state 195
+    lineparam                      shift and go to state 194
 
-state 152
+state 150
 
     (130) startfillp -> STARTFILL . LPARENTHESIS exp RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 197
+    LPARENTHESIS    shift and go to state 196
 
 
-state 153
+state 151
 
     (114) an -> startfillp . dibuja stopfill
     (117) dibuja -> . v RPARENTHESIS SEMICOLON
@@ -2841,26 +2825,26 @@ state 153
     (122) v -> . TRIANGLE triangleparam
     (123) v -> . ARC arcparam
 
-    LINE            shift and go to state 151
-    SQUARE          shift and go to state 154
-    CIRCLE          shift and go to state 158
-    STAR            shift and go to state 150
-    TRIANGLE        shift and go to state 148
-    ARC             shift and go to state 156
+    LINE            shift and go to state 149
+    SQUARE          shift and go to state 152
+    CIRCLE          shift and go to state 156
+    STAR            shift and go to state 148
+    TRIANGLE        shift and go to state 146
+    ARC             shift and go to state 154
 
-    dibuja                         shift and go to state 198
-    v                              shift and go to state 157
+    dibuja                         shift and go to state 197
+    v                              shift and go to state 155
 
-state 154
+state 152
 
     (119) v -> SQUARE . squareparam
     (125) squareparam -> . LPARENTHESIS exp COMMA exp COMMA exp
 
-    LPARENTHESIS    shift and go to state 199
+    LPARENTHESIS    shift and go to state 198
 
-    squareparam                    shift and go to state 200
+    squareparam                    shift and go to state 199
 
-state 155
+state 153
 
     (113) an -> dibuja .
 
@@ -2883,32 +2867,32 @@ state 155
     RBRACKET        reduce using rule 113 (an -> dibuja .)
 
 
-state 156
+state 154
 
     (123) v -> ARC . arcparam
     (129) arcparam -> . LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA exp
 
-    LPARENTHESIS    shift and go to state 201
+    LPARENTHESIS    shift and go to state 200
 
-    arcparam                       shift and go to state 202
+    arcparam                       shift and go to state 201
 
-state 157
+state 155
 
     (117) dibuja -> v . RPARENTHESIS SEMICOLON
 
-    RPARENTHESIS    shift and go to state 203
+    RPARENTHESIS    shift and go to state 202
 
 
-state 158
+state 156
 
     (120) v -> CIRCLE . circleparam
     (126) circleparam -> . LPARENTHESIS exp COMMA exp COMMA exp
 
-    LPARENTHESIS    shift and go to state 204
+    LPARENTHESIS    shift and go to state 203
 
-    circleparam                    shift and go to state 205
+    circleparam                    shift and go to state 204
 
-state 159
+state 157
 
     (116) linecolorp -> LINECOLOR LPARENTHESIS . exp RPARENTHESIS SEMICOLON
     (63) exp -> . termino ab
@@ -2924,25 +2908,25 @@ state 159
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 206
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 205
+    factor                         shift and go to state 100
 
-state 160
+state 158
 
     (44) asignacion -> ID aa EQUAL . expresion SEMICOLON
     (47) expresion -> . specialexp m n
@@ -2960,56 +2944,63 @@ state 160
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    expresion                      shift and go to state 207
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    specialexp                     shift and go to state 130
-    termino                        shift and go to state 103
-    exp                            shift and go to state 141
-    factor                         shift and go to state 105
+    expresion                      shift and go to state 206
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    specialexp                     shift and go to state 128
+    termino                        shift and go to state 98
+    exp                            shift and go to state 139
+    factor                         shift and go to state 100
 
-state 161
+state 159
 
     (45) aa -> LSQUAREBRACKET exp . RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
 
-    RSQUAREBRACKET  shift and go to state 208
+    RSQUAREBRACKET  shift and go to state 207
 
 
-state 162
+state 160
 
     (90) condicion -> IF LPARENTHESIS expresion . RPARENTHESIS bloque s SEMICOLON
+
+    RPARENTHESIS    shift and go to state 208
+
+
+state 161
+
+    (115) linewidthp -> LINEWIDTH LPARENTHESIS exp . RPARENTHESIS SEMICOLON
 
     RPARENTHESIS    shift and go to state 209
 
 
+state 162
+
+    (21) funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON .
+
+    FUNC            reduce using rule 21 (funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON .)
+    RBRACKET        reduce using rule 21 (funcion -> FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON .)
+
+
 state 163
 
-    (34) bloque -> LBRACKET l RBRACKET SEMICOLON .
+    (29) j -> COMMA param .
 
-    SEMICOLON       reduce using rule 34 (bloque -> LBRACKET l RBRACKET SEMICOLON .)
-    ELSE            reduce using rule 34 (bloque -> LBRACKET l RBRACKET SEMICOLON .)
+    RPARENTHESIS    reduce using rule 29 (j -> COMMA param .)
 
 
 state 164
-
-    (115) linewidthp -> LINEWIDTH LPARENTHESIS exp . RPARENTHESIS SEMICOLON
-
-    RPARENTHESIS    shift and go to state 210
-
-
-state 165
 
     (87) r -> LSQUAREBRACKET . exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
     (63) exp -> . termino ab
@@ -3025,25 +3016,25 @@ state 165
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 211
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 210
+    factor                         shift and go to state 100
 
-state 166
+state 165
 
     (88) r -> llamadafunc .
 
@@ -3086,7 +3077,7 @@ state 166
     SEMICOLON       reduce using rule 88 (r -> llamadafunc .)
 
 
-state 167
+state 166
 
     (86) varcte -> ID r .
 
@@ -3129,7 +3120,7 @@ state 167
     SEMICOLON       reduce using rule 86 (varcte -> ID r .)
 
 
-state 168
+state 167
 
     (76) ad -> LPARENTHESIS expresion RPARENTHESIS .
 
@@ -3137,13 +3128,14 @@ state 168
     DIVISION        reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     PLUS            reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     MINUS           reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
-    RPARENTHESIS    reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     GREATERTHAN     reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     LESSTHAN        reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     NOTEQUAL        reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     LESSEQUAL       reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     GREATEREQUAL    reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     EQUALEQUAL      reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
+    AND             reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
+    OR              reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     LPARENTHESIS    reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     CTEINT          reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     CTEFLOAT        reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
@@ -3151,10 +3143,9 @@ state 168
     CTESTRING       reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     ID              reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     COMMA           reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
-    SEMICOLON       reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
+    RPARENTHESIS    reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     RSQUAREBRACKET  reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
-    AND             reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
-    OR              reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
+    SEMICOLON       reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     IF              reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     WHILE           reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
     PRINT           reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
@@ -3172,7 +3163,7 @@ state 168
     RBRACKET        reduce using rule 76 (ad -> LPARENTHESIS expresion RPARENTHESIS .)
 
 
-state 169
+state 168
 
     (50) o -> AND .
 
@@ -3186,7 +3177,7 @@ state 169
     ID              reduce using rule 50 (o -> AND .)
 
 
-state 170
+state 169
 
     (47) expresion -> specialexp m . n
     (52) n -> . expresion
@@ -3209,28 +3200,28 @@ state 170
     RPARENTHESIS    reduce using rule 53 (n -> .)
     COMMA           reduce using rule 53 (n -> .)
     SEMICOLON       reduce using rule 53 (n -> .)
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    expresion                      shift and go to state 212
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    specialexp                     shift and go to state 130
-    llamadafunc                    shift and go to state 100
-    n                              shift and go to state 213
-    termino                        shift and go to state 103
-    exp                            shift and go to state 141
-    factor                         shift and go to state 105
+    expresion                      shift and go to state 211
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    specialexp                     shift and go to state 128
+    llamadafunc                    shift and go to state 95
+    n                              shift and go to state 212
+    termino                        shift and go to state 98
+    exp                            shift and go to state 139
+    factor                         shift and go to state 100
 
-state 171
+state 170
 
     (48) m -> o . specialexp
     (54) specialexp -> . exp p
@@ -3247,26 +3238,26 @@ state 171
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    specialexp                     shift and go to state 214
-    termino                        shift and go to state 103
-    exp                            shift and go to state 141
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    specialexp                     shift and go to state 213
+    termino                        shift and go to state 98
+    exp                            shift and go to state 139
+    factor                         shift and go to state 100
 
-state 172
+state 171
 
     (51) o -> OR .
 
@@ -3280,7 +3271,7 @@ state 172
     ID              reduce using rule 51 (o -> OR .)
 
 
-state 173
+state 172
 
     (59) q -> NOTEQUAL .
 
@@ -3294,7 +3285,7 @@ state 173
     ID              reduce using rule 59 (q -> NOTEQUAL .)
 
 
-state 174
+state 173
 
     (61) q -> GREATEREQUAL .
 
@@ -3308,7 +3299,7 @@ state 174
     ID              reduce using rule 61 (q -> GREATEREQUAL .)
 
 
-state 175
+state 174
 
     (57) q -> GREATERTHAN .
 
@@ -3322,7 +3313,7 @@ state 175
     ID              reduce using rule 57 (q -> GREATERTHAN .)
 
 
-state 176
+state 175
 
     (55) p -> q . exp
     (63) exp -> . termino ab
@@ -3338,25 +3329,25 @@ state 176
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 215
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 214
+    factor                         shift and go to state 100
 
-state 177
+state 176
 
     (54) specialexp -> exp p .
 
@@ -3375,7 +3366,7 @@ state 177
     SEMICOLON       reduce using rule 54 (specialexp -> exp p .)
 
 
-state 178
+state 177
 
     (58) q -> LESSTHAN .
 
@@ -3389,7 +3380,7 @@ state 178
     ID              reduce using rule 58 (q -> LESSTHAN .)
 
 
-state 179
+state 178
 
     (60) q -> LESSEQUAL .
 
@@ -3403,7 +3394,7 @@ state 179
     ID              reduce using rule 60 (q -> LESSEQUAL .)
 
 
-state 180
+state 179
 
     (62) q -> EQUALEQUAL .
 
@@ -3417,7 +3408,7 @@ state 180
     ID              reduce using rule 62 (q -> EQUALEQUAL .)
 
 
-state 181
+state 180
 
     (64) ab -> ab2 exp .
 
@@ -3458,7 +3449,7 @@ state 181
     SEMICOLON       reduce using rule 64 (ab -> ab2 exp .)
 
 
-state 182
+state 181
 
     (69) ac -> ac2 termino .
 
@@ -3499,23 +3490,23 @@ state 182
     SEMICOLON       reduce using rule 69 (ac -> ac2 termino .)
 
 
-state 183
+state 182
 
     (93) ciclo -> WHILE LPARENTHESIS expresion RPARENTHESIS . bloque SEMICOLON
-    (34) bloque -> . LBRACKET l RBRACKET SEMICOLON
+    (34) bloque -> . LBRACKET l RBRACKET
 
-    LBRACKET        shift and go to state 66
+    LBRACKET        shift and go to state 61
 
-    bloque                         shift and go to state 216
+    bloque                         shift and go to state 215
 
-state 184
+state 183
 
     (96) ah -> CTESTRING ai .
 
     RPARENTHESIS    reduce using rule 96 (ah -> CTESTRING ai .)
 
 
-state 185
+state 184
 
     (97) ai -> COMMA . ah
     (95) ah -> . expresion ai
@@ -3536,10 +3527,10 @@ state 185
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
   ! shift/reduce conflict for CTESTRING resolved as shift
-    CTESTRING       shift and go to state 142
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    CTESTRING       shift and go to state 140
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
@@ -3547,33 +3538,33 @@ state 185
 
   ! CTESTRING       [ reduce using rule 81 (ag -> .) ]
 
-    expresion                      shift and go to state 144
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    ah                             shift and go to state 217
-    llamadafunc                    shift and go to state 100
-    specialexp                     shift and go to state 130
-    termino                        shift and go to state 103
-    exp                            shift and go to state 141
-    factor                         shift and go to state 105
+    expresion                      shift and go to state 142
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    ah                             shift and go to state 216
+    llamadafunc                    shift and go to state 95
+    specialexp                     shift and go to state 128
+    termino                        shift and go to state 98
+    exp                            shift and go to state 139
+    factor                         shift and go to state 100
 
-state 186
+state 185
 
     (94) escritura -> PRINT LPARENTHESIS ah RPARENTHESIS . SEMICOLON
 
-    SEMICOLON       shift and go to state 218
+    SEMICOLON       shift and go to state 217
 
 
-state 187
+state 186
 
     (95) ah -> expresion ai .
 
     RPARENTHESIS    reduce using rule 95 (ah -> expresion ai .)
 
 
-state 188
+state 187
 
     (107) aj -> RANDOM LPARENTHESIS exp COMMA . exp RPARENTHESIS SEMICOLON
     (63) exp -> . termino ab
@@ -3589,32 +3580,28 @@ state 188
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 219
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 218
+    factor                         shift and go to state 100
 
-state 189
+state 188
 
     (99) llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .
 
-    PRODUCT         reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
-    DIVISION        reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
-    PLUS            reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
-    MINUS           reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
     ID              reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
     IF              reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
     WHILE           reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
@@ -3632,8 +3619,12 @@ state 189
     TRIANGLE        reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
     ARC             reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
     RBRACKET        reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
-    COMMA           reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
+    PRODUCT         reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
+    DIVISION        reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
+    PLUS            reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
+    MINUS           reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
     RPARENTHESIS    reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
+    COMMA           reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
     GREATERTHAN     reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
     LESSTHAN        reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
     NOTEQUAL        reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
@@ -3650,14 +3641,14 @@ state 189
     SEMICOLON       reduce using rule 99 (llamadafunc -> LPARENTHESIS t RPARENTHESIS SEMICOLON .)
 
 
-state 190
+state 189
 
     (103) u -> exp COMMA u .
 
     RPARENTHESIS    reduce using rule 103 (u -> exp COMMA u .)
 
 
-state 191
+state 190
 
     (128) triangleparam -> LPARENTHESIS . exp COMMA exp COMMA exp
     (63) exp -> . termino ab
@@ -3673,32 +3664,32 @@ state 191
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 220
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 219
+    factor                         shift and go to state 100
 
-state 192
+state 191
 
     (122) v -> TRIANGLE triangleparam .
 
     RPARENTHESIS    reduce using rule 122 (v -> TRIANGLE triangleparam .)
 
 
-state 193
+state 192
 
     (127) starparam -> LPARENTHESIS . exp COMMA exp COMMA exp
     (63) exp -> . termino ab
@@ -3714,39 +3705,39 @@ state 193
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 221
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 220
+    factor                         shift and go to state 100
 
-state 194
+state 193
 
     (121) v -> STAR starparam .
 
     RPARENTHESIS    reduce using rule 121 (v -> STAR starparam .)
 
 
-state 195
+state 194
 
     (118) v -> LINE lineparam .
 
     RPARENTHESIS    reduce using rule 118 (v -> LINE lineparam .)
 
 
-state 196
+state 195
 
     (124) lineparam -> LPARENTHESIS . exp COMMA exp COMMA exp COMMA exp
     (63) exp -> . termino ab
@@ -3762,25 +3753,25 @@ state 196
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 222
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 221
+    factor                         shift and go to state 100
 
-state 197
+state 196
 
     (130) startfillp -> STARTFILL LPARENTHESIS . exp RPARENTHESIS SEMICOLON
     (63) exp -> . termino ab
@@ -3796,34 +3787,34 @@ state 197
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 223
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 222
+    factor                         shift and go to state 100
 
-state 198
+state 197
 
     (114) an -> startfillp dibuja . stopfill
     (131) stopfill -> . STOPFILL LPARENTHESIS RPARENTHESIS SEMICOLON
 
-    STOPFILL        shift and go to state 224
+    STOPFILL        shift and go to state 223
 
-    stopfill                       shift and go to state 225
+    stopfill                       shift and go to state 224
 
-state 199
+state 198
 
     (125) squareparam -> LPARENTHESIS . exp COMMA exp COMMA exp
     (63) exp -> . termino ab
@@ -3839,32 +3830,32 @@ state 199
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 226
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 225
+    factor                         shift and go to state 100
 
-state 200
+state 199
 
     (119) v -> SQUARE squareparam .
 
     RPARENTHESIS    reduce using rule 119 (v -> SQUARE squareparam .)
 
 
-state 201
+state 200
 
     (129) arcparam -> LPARENTHESIS . exp COMMA exp COMMA exp COMMA exp COMMA exp
     (63) exp -> . termino ab
@@ -3880,39 +3871,39 @@ state 201
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 227
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 226
+    factor                         shift and go to state 100
 
-state 202
+state 201
 
     (123) v -> ARC arcparam .
 
     RPARENTHESIS    reduce using rule 123 (v -> ARC arcparam .)
 
 
-state 203
+state 202
 
     (117) dibuja -> v RPARENTHESIS . SEMICOLON
 
-    SEMICOLON       shift and go to state 228
+    SEMICOLON       shift and go to state 227
 
 
-state 204
+state 203
 
     (126) circleparam -> LPARENTHESIS . exp COMMA exp COMMA exp
     (63) exp -> . termino ab
@@ -3928,76 +3919,76 @@ state 204
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 229
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 228
+    factor                         shift and go to state 100
 
-state 205
+state 204
 
     (120) v -> CIRCLE circleparam .
 
     RPARENTHESIS    reduce using rule 120 (v -> CIRCLE circleparam .)
 
 
-state 206
+state 205
 
     (116) linecolorp -> LINECOLOR LPARENTHESIS exp . RPARENTHESIS SEMICOLON
 
-    RPARENTHESIS    shift and go to state 230
+    RPARENTHESIS    shift and go to state 229
+
+
+state 206
+
+    (44) asignacion -> ID aa EQUAL expresion . SEMICOLON
+
+    SEMICOLON       shift and go to state 230
 
 
 state 207
 
-    (44) asignacion -> ID aa EQUAL expresion . SEMICOLON
+    (45) aa -> LSQUAREBRACKET exp RSQUAREBRACKET . LSQUAREBRACKET exp RSQUAREBRACKET
 
-    SEMICOLON       shift and go to state 231
+    LSQUAREBRACKET  shift and go to state 231
 
 
 state 208
 
-    (45) aa -> LSQUAREBRACKET exp RSQUAREBRACKET . LSQUAREBRACKET exp RSQUAREBRACKET
+    (90) condicion -> IF LPARENTHESIS expresion RPARENTHESIS . bloque s SEMICOLON
+    (34) bloque -> . LBRACKET l RBRACKET
 
-    LSQUAREBRACKET  shift and go to state 232
+    LBRACKET        shift and go to state 61
 
+    bloque                         shift and go to state 232
 
 state 209
 
-    (90) condicion -> IF LPARENTHESIS expresion RPARENTHESIS . bloque s SEMICOLON
-    (34) bloque -> . LBRACKET l RBRACKET SEMICOLON
+    (115) linewidthp -> LINEWIDTH LPARENTHESIS exp RPARENTHESIS . SEMICOLON
 
-    LBRACKET        shift and go to state 66
+    SEMICOLON       shift and go to state 233
 
-    bloque                         shift and go to state 233
 
 state 210
 
-    (115) linewidthp -> LINEWIDTH LPARENTHESIS exp RPARENTHESIS . SEMICOLON
+    (87) r -> LSQUAREBRACKET exp . RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
 
-    SEMICOLON       shift and go to state 234
+    RSQUAREBRACKET  shift and go to state 234
 
 
 state 211
-
-    (87) r -> LSQUAREBRACKET exp . RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
-
-    RSQUAREBRACKET  shift and go to state 235
-
-
-state 212
 
     (52) n -> expresion .
 
@@ -4006,16 +3997,16 @@ state 212
     SEMICOLON       reduce using rule 52 (n -> expresion .)
 
 
-state 213
+state 212
 
     (47) expresion -> specialexp m n .
 
-    COMMA           reduce using rule 47 (expresion -> specialexp m n .)
     RPARENTHESIS    reduce using rule 47 (expresion -> specialexp m n .)
+    COMMA           reduce using rule 47 (expresion -> specialexp m n .)
     SEMICOLON       reduce using rule 47 (expresion -> specialexp m n .)
 
 
-state 214
+state 213
 
     (48) m -> o specialexp .
 
@@ -4032,7 +4023,7 @@ state 214
     SEMICOLON       reduce using rule 48 (m -> o specialexp .)
 
 
-state 215
+state 214
 
     (55) p -> q exp .
 
@@ -4051,21 +4042,21 @@ state 215
     SEMICOLON       reduce using rule 55 (p -> q exp .)
 
 
-state 216
+state 215
 
     (93) ciclo -> WHILE LPARENTHESIS expresion RPARENTHESIS bloque . SEMICOLON
 
-    SEMICOLON       shift and go to state 236
+    SEMICOLON       shift and go to state 235
 
 
-state 217
+state 216
 
     (97) ai -> COMMA ah .
 
     RPARENTHESIS    reduce using rule 97 (ai -> COMMA ah .)
 
 
-state 218
+state 217
 
     (94) escritura -> PRINT LPARENTHESIS ah RPARENTHESIS SEMICOLON .
 
@@ -4088,49 +4079,49 @@ state 218
     RBRACKET        reduce using rule 94 (escritura -> PRINT LPARENTHESIS ah RPARENTHESIS SEMICOLON .)
 
 
-state 219
+state 218
 
     (107) aj -> RANDOM LPARENTHESIS exp COMMA exp . RPARENTHESIS SEMICOLON
 
-    RPARENTHESIS    shift and go to state 237
+    RPARENTHESIS    shift and go to state 236
+
+
+state 219
+
+    (128) triangleparam -> LPARENTHESIS exp . COMMA exp COMMA exp
+
+    COMMA           shift and go to state 237
 
 
 state 220
 
-    (128) triangleparam -> LPARENTHESIS exp . COMMA exp COMMA exp
+    (127) starparam -> LPARENTHESIS exp . COMMA exp COMMA exp
 
     COMMA           shift and go to state 238
 
 
 state 221
 
-    (127) starparam -> LPARENTHESIS exp . COMMA exp COMMA exp
+    (124) lineparam -> LPARENTHESIS exp . COMMA exp COMMA exp COMMA exp
 
     COMMA           shift and go to state 239
 
 
 state 222
 
-    (124) lineparam -> LPARENTHESIS exp . COMMA exp COMMA exp COMMA exp
+    (130) startfillp -> STARTFILL LPARENTHESIS exp . RPARENTHESIS SEMICOLON
 
-    COMMA           shift and go to state 240
+    RPARENTHESIS    shift and go to state 240
 
 
 state 223
 
-    (130) startfillp -> STARTFILL LPARENTHESIS exp . RPARENTHESIS SEMICOLON
+    (131) stopfill -> STOPFILL . LPARENTHESIS RPARENTHESIS SEMICOLON
 
-    RPARENTHESIS    shift and go to state 241
+    LPARENTHESIS    shift and go to state 241
 
 
 state 224
-
-    (131) stopfill -> STOPFILL . LPARENTHESIS RPARENTHESIS SEMICOLON
-
-    LPARENTHESIS    shift and go to state 242
-
-
-state 225
 
     (114) an -> startfillp dibuja stopfill .
 
@@ -4153,25 +4144,24 @@ state 225
     RBRACKET        reduce using rule 114 (an -> startfillp dibuja stopfill .)
 
 
-state 226
+state 225
 
     (125) squareparam -> LPARENTHESIS exp . COMMA exp COMMA exp
+
+    COMMA           shift and go to state 242
+
+
+state 226
+
+    (129) arcparam -> LPARENTHESIS exp . COMMA exp COMMA exp COMMA exp COMMA exp
 
     COMMA           shift and go to state 243
 
 
 state 227
 
-    (129) arcparam -> LPARENTHESIS exp . COMMA exp COMMA exp COMMA exp COMMA exp
-
-    COMMA           shift and go to state 244
-
-
-state 228
-
     (117) dibuja -> v RPARENTHESIS SEMICOLON .
 
-    STOPFILL        reduce using rule 117 (dibuja -> v RPARENTHESIS SEMICOLON .)
     ID              reduce using rule 117 (dibuja -> v RPARENTHESIS SEMICOLON .)
     IF              reduce using rule 117 (dibuja -> v RPARENTHESIS SEMICOLON .)
     WHILE           reduce using rule 117 (dibuja -> v RPARENTHESIS SEMICOLON .)
@@ -4189,23 +4179,24 @@ state 228
     TRIANGLE        reduce using rule 117 (dibuja -> v RPARENTHESIS SEMICOLON .)
     ARC             reduce using rule 117 (dibuja -> v RPARENTHESIS SEMICOLON .)
     RBRACKET        reduce using rule 117 (dibuja -> v RPARENTHESIS SEMICOLON .)
+    STOPFILL        reduce using rule 117 (dibuja -> v RPARENTHESIS SEMICOLON .)
+
+
+state 228
+
+    (126) circleparam -> LPARENTHESIS exp . COMMA exp COMMA exp
+
+    COMMA           shift and go to state 244
 
 
 state 229
 
-    (126) circleparam -> LPARENTHESIS exp . COMMA exp COMMA exp
+    (116) linecolorp -> LINECOLOR LPARENTHESIS exp RPARENTHESIS . SEMICOLON
 
-    COMMA           shift and go to state 245
+    SEMICOLON       shift and go to state 245
 
 
 state 230
-
-    (116) linecolorp -> LINECOLOR LPARENTHESIS exp RPARENTHESIS . SEMICOLON
-
-    SEMICOLON       shift and go to state 246
-
-
-state 231
 
     (44) asignacion -> ID aa EQUAL expresion SEMICOLON .
 
@@ -4228,7 +4219,7 @@ state 231
     RBRACKET        reduce using rule 44 (asignacion -> ID aa EQUAL expresion SEMICOLON .)
 
 
-state 232
+state 231
 
     (45) aa -> LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET . exp RSQUAREBRACKET
     (63) exp -> . termino ab
@@ -4244,36 +4235,36 @@ state 232
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 247
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 246
+    factor                         shift and go to state 100
 
-state 233
+state 232
 
     (90) condicion -> IF LPARENTHESIS expresion RPARENTHESIS bloque . s SEMICOLON
     (91) s -> . ELSE bloque
     (92) s -> .
 
-    ELSE            shift and go to state 248
+    ELSE            shift and go to state 247
     SEMICOLON       reduce using rule 92 (s -> .)
 
-    s                              shift and go to state 249
+    s                              shift and go to state 248
 
-state 234
+state 233
 
     (115) linewidthp -> LINEWIDTH LPARENTHESIS exp RPARENTHESIS SEMICOLON .
 
@@ -4287,14 +4278,14 @@ state 234
     ARC             reduce using rule 115 (linewidthp -> LINEWIDTH LPARENTHESIS exp RPARENTHESIS SEMICOLON .)
 
 
-state 235
+state 234
 
     (87) r -> LSQUAREBRACKET exp RSQUAREBRACKET . LSQUAREBRACKET exp RSQUAREBRACKET
 
-    LSQUAREBRACKET  shift and go to state 250
+    LSQUAREBRACKET  shift and go to state 249
 
 
-state 236
+state 235
 
     (93) ciclo -> WHILE LPARENTHESIS expresion RPARENTHESIS bloque SEMICOLON .
 
@@ -4317,14 +4308,14 @@ state 236
     RBRACKET        reduce using rule 93 (ciclo -> WHILE LPARENTHESIS expresion RPARENTHESIS bloque SEMICOLON .)
 
 
-state 237
+state 236
 
     (107) aj -> RANDOM LPARENTHESIS exp COMMA exp RPARENTHESIS . SEMICOLON
 
-    SEMICOLON       shift and go to state 251
+    SEMICOLON       shift and go to state 250
 
 
-state 238
+state 237
 
     (128) triangleparam -> LPARENTHESIS exp COMMA . exp COMMA exp
     (63) exp -> . termino ab
@@ -4340,25 +4331,25 @@ state 238
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 252
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 251
+    factor                         shift and go to state 100
 
-state 239
+state 238
 
     (127) starparam -> LPARENTHESIS exp COMMA . exp COMMA exp
     (63) exp -> . termino ab
@@ -4374,25 +4365,25 @@ state 239
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 253
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 252
+    factor                         shift and go to state 100
 
-state 240
+state 239
 
     (124) lineparam -> LPARENTHESIS exp COMMA . exp COMMA exp COMMA exp
     (63) exp -> . termino ab
@@ -4408,39 +4399,39 @@ state 240
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 254
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 253
+    factor                         shift and go to state 100
 
-state 241
+state 240
 
     (130) startfillp -> STARTFILL LPARENTHESIS exp RPARENTHESIS . SEMICOLON
 
-    SEMICOLON       shift and go to state 255
+    SEMICOLON       shift and go to state 254
 
 
-state 242
+state 241
 
     (131) stopfill -> STOPFILL LPARENTHESIS . RPARENTHESIS SEMICOLON
 
-    RPARENTHESIS    shift and go to state 256
+    RPARENTHESIS    shift and go to state 255
 
 
-state 243
+state 242
 
     (125) squareparam -> LPARENTHESIS exp COMMA . exp COMMA exp
     (63) exp -> . termino ab
@@ -4456,25 +4447,25 @@ state 243
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 257
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 256
+    factor                         shift and go to state 100
 
-state 244
+state 243
 
     (129) arcparam -> LPARENTHESIS exp COMMA . exp COMMA exp COMMA exp COMMA exp
     (63) exp -> . termino ab
@@ -4490,25 +4481,25 @@ state 244
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 258
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 257
+    factor                         shift and go to state 100
 
-state 245
+state 244
 
     (126) circleparam -> LPARENTHESIS exp COMMA . exp COMMA exp
     (63) exp -> . termino ab
@@ -4524,25 +4515,25 @@ state 245
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 259
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 258
+    factor                         shift and go to state 100
 
-state 246
+state 245
 
     (116) linecolorp -> LINECOLOR LPARENTHESIS exp RPARENTHESIS SEMICOLON .
 
@@ -4555,30 +4546,30 @@ state 246
     ARC             reduce using rule 116 (linecolorp -> LINECOLOR LPARENTHESIS exp RPARENTHESIS SEMICOLON .)
 
 
-state 247
+state 246
 
     (45) aa -> LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp . RSQUAREBRACKET
 
-    RSQUAREBRACKET  shift and go to state 260
+    RSQUAREBRACKET  shift and go to state 259
 
+
+state 247
+
+    (91) s -> ELSE . bloque
+    (34) bloque -> . LBRACKET l RBRACKET
+
+    LBRACKET        shift and go to state 61
+
+    bloque                         shift and go to state 260
 
 state 248
 
-    (91) s -> ELSE . bloque
-    (34) bloque -> . LBRACKET l RBRACKET SEMICOLON
-
-    LBRACKET        shift and go to state 66
-
-    bloque                         shift and go to state 261
-
-state 249
-
     (90) condicion -> IF LPARENTHESIS expresion RPARENTHESIS bloque s . SEMICOLON
 
-    SEMICOLON       shift and go to state 262
+    SEMICOLON       shift and go to state 261
 
 
-state 250
+state 249
 
     (87) r -> LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET . exp RSQUAREBRACKET
     (63) exp -> . termino ab
@@ -4594,25 +4585,25 @@ state 250
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 263
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 262
+    factor                         shift and go to state 100
 
-state 251
+state 250
 
     (107) aj -> RANDOM LPARENTHESIS exp COMMA exp RPARENTHESIS SEMICOLON .
 
@@ -4635,28 +4626,28 @@ state 251
     RBRACKET        reduce using rule 107 (aj -> RANDOM LPARENTHESIS exp COMMA exp RPARENTHESIS SEMICOLON .)
 
 
-state 252
+state 251
 
     (128) triangleparam -> LPARENTHESIS exp COMMA exp . COMMA exp
+
+    COMMA           shift and go to state 263
+
+
+state 252
+
+    (127) starparam -> LPARENTHESIS exp COMMA exp . COMMA exp
 
     COMMA           shift and go to state 264
 
 
 state 253
 
-    (127) starparam -> LPARENTHESIS exp COMMA exp . COMMA exp
+    (124) lineparam -> LPARENTHESIS exp COMMA exp . COMMA exp COMMA exp
 
     COMMA           shift and go to state 265
 
 
 state 254
-
-    (124) lineparam -> LPARENTHESIS exp COMMA exp . COMMA exp COMMA exp
-
-    COMMA           shift and go to state 266
-
-
-state 255
 
     (130) startfillp -> STARTFILL LPARENTHESIS exp RPARENTHESIS SEMICOLON .
 
@@ -4668,49 +4659,49 @@ state 255
     ARC             reduce using rule 130 (startfillp -> STARTFILL LPARENTHESIS exp RPARENTHESIS SEMICOLON .)
 
 
-state 256
+state 255
 
     (131) stopfill -> STOPFILL LPARENTHESIS RPARENTHESIS . SEMICOLON
 
-    SEMICOLON       shift and go to state 267
+    SEMICOLON       shift and go to state 266
+
+
+state 256
+
+    (125) squareparam -> LPARENTHESIS exp COMMA exp . COMMA exp
+
+    COMMA           shift and go to state 267
 
 
 state 257
 
-    (125) squareparam -> LPARENTHESIS exp COMMA exp . COMMA exp
+    (129) arcparam -> LPARENTHESIS exp COMMA exp . COMMA exp COMMA exp COMMA exp
 
     COMMA           shift and go to state 268
 
 
 state 258
 
-    (129) arcparam -> LPARENTHESIS exp COMMA exp . COMMA exp COMMA exp COMMA exp
+    (126) circleparam -> LPARENTHESIS exp COMMA exp . COMMA exp
 
     COMMA           shift and go to state 269
 
 
 state 259
 
-    (126) circleparam -> LPARENTHESIS exp COMMA exp . COMMA exp
-
-    COMMA           shift and go to state 270
-
-
-state 260
-
     (45) aa -> LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET .
 
     EQUAL           reduce using rule 45 (aa -> LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET .)
 
 
-state 261
+state 260
 
     (91) s -> ELSE bloque .
 
     SEMICOLON       reduce using rule 91 (s -> ELSE bloque .)
 
 
-state 262
+state 261
 
     (90) condicion -> IF LPARENTHESIS expresion RPARENTHESIS bloque s SEMICOLON .
 
@@ -4733,14 +4724,14 @@ state 262
     RBRACKET        reduce using rule 90 (condicion -> IF LPARENTHESIS expresion RPARENTHESIS bloque s SEMICOLON .)
 
 
-state 263
+state 262
 
     (87) r -> LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp . RSQUAREBRACKET
 
-    RSQUAREBRACKET  shift and go to state 271
+    RSQUAREBRACKET  shift and go to state 270
 
 
-state 264
+state 263
 
     (128) triangleparam -> LPARENTHESIS exp COMMA exp COMMA . exp
     (63) exp -> . termino ab
@@ -4756,25 +4747,25 @@ state 264
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 272
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 271
+    factor                         shift and go to state 100
 
-state 265
+state 264
 
     (127) starparam -> LPARENTHESIS exp COMMA exp COMMA . exp
     (63) exp -> . termino ab
@@ -4790,25 +4781,25 @@ state 265
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 273
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 272
+    factor                         shift and go to state 100
 
-state 266
+state 265
 
     (124) lineparam -> LPARENTHESIS exp COMMA exp COMMA . exp COMMA exp
     (63) exp -> . termino ab
@@ -4824,25 +4815,25 @@ state 266
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 274
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 273
+    factor                         shift and go to state 100
 
-state 267
+state 266
 
     (131) stopfill -> STOPFILL LPARENTHESIS RPARENTHESIS SEMICOLON .
 
@@ -4865,7 +4856,7 @@ state 267
     RBRACKET        reduce using rule 131 (stopfill -> STOPFILL LPARENTHESIS RPARENTHESIS SEMICOLON .)
 
 
-state 268
+state 267
 
     (125) squareparam -> LPARENTHESIS exp COMMA exp COMMA . exp
     (63) exp -> . termino ab
@@ -4881,25 +4872,25 @@ state 268
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 275
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 274
+    factor                         shift and go to state 100
 
-state 269
+state 268
 
     (129) arcparam -> LPARENTHESIS exp COMMA exp COMMA . exp COMMA exp COMMA exp
     (63) exp -> . termino ab
@@ -4915,25 +4906,25 @@ state 269
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 276
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 275
+    factor                         shift and go to state 100
 
-state 270
+state 269
 
     (126) circleparam -> LPARENTHESIS exp COMMA exp COMMA . exp
     (63) exp -> . termino ab
@@ -4949,25 +4940,25 @@ state 270
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 277
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 276
+    factor                         shift and go to state 100
 
-state 271
+state 270
 
     (87) r -> LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET .
 
@@ -5010,49 +5001,49 @@ state 271
     SEMICOLON       reduce using rule 87 (r -> LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET .)
 
 
-state 272
+state 271
 
     (128) triangleparam -> LPARENTHESIS exp COMMA exp COMMA exp .
 
     RPARENTHESIS    reduce using rule 128 (triangleparam -> LPARENTHESIS exp COMMA exp COMMA exp .)
 
 
-state 273
+state 272
 
     (127) starparam -> LPARENTHESIS exp COMMA exp COMMA exp .
 
     RPARENTHESIS    reduce using rule 127 (starparam -> LPARENTHESIS exp COMMA exp COMMA exp .)
 
 
-state 274
+state 273
 
     (124) lineparam -> LPARENTHESIS exp COMMA exp COMMA exp . COMMA exp
 
-    COMMA           shift and go to state 278
+    COMMA           shift and go to state 277
 
 
-state 275
+state 274
 
     (125) squareparam -> LPARENTHESIS exp COMMA exp COMMA exp .
 
     RPARENTHESIS    reduce using rule 125 (squareparam -> LPARENTHESIS exp COMMA exp COMMA exp .)
 
 
-state 276
+state 275
 
     (129) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp . COMMA exp COMMA exp
 
-    COMMA           shift and go to state 279
+    COMMA           shift and go to state 278
 
 
-state 277
+state 276
 
     (126) circleparam -> LPARENTHESIS exp COMMA exp COMMA exp .
 
     RPARENTHESIS    reduce using rule 126 (circleparam -> LPARENTHESIS exp COMMA exp COMMA exp .)
 
 
-state 278
+state 277
 
     (124) lineparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA . exp
     (63) exp -> . termino ab
@@ -5068,25 +5059,25 @@ state 278
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 280
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 279
+    factor                         shift and go to state 100
 
-state 279
+state 278
 
     (129) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA . exp COMMA exp
     (63) exp -> . termino ab
@@ -5102,39 +5093,39 @@ state 279
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 281
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 280
+    factor                         shift and go to state 100
 
-state 280
+state 279
 
     (124) lineparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp .
 
     RPARENTHESIS    reduce using rule 124 (lineparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp .)
 
 
-state 281
+state 280
 
     (129) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp . COMMA exp
 
-    COMMA           shift and go to state 282
+    COMMA           shift and go to state 281
 
 
-state 282
+state 281
 
     (129) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA . exp
     (63) exp -> . termino ab
@@ -5150,25 +5141,25 @@ state 282
     (81) ag -> .
     (99) llamadafunc -> . LPARENTHESIS t RPARENTHESIS SEMICOLON
 
-    LPARENTHESIS    shift and go to state 101
-    PLUS            shift and go to state 102
-    MINUS           shift and go to state 107
+    LPARENTHESIS    shift and go to state 96
+    PLUS            shift and go to state 97
+    MINUS           shift and go to state 102
     CTEINT          reduce using rule 81 (ag -> .)
     CTEFLOAT        reduce using rule 81 (ag -> .)
     CTEBOOL         reduce using rule 81 (ag -> .)
     CTESTRING       reduce using rule 81 (ag -> .)
     ID              reduce using rule 81 (ag -> .)
 
-    ae                             shift and go to state 106
-    ad                             shift and go to state 97
-    ag                             shift and go to state 98
-    af                             shift and go to state 99
-    llamadafunc                    shift and go to state 100
-    termino                        shift and go to state 103
-    exp                            shift and go to state 283
-    factor                         shift and go to state 105
+    ae                             shift and go to state 101
+    ad                             shift and go to state 92
+    ag                             shift and go to state 93
+    af                             shift and go to state 94
+    llamadafunc                    shift and go to state 95
+    termino                        shift and go to state 98
+    exp                            shift and go to state 282
+    factor                         shift and go to state 100
 
-state 283
+state 282
 
     (129) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA exp .
 
@@ -5177,12 +5168,10 @@ state 283
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for FUNC in state 9 resolved as shift
-WARNING: shift/reduce conflict for FUNC in state 18 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 103 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 103 resolved as shift
-WARNING: shift/reduce conflict for CTESTRING in state 109 resolved as shift
-WARNING: shift/reduce conflict for LPARENTHESIS in state 128 resolved as shift
-WARNING: shift/reduce conflict for CTESTRING in state 185 resolved as shift
-WARNING: reduce/reduce conflict in state 131 resolved using rule (p -> <empty>)
-WARNING: rejected rule (u -> exp) in state 131
+WARNING: shift/reduce conflict for PLUS in state 98 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 98 resolved as shift
+WARNING: shift/reduce conflict for CTESTRING in state 104 resolved as shift
+WARNING: shift/reduce conflict for LPARENTHESIS in state 126 resolved as shift
+WARNING: shift/reduce conflict for CTESTRING in state 184 resolved as shift
+WARNING: reduce/reduce conflict in state 129 resolved using rule (p -> <empty>)
+WARNING: rejected rule (u -> exp) in state 129
