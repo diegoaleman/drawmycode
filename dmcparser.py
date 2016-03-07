@@ -83,7 +83,7 @@ def p_param(p):
 
 def p_j(p):
 	'''j : COMMA param
-			|'''
+			|'''	
 def p_main(p):
 	'''main : FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON'''
 
