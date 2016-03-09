@@ -10,8 +10,9 @@ var x:int;
 		else 
 		{
 			return 0;
-		}
+		};
 	};
+
 	main () 
 	var res:int;
 	{
@@ -23,6 +24,7 @@ var x:int;
 		else 
 		{
 			print ("no");
-		}
-	}M
-}
+		};
+	};
+};
+end
