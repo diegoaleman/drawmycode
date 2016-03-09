@@ -16,9 +16,14 @@ import sys
 # Get the token map from the lexer.
 from dmclex import tokens
 dirproc = {}
+varsList = []
+auxvars = {}
+varsGlobales = {}
+nombrePrograma = ""
 def p_programa(p):
 	'''programa : BEGIN PROGRAM createDirProc ID altaPrograma SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END'''
 	p[0] = "Success"
+	
 
 def p_createDirProc(p):
 	'''createDirProc :'''
@@ -26,36 +31,45 @@ def p_createDirProc(p):
 
 def p_altaPrograma(p):
 	'''altaPrograma :'''
+	global nombrePrograma
 	nombre = p[-1]
+	nombrePrograma = nombre
 	dirproc[nombre] = {}
 	dirproc[nombre] = {'Tipo': 'programa', 'Vars': {}}
 	
-
 def p_a(p):
 	'''a : vars
 			|'''
 
-
 def p_vars(p):
-	'''vars : VAR c'''
+	'''vars : VAR createGlobalTable c'''
+
+def p_createGlobalTable(p):
+	'''createGlobalTable :'''
+	varsGlobales = {}
 
 def p_c(p):
 	'''c : f SEMICOLON e'''
 
 def p_f(p):
-	'''f : d COLON tipo
+	'''f : d COLON tipo 
 			| matrix'''
+	auxvars[varsList.pop()] = {'Tipo' : p[3]}
+
 
 def p_d(p):
 	'''d : ID
 			| ID COMMA d'''
-
+	global varsList
+	varsList.append(p[1])
+	
+	
 def p_tipo(p):
 	'''tipo : INT
 			| FLOAT
 			| BOOL
 			| STRING'''
-
+	p[0] = p[1]
 
 def p_matrix(p):
 	'''matrix :  mataux COLON INT'''
@@ -74,14 +88,17 @@ def p_b(p):
 
 
 def p_funcion(p):
-	'''funcion : FUNC g ID altaFuncion LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON'''
+	'''funcion : FUNC g ID altaFuncion LPARENTHESIS h RPARENTHESIS funcvars bloque SEMICOLON'''
+
+def p_funcvars(p):
+	'''funcvars : vars
+			|'''
 
 def p_altaFuncion(p):
 	'''altaFuncion :'''
 	nombreFunc = p[-1]
 	dirproc[nombreFunc] = {}
 	dirproc[nombreFunc] = {'Tipo': 'void', 'Vars': {}}
-	print dirproc
 
 def p_g(p):
 	'''g : INT
@@ -102,8 +119,13 @@ def p_j(p):
 	'''j : COMMA param
 			|'''	
 def p_main(p):
-	'''main : MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON'''
+	'''main : MAIN altaMain LPARENTHESIS RPARENTHESIS k bloque SEMICOLON'''
 
+def p_altaMain(p):
+	'''altaMain :'''
+	nombreFunc = 'main'
+	dirproc[nombreFunc] = {}
+	dirproc[nombreFunc] = {'Tipo': 'void', 'Vars': {}}
 def p_k(p):
 	'''k : vars
 			|'''

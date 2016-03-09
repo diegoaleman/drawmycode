@@ -1,7 +1,19 @@
 begin program test3;
-var x:int;
+var x,y:int; z:float;
 {
 	func int diego(y:int, z:int)
+	{
+		if (z==y)
+		{
+			return 1;
+		} 
+		else 
+		{
+			return 0;
+		};
+	};
+
+	func void omar(y:int, z:int)
 	{
 		if (z==y)
 		{
