@@ -15,11 +15,21 @@ import sys
 
 # Get the token map from the lexer.
 from dmclex import tokens
-
+dirproc = {}
 def p_programa(p):
-	'''programa : BEGIN PROGRAM ID SEMICOLON a LBRACKET main b RBRACKET SEMICOLON END'''
+	'''programa : BEGIN PROGRAM createDirProc ID altaPrograma SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END'''
 	p[0] = "Success"
 
+def p_createDirProc(p):
+	'''createDirProc :'''
+	dirproc = {}
+
+def p_altaPrograma(p):
+	'''altaPrograma :'''
+	nombre = p[-1]
+	dirproc[nombre] = {}
+	dirproc[nombre] = {'Tipo': 'programa', 'Vars': {}}
+	
 
 def p_a(p):
 	'''a : vars
@@ -64,8 +74,14 @@ def p_b(p):
 
 
 def p_funcion(p):
-	'''funcion : FUNC g ID LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON'''
-	
+	'''funcion : FUNC g ID altaFuncion LPARENTHESIS h RPARENTHESIS a bloque SEMICOLON'''
+
+def p_altaFuncion(p):
+	'''altaFuncion :'''
+	nombreFunc = p[-1]
+	dirproc[nombreFunc] = {}
+	dirproc[nombreFunc] = {'Tipo': 'void', 'Vars': {}}
+	print dirproc
 
 def p_g(p):
 	'''g : INT
@@ -86,7 +102,7 @@ def p_j(p):
 	'''j : COMMA param
 			|'''	
 def p_main(p):
-	'''main : FUNC VOID MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON'''
+	'''main : MAIN LPARENTHESIS RPARENTHESIS k bloque SEMICOLON'''
 
 def p_k(p):
 	'''k : vars
@@ -100,7 +116,10 @@ def p_l(p):
 			|'''
 
 def p_estatuto(p):
-	'''estatuto : asignacion
+	'''estatuto : estatutotipos SEMICOLON'''
+
+def p_estatutotipos(p):
+	'''estatutotipos : asignacion
 			| condicion
 			| ciclo
 			| escritura
@@ -109,7 +128,7 @@ def p_estatuto(p):
 			| return'''
 
 def p_asignacion(p):
-	'''asignacion : ID aa EQUAL expresion SEMICOLON'''
+	'''asignacion : ID aa EQUAL expresion'''
 
 def p_aa(p):
 	'''aa : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
@@ -171,7 +190,8 @@ def p_ac2(p):
 def p_factor(p):
 	'''factor : ad
 			| ae
-			| af'''
+			| af
+			| opfunc'''
 
 def p_ad(p):
 	'''ad : LPARENTHESIS expresion RPARENTHESIS'''
@@ -196,22 +216,21 @@ def p_varcte(p):
 
 def p_r(p):
 	'''r : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
-			| llamadafunc
 			|'''
 
 def p_condicion(p):
-	'''condicion : IF LPARENTHESIS expresion RPARENTHESIS bloque s SEMICOLON'''
+	'''condicion : IF LPARENTHESIS expresion RPARENTHESIS bloque s'''
 
 def p_s(p):
 	'''s : ELSE bloque
 			|'''
 
 def p_ciclo(p):
-	'''ciclo : WHILE LPARENTHESIS expresion RPARENTHESIS bloque SEMICOLON'''
+	'''ciclo : WHILE LPARENTHESIS expresion RPARENTHESIS bloque'''
 
 
 def p_escritura(p):
-	'''escritura : PRINT LPARENTHESIS ah RPARENTHESIS SEMICOLON'''
+	'''escritura : PRINT LPARENTHESIS ah RPARENTHESIS'''
 
 def p_ah(p):
 	'''ah : expresion ai
@@ -222,7 +241,7 @@ def p_ai(p):
 			|'''
 
 def p_llamadafunc(p):
-	'''llamadafunc : LPARENTHESIS t RPARENTHESIS SEMICOLON'''
+	'''llamadafunc : LPARENTHESIS t RPARENTHESIS'''
 
 def p_t(p):
 	'''t : u
@@ -236,37 +255,40 @@ def p_return(p):
 	'''return : RETURN exp'''
 
 def p_specialfunc(p):
-	'''specialfunc : aj 
-					| ak'''
+	'''specialfunc : opfunc
+			| dibujafunc'''
 
-def p_aj(p):
-	'''aj : RANDOM LPARENTHESIS exp COMMA exp RPARENTHESIS SEMICOLON'''
+def p_opfunc(p):
+	'''opfunc : randomfunc'''
 
-def p_ak(p):
-	'''ak : al am an'''
+def p_randomfunc(p):
+	'''randomfunc : RANDOM LPARENTHESIS exp COMMA exp RPARENTHESIS'''
+
+def p_dibujafunc(p):
+	'''dibujafunc : al am an'''
 
 def p_al(p):
-	'''al : linewidthp
+	'''al : linewidthfunc
 			|'''
 
 def p_am(p):
-	'''am : linecolorp
+	'''am : linecolorfunc
 			|'''
 
 def p_an(p):
 	'''an : dibuja 
-			| startfillp dibuja stopfill'''
+			| startfillfunc dibuja stopfillfunc'''
 
 
-def p_linewidthp(p):
-	'''linewidthp : LINEWIDTH LPARENTHESIS exp RPARENTHESIS SEMICOLON'''
+def p_linewidthfunc(p):
+	'''linewidthfunc : LINEWIDTH LPARENTHESIS exp RPARENTHESIS SEMICOLON'''
 
-def p_linecolorp(p):
-	'''linecolorp : LINECOLOR LPARENTHESIS exp RPARENTHESIS SEMICOLON'''
+def p_linecolorfunc(p):
+	'''linecolorfunc : LINECOLOR LPARENTHESIS exp RPARENTHESIS SEMICOLON'''
 
 
 def p_dibuja(p):
-	'''dibuja : v RPARENTHESIS SEMICOLON'''
+	'''dibuja : v RPARENTHESIS'''
 
 def p_v(p):
 	'''v : LINE lineparam
@@ -294,11 +316,11 @@ def p_triangleparam(p):
 def p_arcparam(p):
 	'''arcparam : LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA exp'''
 
-def p_startfillp(p):
-	'''startfillp : STARTFILL LPARENTHESIS exp RPARENTHESIS SEMICOLON'''
+def p_startfillfunc(p):
+	'''startfillfunc : STARTFILL LPARENTHESIS exp RPARENTHESIS SEMICOLON'''
 
-def p_stopfill(p):
-	'''stopfill : STOPFILL LPARENTHESIS RPARENTHESIS SEMICOLON'''
+def p_stopfillfunc(p):
+	'''stopfillfunc : STOPFILL LPARENTHESIS RPARENTHESIS'''
 
 
 def p_error(p):
@@ -319,6 +341,7 @@ if __name__ == '__main__':
 			# Parse the data
 			if (dmcparser.parse(data, tracking=True) == 'Success'):
 				print ('Valid program');
+				
 		except EOFError:
 	   		print(EOFError)
 	else:

@@ -1,0 +1,28 @@
+begin program test3;
+var x:int;
+{
+	func int diego(y:int, z:int)
+	{
+		if (z==y)
+		{
+			return 1;
+		} 
+		else 
+		{
+			return 0;
+		}
+	};
+	main () 
+	var res:int;
+	{
+		res = diego(random(0,1), random(0,1));
+		if (res == 1)
+		{
+			print ("yes");
+		} 
+		else 
+		{
+			print ("no");
+		}
+	}M
+}

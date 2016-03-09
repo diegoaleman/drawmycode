@@ -1,0 +1,19 @@
+begin program ejemplo2;
+var num:int;
+{
+
+	main() 
+	{
+		if (random(1,2) == 1)
+		{
+			lineWidth(2);
+			circle(5,5,5);
+		}
+		else 
+		{
+			lineColor(10);
+			triangle(5,5,5);
+		};
+	};
+};
+end

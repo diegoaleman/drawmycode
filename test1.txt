@@ -1,13 +1,14 @@
 begin program ejemplo2;
 {
-	func void main() 
+	func int prueba(x:int)
+	{
+
+	};
+
+	main() 
 	{
 		num = 1;
 	};
-
-		func int prueba(x:int)
-	{
-
-	};
+		
 };
 end
