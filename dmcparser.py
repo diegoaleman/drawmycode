@@ -18,12 +18,15 @@ from dmclex import tokens
 dirproc = {}
 varsList = []
 auxvars = {}
-varsGlobales = {}
+auxVarsDir = {}
+varsGlobalesDir = {}
+varsLocalesDir = {}
 nombrePrograma = ""
+scope = "Global"
+nombreFunc = ""
 def p_programa(p):
 	'''programa : BEGIN PROGRAM createDirProc ID altaPrograma SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END'''
 	p[0] = "Success"
-	
 
 def p_createDirProc(p):
 	'''createDirProc :'''
@@ -32,43 +35,64 @@ def p_createDirProc(p):
 def p_altaPrograma(p):
 	'''altaPrograma :'''
 	global nombrePrograma
+	# Da de alta el programa en el DirProc
 	nombre = p[-1]
 	nombrePrograma = nombre
-	dirproc[nombre] = {}
-	dirproc[nombre] = {'Tipo': 'programa', 'Vars': {}}
+	dirproc[nombrePrograma] = {}
+	dirproc[nombrePrograma] = {'Tipo': 'programa', 'Vars': {}}
 	
 def p_a(p):
 	'''a : vars
 			|'''
+	global varsGlobalesDir
+	global auxVarsDir
+	global varsList
+
+	# Copia solo las variables globales
+	for elem in auxVarsDir:
+		varsGlobalesDir[elem] = auxVarsDir[elem]
+		varsGlobalesDir[elem]['Scope'] = 'Global'
+		varsGlobalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
+	dirproc[nombrePrograma]['Vars'] = varsGlobalesDir
+	# Eliminar las variables que ya se guardaron como globales
+	remove = [k for k in auxVarsDir]
+	for k in remove: del auxVarsDir[k]
+
 
 def p_vars(p):
 	'''vars : VAR createGlobalTable c'''
 
 def p_createGlobalTable(p):
 	'''createGlobalTable :'''
-	varsGlobales = {}
 
 def p_c(p):
 	'''c : f SEMICOLON e'''
-
+	
 def p_f(p):
 	'''f : d COLON tipo 
-			| matrix'''
-	auxvars[varsList.pop()] = {'Tipo' : p[3]}
-
+			| matrix'''	
+	global varsList
+	global auxVarsDir
+	# Asigna el tipo a las variables 
+	tipo = p[3]
+	while (len(varsList) > 0):
+		auxVarsDir[varsList.pop()] = {'Tipo' : tipo}
 
 def p_d(p):
-	'''d : ID
-			| ID COMMA d'''
-	global varsList
-	varsList.append(p[1])
-	
+	'''d : ID saveVarID
+			| ID saveVarID COMMA d'''
+
+def p_saveVarID(p):
+	'''saveVarID :'''
+	# Guarda el nombre de las variables
+	varsList.append(p[-1])
 	
 def p_tipo(p):
 	'''tipo : INT
 			| FLOAT
 			| BOOL
 			| STRING'''
+	# Regresa el tipo de la variable
 	p[0] = p[1]
 
 def p_matrix(p):
@@ -87,25 +111,46 @@ def p_b(p):
 			|'''
 
 
+
 def p_funcion(p):
 	'''funcion : FUNC g ID altaFuncion LPARENTHESIS h RPARENTHESIS funcvars bloque SEMICOLON'''
 
 def p_funcvars(p):
 	'''funcvars : vars
 			|'''
+	global varsList
+	global auxVarsDir
+	global varsLocalesDir
 
+	
+	# Copia solo las variables locales
+	for elem in auxVarsDir:
+		varsLocalesDir[elem] = auxVarsDir[elem]
+		varsLocalesDir[elem]['Scope'] = 'Local'
+		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
+	dirproc[nombreFunc]['Vars'] = varsLocalesDir
+	# Eliminar las variables que ya se guardaron como locales
+	remove = [k for k in auxVarsDir]
+	for k in remove: del auxVarsDir[k]
+
+
+# Funcion para dar de alta en el DirProc las funciones que crea el usuario
 def p_altaFuncion(p):
 	'''altaFuncion :'''
+	global nombreFunc
+	global varsLocalesDir
+	# Reinicializa diccionario de variables locales
+	varsLocalesDir = {}
 	nombreFunc = p[-1]
 	dirproc[nombreFunc] = {}
-	dirproc[nombreFunc] = {'Tipo': 'void', 'Vars': {}}
+	dirproc[nombreFunc] = {'Tipo': p[-2], 'Vars': {}}
 
 def p_g(p):
 	'''g : INT
 			| BOOL
 			| FLOAT
 			| VOID'''
-
+	p[0] = p[1]
 
 def p_h(p):
 	'''h : param 
@@ -121,14 +166,33 @@ def p_j(p):
 def p_main(p):
 	'''main : MAIN altaMain LPARENTHESIS RPARENTHESIS k bloque SEMICOLON'''
 
+# Funcion para dar de alta el main en el DirProc
 def p_altaMain(p):
 	'''altaMain :'''
+	global nombreFunc
+	global varsLocalesDir
+	# Reinicializa diccionario de variables locales
+	varsLocalesDir = {}
 	nombreFunc = 'main'
 	dirproc[nombreFunc] = {}
 	dirproc[nombreFunc] = {'Tipo': 'void', 'Vars': {}}
+
 def p_k(p):
 	'''k : vars
 			|'''
+	global varsList
+	global auxVarsDir
+	global varsLocalesDir
+
+	# Copia solo las variables locales
+	for elem in auxVarsDir:
+		varsLocalesDir[elem] = auxVarsDir[elem]
+		varsLocalesDir[elem]['Scope'] = 'Local'
+		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
+	dirproc[nombreFunc]['Vars'] = varsLocalesDir
+	# Eliminar las variables que ya se guardaron como locales
+	remove = [k for k in auxVarsDir]
+	for k in remove: del auxVarsDir[k]
 
 def p_bloque(p):
 	'''bloque : LBRACKET l RBRACKET'''
@@ -363,7 +427,7 @@ if __name__ == '__main__':
 			# Parse the data
 			if (dmcparser.parse(data, tracking=True) == 'Success'):
 				print ('Valid program');
-				
+				print dirproc
 		except EOFError:
 	   		print(EOFError)
 	else:
