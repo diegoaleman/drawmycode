@@ -1,7 +1,7 @@
 begin program test3;
-var x,y:int; z:float;
+var x,y:int;
 {
-	func int diego(y:int, z:int)
+	func int diego(r:int, z:bool)
 	var d:string;
 	{
 		if (z==y)
@@ -14,7 +14,7 @@ var x,y:int; z:float;
 		};
 	};
 
-	func float omar(y:int, z:int)
+	func float omar(t:float, u:int)
 	var a:bool;
 	{
 		if (z==y)

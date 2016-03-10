@@ -155,14 +155,35 @@ def p_g(p):
 def p_h(p):
 	'''h : param 
 			|'''
+	global varsList
+	global auxVarsDir
+	global varsLocalesDir
+	
+	# Copia solo las variables locales como parametros
+	for elem in auxVarsDir:
+		varsLocalesDir[elem] = auxVarsDir[elem]
+		varsLocalesDir[elem]['Scope'] = 'Local'
+		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
+	dirproc[nombreFunc]['Vars'] = varsLocalesDir
 
 def p_param(p):
-	'''param : ID COLON tipo j'''
+	'''param : ID COLON tipo saveParamVar j'''
 
+def p_saveParamVar(p):
+	'''saveParamVar :'''
+	global varsList
+	global auxVarsDir
+	# Obtiene el nombre de la variable de parametro 
+	paramID = p[-3]
+	# Obtiene el tipo de la variable de parametro 
+	tipo = p[-1]
+	# Guarda en un diccionario el nombre y tipo.
+	auxVarsDir[paramID] = {'Tipo' : tipo}
 
 def p_j(p):
 	'''j : COMMA param
-			|'''	
+			|'''
+
 def p_main(p):
 	'''main : MAIN altaMain LPARENTHESIS RPARENTHESIS k bloque SEMICOLON'''
 
@@ -190,9 +211,6 @@ def p_k(p):
 		varsLocalesDir[elem]['Scope'] = 'Local'
 		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
 	dirproc[nombreFunc]['Vars'] = varsLocalesDir
-	# Eliminar las variables que ya se guardaron como locales
-	remove = [k for k in auxVarsDir]
-	for k in remove: del auxVarsDir[k]
 
 def p_bloque(p):
 	'''bloque : LBRACKET l RBRACKET'''
