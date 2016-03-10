@@ -17,13 +17,17 @@ import sys
 from dmclex import tokens
 dirproc = {}
 varsList = []
+matrixList = []
 auxvars = {}
 auxVarsDir = {}
+auxMatrixVarsDir = {}
 varsGlobalesDir = {}
 varsLocalesDir = {}
 nombrePrograma = ""
 scope = "Global"
 nombreFunc = ""
+tipo = ""
+
 def p_programa(p):
 	'''programa : BEGIN PROGRAM createDirProc ID altaPrograma SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END'''
 	p[0] = "Success"
@@ -47,7 +51,7 @@ def p_a(p):
 	global varsGlobalesDir
 	global auxVarsDir
 	global varsList
-
+	global auxMatrixVarsDir
 	# Copia solo las variables globales
 	for elem in auxVarsDir:
 		varsGlobalesDir[elem] = auxVarsDir[elem]
@@ -57,6 +61,16 @@ def p_a(p):
 	# Eliminar las variables que ya se guardaron como globales
 	remove = [k for k in auxVarsDir]
 	for k in remove: del auxVarsDir[k]
+
+	# Copia solo las variables globales
+	for elem in auxMatrixVarsDir:
+		varsGlobalesDir[elem] = auxMatrixVarsDir[elem]
+		varsGlobalesDir[elem]['Scope'] = 'Global'
+		varsGlobalesDir[elem]['Tipo'] = auxMatrixVarsDir[elem]['Tipo']
+	dirproc[nombrePrograma]['Vars'] = varsGlobalesDir
+	# Eliminar las variables que ya se guardaron como globales
+	remove = [k for k in auxMatrixVarsDir]
+	for k in remove: del auxMatrixVarsDir[k]
 
 
 def p_vars(p):
@@ -69,15 +83,20 @@ def p_c(p):
 	'''c : f SEMICOLON e'''
 	
 def p_f(p):
-	'''f : d COLON tipo 
+	'''f : d COLON tipo saveTipo
 			| matrix'''	
 	global varsList
 	global auxVarsDir
-	# Asigna el tipo a las variables 
-	tipo = p[3]
+
+	# Guarda el tipo de la variable en el diccionario auxiliar de variables
 	while (len(varsList) > 0):
 		auxVarsDir[varsList.pop()] = {'Tipo' : tipo}
 
+def p_saveTipo(p):
+	'''saveTipo :'''
+	# Asigna el tipo a las variables 
+	global tipo
+	tipo = p[-1]
 def p_d(p):
 	'''d : ID saveVarID
 			| ID saveVarID COMMA d'''
@@ -97,10 +116,20 @@ def p_tipo(p):
 
 def p_matrix(p):
 	'''matrix :  mataux COLON INT'''
+	global matrixList
+	global auxMatrixVarsDir
+	
+	# Guarda el tipo de la variable en el diccionario auxiliar de variables
+	while (len(matrixList) > 0):
+		auxMatrixVarsDir[matrixList.pop()] = {'Tipo' : 'int'}
 
 def p_mataux(p):
-	'''mataux : ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET
-			| ID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux'''
+	'''mataux : ID saveMatrixID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET
+			| ID saveMatrixID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux'''
+
+def p_saveMatrixID(p):
+	'''saveMatrixID :'''
+	matrixList.append(p[-1])
 
 def p_e(p):
 	'''e : c 
@@ -109,8 +138,6 @@ def p_e(p):
 def p_b(p):
 	'''b : funcion b
 			|'''
-
-
 
 def p_funcion(p):
 	'''funcion : FUNC g ID altaFuncion LPARENTHESIS h RPARENTHESIS funcvars bloque SEMICOLON'''
@@ -121,7 +148,7 @@ def p_funcvars(p):
 	global varsList
 	global auxVarsDir
 	global varsLocalesDir
-
+	global auxMatrixVarsDir
 	
 	# Copia solo las variables locales
 	for elem in auxVarsDir:
@@ -132,6 +159,16 @@ def p_funcvars(p):
 	# Eliminar las variables que ya se guardaron como locales
 	remove = [k for k in auxVarsDir]
 	for k in remove: del auxVarsDir[k]
+
+	# Copia solo las variables globales
+	for elem in auxMatrixVarsDir:
+		varsLocalesDir[elem] = auxMatrixVarsDir[elem]
+		varsLocalesDir[elem]['Scope'] = 'Local'
+		varsLocalesDir[elem]['Tipo'] = auxMatrixVarsDir[elem]['Tipo']
+	dirproc[nombreFunc]['Vars'] = varsLocalesDir
+	# Eliminar las variables que ya se guardaron como globales
+	remove = [k for k in auxMatrixVarsDir]
+	for k in remove: del auxMatrixVarsDir[k]
 
 
 # Funcion para dar de alta en el DirProc las funciones que crea el usuario
@@ -204,13 +241,22 @@ def p_k(p):
 	global varsList
 	global auxVarsDir
 	global varsLocalesDir
-
+	global auxMatrixVarsDir
+	
 	# Copia solo las variables locales
 	for elem in auxVarsDir:
 		varsLocalesDir[elem] = auxVarsDir[elem]
 		varsLocalesDir[elem]['Scope'] = 'Local'
 		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
 	dirproc[nombreFunc]['Vars'] = varsLocalesDir
+
+	# Copia solo las variables globales
+	for elem in auxMatrixVarsDir:
+		varsLocalesDir[elem] = auxMatrixVarsDir[elem]
+		varsLocalesDir[elem]['Scope'] = 'Local'
+		varsLocalesDir[elem]['Tipo'] = auxMatrixVarsDir[elem]['Tipo']
+	dirproc[nombreFunc]['Vars'] = varsLocalesDir
+
 
 def p_bloque(p):
 	'''bloque : LBRACKET l RBRACKET'''
