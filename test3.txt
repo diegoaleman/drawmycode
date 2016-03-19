@@ -1,8 +1,8 @@
 begin program test3;
-var x,y:int;
+var x,y:int; z:float; mat[2][2]:int;
 {
 	func int diego(r:int, z:bool)
-	var d:string;
+	var d:string; mat3[3][3]:int;
 	{
 		if (z==y)
 		{
@@ -15,7 +15,7 @@ var x,y:int;
 	};
 
 	func float omar(t:float, u:int)
-	var a:bool;
+	var a:bool; mat2[3][3]:int;
 	{
 		if (z==y)
 		{
@@ -28,7 +28,7 @@ var x,y:int;
 	};
 
 	main () 
-	var res:int;
+	var res:int;mat4[4][4]:int;
 	{
 		res = diego(random(0,1), random(0,1));
 		if (res == 1)
