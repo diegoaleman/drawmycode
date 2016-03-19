@@ -62,7 +62,7 @@ def p_a(p):
 	remove = [k for k in auxVarsDir]
 	for k in remove: del auxVarsDir[k]
 
-	# Copia solo las variables globales
+	# Copia solo las variables que son matrices
 	for elem in auxMatrixVarsDir:
 		varsGlobalesDir[elem] = auxMatrixVarsDir[elem]
 		varsGlobalesDir[elem]['Scope'] = 'Global'
@@ -160,7 +160,7 @@ def p_funcvars(p):
 	remove = [k for k in auxVarsDir]
 	for k in remove: del auxVarsDir[k]
 
-	# Copia solo las variables globales
+	# Copia solo las variables que son matrices
 	for elem in auxMatrixVarsDir:
 		varsLocalesDir[elem] = auxMatrixVarsDir[elem]
 		varsLocalesDir[elem]['Scope'] = 'Local'
@@ -250,7 +250,7 @@ def p_k(p):
 		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
 	dirproc[nombreFunc]['Vars'] = varsLocalesDir
 
-	# Copia solo las variables globales
+	# Copia solo las variables que son matrices
 	for elem in auxMatrixVarsDir:
 		varsLocalesDir[elem] = auxMatrixVarsDir[elem]
 		varsLocalesDir[elem]['Scope'] = 'Local'
