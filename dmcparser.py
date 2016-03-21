@@ -10,8 +10,14 @@
 # *Change the test filename to test other files
 # ------------------------------------------------------------
 
+# int 		-  [1 - 9,999]
+# float 	-  [10,000 - 19,999]
+# bool 		-  [20,000 - 29,999]
+# string 	-  [30,000 - 39,999]
+
 import ply.yacc as yacc
 import sys
+from tablas import *
 
 # Get the token map from the lexer.
 from dmclex import tokens
@@ -23,10 +29,12 @@ auxVarsDir = {}
 auxMatrixVarsDir = {}
 varsGlobalesDir = {}
 varsLocalesDir = {}
-nombrePrograma = ""
+
+nombrePrograma = None
 scope = "Global"
-nombreFunc = ""
-tipo = ""
+nombreFunc = None
+tipo = None
+
 
 def p_programa(p):
 	'''programa : BEGIN PROGRAM createDirProc ID altaPrograma SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END'''
@@ -87,16 +95,19 @@ def p_f(p):
 			| matrix'''	
 	global varsList
 	global auxVarsDir
-
-	# Guarda el tipo de la variable en el diccionario auxiliar de variables
+	
 	while (len(varsList) > 0):
-		auxVarsDir[varsList.pop()] = {'Tipo' : tipo}
+		# Le asigna una direccion a la variable
+		assignedDir = set_dir(tipo)
+		# Guarda el tipo y direccionde la variable en el diccionario auxiliar de variables
+		auxVarsDir[varsList.pop()] = {'Tipo' : tipo, 'Dir' : assignedDir}
 
 def p_saveTipo(p):
 	'''saveTipo :'''
 	# Asigna el tipo a las variables 
 	global tipo
 	tipo = p[-1]
+
 def p_d(p):
 	'''d : ID saveVarID
 			| ID saveVarID COMMA d'''
@@ -119,9 +130,12 @@ def p_matrix(p):
 	global matrixList
 	global auxMatrixVarsDir
 	
-	# Guarda el tipo de la variable en el diccionario auxiliar de variables
+	
 	while (len(matrixList) > 0):
-		auxMatrixVarsDir[matrixList.pop()] = {'Tipo' : 'int'}
+		# Le asigna una direccion a la variable 
+		assignedDir = set_dir('int')
+		# Guarda el tipo y direccion de la variable en el diccionario auxiliar de variables
+		auxMatrixVarsDir[matrixList.pop()] = {'Tipo' : 'int', 'Dir' : assignedDir}
 
 def p_mataux(p):
 	'''mataux : ID saveMatrixID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET
@@ -214,8 +228,10 @@ def p_saveParamVar(p):
 	paramID = p[-3]
 	# Obtiene el tipo de la variable de parametro 
 	tipo = p[-1]
-	# Guarda en un diccionario el nombre y tipo.
-	auxVarsDir[paramID] = {'Tipo' : tipo}
+	# Le asigna una direccion a la variable
+	assignedDir = set_dir(tipo)
+	# Guarda en un diccionario el nombre, tipo y direccion.
+	auxVarsDir[paramID] = {'Tipo' : tipo, 'Dir' : assignedDir}
 
 def p_j(p):
 	'''j : COMMA param
@@ -491,7 +507,11 @@ if __name__ == '__main__':
 			# Parse the data
 			if (dmcparser.parse(data, tracking=True) == 'Success'):
 				print ('Valid program');
-				print dirproc
+				for elem in dirproc:
+					print elem
+					for x in dirproc[elem]['Vars']:
+
+						print (x, (dirproc[elem]['Vars'][x]))
 		except EOFError:
 	   		print(EOFError)
 	else:

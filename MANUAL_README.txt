@@ -5,7 +5,7 @@
 # Para ejecutar, escribir los siguientes comandos:
 
 # python dmclex.py
-# python dmcparser.py test1.txt
+# python dmcparser.py test/test1.txt
 
 # Para probar otros archivos, cambiar el nombre del archivo .txt
 # ------------------------------------------------------------

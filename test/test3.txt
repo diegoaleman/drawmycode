@@ -1,5 +1,5 @@
 begin program test3;
-var x,y:int; z:float; mat[2][2]:int;
+var x,y:float; z:float; mat[2][2]:int;
 {
 	func int diego(r:int, z:bool)
 	var d:string; mat3[3][3]:int;
@@ -14,7 +14,7 @@ var x,y:int; z:float; mat[2][2]:int;
 		};
 	};
 
-	func float omar(t:float, u:int)
+	func float omar(t:float, t:int)
 	var a:bool; mat2[3][3]:int;
 	{
 		if (z==y)

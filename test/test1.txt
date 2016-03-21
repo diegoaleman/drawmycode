@@ -1,12 +1,12 @@
 begin program ejemplo2;
 {
 	func bool prueba(x:int)
-	var x:float;
 	{
-
+		x = 2 + 3;
 	};
 
 	main() 
+	var num:int;
 	{
 		num = 1;
 	};
