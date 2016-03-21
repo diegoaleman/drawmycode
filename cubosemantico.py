@@ -248,5 +248,3 @@ cuboSemantico = {
         }, 
     }, 
 }
-test = cubo_semantico['int']['float']['+']
-print test

@@ -1,14 +1,15 @@
 begin program ejemplo2;
 {
+
 	func bool prueba(x:int)
+	var a,b:int;
 	{
-		x = 2 + 3;
+		x = a * b;
 	};
 
 	main() 
 	var num:int;
 	{
-		num = 1;
 	};
 		
 };

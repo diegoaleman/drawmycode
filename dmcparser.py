@@ -5,7 +5,7 @@
 
 # Run:
 # python dmclex.py
-# python dmcparser.py test1.txt
+# python dmcparser.py test/test1.txt
 
 # *Change the test filename to test other files
 # ------------------------------------------------------------
@@ -18,6 +18,7 @@
 import ply.yacc as yacc
 import sys
 from tablas import *
+from cuadruplos import *
 
 # Get the token map from the lexer.
 from dmclex import tokens
@@ -30,10 +31,12 @@ auxMatrixVarsDir = {}
 varsGlobalesDir = {}
 varsLocalesDir = {}
 
+
 nombrePrograma = None
 scope = "Global"
 nombreFunc = None
 tipo = None
+dirActual = None
 
 
 def p_programa(p):
@@ -47,9 +50,12 @@ def p_createDirProc(p):
 def p_altaPrograma(p):
 	'''altaPrograma :'''
 	global nombrePrograma
+	global dirActual
 	# Da de alta el programa en el DirProc
 	nombre = p[-1]
+
 	nombrePrograma = nombre
+	dirActual = nombrePrograma
 	dirproc[nombrePrograma] = {}
 	dirproc[nombrePrograma] = {'Tipo': 'programa', 'Vars': {}}
 	
@@ -190,9 +196,11 @@ def p_altaFuncion(p):
 	'''altaFuncion :'''
 	global nombreFunc
 	global varsLocalesDir
+	global dirActual
 	# Reinicializa diccionario de variables locales
 	varsLocalesDir = {}
 	nombreFunc = p[-1]
+	dirActual = nombreFunc
 	dirproc[nombreFunc] = {}
 	dirproc[nombreFunc] = {'Tipo': p[-2], 'Vars': {}}
 
@@ -245,9 +253,12 @@ def p_altaMain(p):
 	'''altaMain :'''
 	global nombreFunc
 	global varsLocalesDir
+	global dirActual
+
 	# Reinicializa diccionario de variables locales
 	varsLocalesDir = {}
 	nombreFunc = 'main'
+	dirActual = nombreFunc
 	dirproc[nombreFunc] = {}
 	dirproc[nombreFunc] = {'Tipo': 'void', 'Vars': {}}
 
@@ -296,6 +307,7 @@ def p_estatutotipos(p):
 def p_asignacion(p):
 	'''asignacion : ID aa EQUAL expresion'''
 
+
 def p_aa(p):
 	'''aa : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
 			|'''
@@ -334,24 +346,43 @@ def p_exp(p):
 	'''exp : termino ab'''
 
 def p_ab(p):
-	'''ab : ab2 exp
+	'''ab : ab2 exp_3 exp
 			|'''
 
 def p_ab2(p):
 	'''ab2 : PLUS
 			| MINUS'''
+	# Envia signo + o -
+	p[0] = p[1]
+
+def p_exp_3(p):
+	'''exp_3 :'''
+	# Meter op(+ -) en POper
+	exp_3(p[-1])
 
 def p_termino(p):
-	'''termino : factor ac'''
+	'''termino : factor exp_4 ac'''
+
+def p_exp_4(p):
+	# Si top(pOper) es * o /
+	'''exp_4 :'''
+	exp_4()
 
 def p_ac(p):
-	'''ac : ac2 termino
+	'''ac : ac2 exp_2 termino
 			|'''
+
 
 def p_ac2(p):
 	'''ac2 : PRODUCT
 			| DIVISION'''
+	# Envia signo * o /
+	p[0] = p[1]
 
+def p_exp_2(p):
+	'''exp_2 :'''
+	# Meter op(* /) en POper
+	exp_2(p[-1])
 
 def p_factor(p):
 	'''factor : ad
@@ -379,10 +410,14 @@ def p_varcte(p):
 			| CTEBOOL
 			| CTESTRING
 			| ID r'''
+	temp_dirvar = dirproc[dirActual]['Vars'][p[1]]['Dir']
+	temp_tipovar = dirproc[dirActual]['Vars'][p[1]]['Tipo']
+	exp_1(temp_dirvar,temp_tipovar)
 
 def p_r(p):
 	'''r : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
 			|'''
+	
 
 def p_condicion(p):
 	'''condicion : IF LPARENTHESIS expresion RPARENTHESIS bloque s'''
@@ -505,13 +540,12 @@ if __name__ == '__main__':
 			data = f.read()
 			f.close()
 			# Parse the data
+			
 			if (dmcparser.parse(data, tracking=True) == 'Success'):
-				print ('Valid program');
-				for elem in dirproc:
-					print elem
-					for x in dirproc[elem]['Vars']:
+				print "Valid"
+				printPilas()
+				print dirproc
 
-						print (x, (dirproc[elem]['Vars'][x]))
 		except EOFError:
 	   		print(EOFError)
 	else:
