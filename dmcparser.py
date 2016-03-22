@@ -305,8 +305,21 @@ def p_estatutotipos(p):
 			| return'''
 
 def p_asignacion(p):
-	'''asignacion : ID aa EQUAL expresion'''
+	'''asignacion : ID exp_asign aa EQUAL exp_8 expresion exp_9'''
 
+def p_exp_asign(p):
+	'''exp_asign :'''
+	temp_dirvar = dirproc[dirActual]['Vars'][p[-1]]['Dir']
+	temp_tipovar = dirproc[dirActual]['Vars'][p[-1]]['Tipo']
+	exp_1(temp_dirvar,temp_tipovar)
+
+def p_exp_8(p):
+	'''exp_8 :'''
+	exp_8(p[-1])
+
+def p_exp_9(p):
+	'''exp_9 :'''
+	exp_9()
 
 def p_aa(p):
 	'''aa : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
@@ -343,7 +356,11 @@ def p_q(p):
 			| EQUALEQUAL'''
 
 def p_exp(p):
-	'''exp : termino ab'''
+	'''exp : termino exp_5 ab'''
+
+def p_exp_5(p):
+	'''exp_5 :'''
+	exp_5()
 
 def p_ab(p):
 	'''ab : ab2 exp_3 exp
@@ -372,17 +389,16 @@ def p_ac(p):
 	'''ac : ac2 exp_2 termino
 			|'''
 
+def p_exp_2(p):
+	'''exp_2 :'''
+	# Meter op(* /) en POper
+	exp_2(p[-1])
 
 def p_ac2(p):
 	'''ac2 : PRODUCT
 			| DIVISION'''
 	# Envia signo * o /
 	p[0] = p[1]
-
-def p_exp_2(p):
-	'''exp_2 :'''
-	# Meter op(* /) en POper
-	exp_2(p[-1])
 
 def p_factor(p):
 	'''factor : ad
@@ -391,7 +407,15 @@ def p_factor(p):
 			| opfunc'''
 
 def p_ad(p):
-	'''ad : LPARENTHESIS expresion RPARENTHESIS'''
+	'''ad : LPARENTHESIS exp_6 expresion RPARENTHESIS exp_7'''
+
+def p_exp_6(p):
+	'''exp_6 :'''
+	exp_6()
+
+def p_exp_7(p):
+	'''exp_7 :'''
+	exp_7()
 
 def p_ae(p):
 	'''ae : ag varcte'''
@@ -405,19 +429,54 @@ def p_ag(p):
 			|'''
 
 def p_varcte(p):
-	'''varcte : CTEINT
-			| CTEFLOAT
-			| CTEBOOL
-			| CTESTRING
-			| ID r'''
-	temp_dirvar = dirproc[dirActual]['Vars'][p[1]]['Dir']
-	temp_tipovar = dirproc[dirActual]['Vars'][p[1]]['Tipo']
-	exp_1(temp_dirvar,temp_tipovar)
+	'''varcte : CTEINT exp_cte_int
+			| CTEFLOAT exp_cte_float
+			| CTEBOOL exp_cte_bool
+			| CTESTRING exp_cte_string
+			| ID r exp_1'''
+
+def p_exp_cte_int(p):
+	'''exp_cte_int :'''
+	global contDirIntCte
+	temp_dircte = contDirIntCte
+	temp_tipocte = "int"
+	exp_1(temp_dircte,temp_tipocte)	
+	contDirIntCte += 1
+
+def p_exp_cte_float(p):
+	'''exp_cte_float :'''
+	'''exp_cte_int :'''
+	global contDirFloatCte
+	temp_dircte = contDirFloatCte
+	temp_tipocte = "float"
+	exp_1(temp_dircte,temp_tipocte)	
+	contDirFloatCte += 1
+
+def p_exp_cte_bool(p):
+	'''exp_cte_bool :'''
+	global contDirBoolCte
+	temp_dircte = contDirBoolCte
+	temp_tipocte = "bool"
+	exp_1(temp_dircte,temp_tipocte)	
+	contDirBoolCte += 1
+
+def p_exp_cte_string(p):
+	'''exp_cte_string :'''
+	global contDirStringCte
+	temp_dircte = contDirStringCte
+	temp_tipocte = "string"
+	exp_1(temp_dircte,temp_tipocte)	
+	contDirStringCte += 1
 
 def p_r(p):
 	'''r : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
 			|'''
-	
+
+def p_exp_1(p):
+	'''exp_1 :'''
+	temp_dirvar = dirproc[dirActual]['Vars'][p[-2]]['Dir']
+	temp_tipovar = dirproc[dirActual]['Vars'][p[-2]]['Tipo']
+	exp_1(temp_dirvar,temp_tipovar)	
 
 def p_condicion(p):
 	'''condicion : IF LPARENTHESIS expresion RPARENTHESIS bloque s'''
@@ -544,7 +603,6 @@ if __name__ == '__main__':
 			if (dmcparser.parse(data, tracking=True) == 'Success'):
 				print "Valid"
 				printPilas()
-				print dirproc
 
 		except EOFError:
 	   		print(EOFError)

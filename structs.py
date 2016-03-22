@@ -28,6 +28,7 @@ class Queue():
     def peek(self):
         return self.items[len(self.items)-1]
 
+
 class Stack():
 
     """Constructor"""
@@ -48,6 +49,10 @@ class Stack():
 
     """Sirve para ver el elemento superior del stack sin removerlo"""
     def peek(self):
+        return self.items[len(self.items)-1]
+
+    """Sirve para ver el segundo elemento superior del stack sin removerlo"""  
+    def peekSecond(self):
         return self.items[len(self.items)-1]
 
     """Despliega todos los elementos del stack"""

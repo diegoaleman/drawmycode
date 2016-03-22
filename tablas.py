@@ -1,11 +1,40 @@
 dircproc = {}
 
+'''
+	============================================
+	Direcciones para variables globales y locales
+	============================================
+'''
 contDirInt = 1
 contDirFloat = 10000
 contDirBool = 20000
 contDirString = 30000
 
-# Asigna direccion a una variable de acuerdo a su tipo
+'''
+	============================================
+	Direcciones para variables temporales
+	============================================
+'''
+contDirIntTemp = 1000
+contDirFloatTemp = 11000
+contDirBoolTemp = 21000
+contDirStringTemp = 31000
+
+'''
+	============================================
+	Direcciones para constantes
+	============================================
+'''
+contDirIntCte = 2000
+contDirFloatCte = 12000
+contDirBoolCte = 22000
+contDirStringCte = 32000
+
+'''
+	=====================================================
+	Asigna direccion a una variable de acuerdo a su tipo
+	=====================================================
+'''
 def set_dir(tipo):
 	global contDirInt
 	global contDirFloat
