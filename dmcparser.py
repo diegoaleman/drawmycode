@@ -305,13 +305,37 @@ def p_estatutotipos(p):
 			| return'''
 
 def p_asignacion(p):
-	'''asignacion : ID exp_asign aa EQUAL exp_8 expresion exp_9'''
+	'''asignacion : ID exp_asign aa EQUAL exp_12 expresion exp_13'''
 
 def p_exp_asign(p):
 	'''exp_asign :'''
 	temp_dirvar = dirproc[dirActual]['Vars'][p[-1]]['Dir']
 	temp_tipovar = dirproc[dirActual]['Vars'][p[-1]]['Tipo']
 	exp_1(temp_dirvar,temp_tipovar)
+
+def p_exp_12(p):
+	'''exp_12 :'''
+	exp_12(p[-1])
+
+def p_exp_13(p):
+	'''exp_13 :'''
+	exp_13()
+
+def p_aa(p):
+	'''aa : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
+			|'''
+
+def p_expresion(p):
+	'''expresion : specialexp m exp_9 n'''
+
+def p_m(p):
+	'''m : o exp_8 specialexp
+			|'''
+
+def p_o(p):
+	'''o : AND
+			| OR'''
+	p[0] = p[1]
 
 def p_exp_8(p):
 	'''exp_8 :'''
@@ -321,30 +345,15 @@ def p_exp_9(p):
 	'''exp_9 :'''
 	exp_9()
 
-def p_aa(p):
-	'''aa : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
-			|'''
-
-def p_expresion(p):
-	'''expresion : specialexp m n'''
-
-def p_m(p):
-	'''m : o specialexp
-			|'''
-
-def p_o(p):
-	'''o : AND
-			| OR'''
-
 def p_n(p):
 	'''n : expresion
 			|'''
 
 def p_specialexp(p):
-	'''specialexp : exp p'''
+	'''specialexp : exp p exp_11'''
 
 def p_p(p):
-	'''p : q exp
+	'''p : q exp_10 exp
 			|'''
 
 def p_q(p):
@@ -354,6 +363,15 @@ def p_q(p):
 			| LESSEQUAL
 			| GREATEREQUAL
 			| EQUALEQUAL'''
+	p[0] = p[1]
+
+def p_exp_10(p):
+	'''exp_10 :'''
+	exp_10(p[-1])
+
+def p_exp_11(p):
+	'''exp_11 :'''
+	exp_11()
 
 def p_exp(p):
 	'''exp : termino exp_5 ab'''
@@ -431,7 +449,7 @@ def p_ag(p):
 def p_varcte(p):
 	'''varcte : CTEINT exp_cte_int
 			| CTEFLOAT exp_cte_float
-			| CTEBOOL exp_cte_bool
+			| ctebool exp_cte_bool
 			| CTESTRING exp_cte_string
 			| ID r exp_1'''
 
@@ -451,6 +469,10 @@ def p_exp_cte_float(p):
 	temp_tipocte = "float"
 	exp_1(temp_dircte,temp_tipocte)	
 	contDirFloatCte += 1
+
+def p_ctebool(p):
+	'''ctebool : TRUE
+			| FALSE'''
 
 def p_exp_cte_bool(p):
 	'''exp_cte_bool :'''
@@ -492,9 +514,13 @@ def p_ciclo(p):
 def p_escritura(p):
 	'''escritura : PRINT LPARENTHESIS ah RPARENTHESIS'''
 
+def p_estatuto_print(p):
+	'''estatuto_print :'''
+	estatuto_print()
+
 def p_ah(p):
-	'''ah : expresion ai
-			| CTESTRING ai'''
+	'''ah : expresion estatuto_print ai
+			| CTESTRING estatuto_print ai'''
 
 def p_ai(p):
 	'''ai : COMMA ah
@@ -585,6 +611,7 @@ def p_stopfillfunc(p):
 
 def p_error(p):
     print('Syntax error in token %s with value %s in line %s' % (p.type, p.value, p.lineno))
+    sys.exit()
 
 # Build the parser
 dmcparser = yacc.yacc()
@@ -603,6 +630,7 @@ if __name__ == '__main__':
 			if (dmcparser.parse(data, tracking=True) == 'Success'):
 				print "Valid"
 				printPilas()
+				print dirproc
 
 		except EOFError:
 	   		print(EOFError)

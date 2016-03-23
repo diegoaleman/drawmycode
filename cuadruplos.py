@@ -145,20 +145,105 @@ def exp_7():
 
 '''
 	============================================
-	8. Meter = en POper
+	8. Meter AND/OR en POper
 	============================================
 '''
-def exp_8(asignOper):
+def exp_8(and_or):
+	global POper
+	POper.push(and_or)
+
+
+'''
+	=====================================================
+	9. Si top(POper) es and o or , sacar and/or de POper
+	=====================================================
+'''
+def exp_9():
+	global POper
+	global pTipos
+	global pilaO
+	
+	#printPilas()
+	if not POper.isEmpty():
+		if POper.peek() == 'and' or POper.peek() == 'or':
+			op = POper.pop()
+
+			opdoDer = pilaO.pop()
+			tipoDer = pTipos.pop()
+
+			opdoIzq = pilaO.pop()
+			tipoIzq = pTipos.pop()
+
+			tipoRes = cuboSemantico[tipoIzq][tipoDer][op];
+
+			if tipoRes != "Error":
+				temp = generaResDir(tipoRes)
+				genera_cuadruplo = Cuadruplo(op,opdoIzq,opdoDer,temp)
+				push_cuadruplo(genera_cuadruplo)
+				pTipos.push(tipoRes)
+				pilaO.push(temp)
+			else:
+				sys.exit("Error. Tipos Incompatibles.")
+
+'''
+	============================================
+	10. Meter < <= > >= <> == en POper
+	============================================
+'''
+def exp_10(oper_logic):
+	global POper
+	POper.push(oper_logic)
+
+
+'''
+	=====================================================
+	11. Si top(POper) es < <= > >= <> == , sacar de POper
+	====================================================
+'''
+def exp_11():
+	global POper
+	global pTipos
+	global pilaO
+	
+	#printPilas()
+	if not POper.isEmpty():
+		if POper.peek() == '<' or POper.peek() == '<=' or POper.peek() == '>' or POper.peek() == '>=' or POper.peek() == '<>' or POper.peek() == '==':
+			op = POper.pop()
+
+			opdoDer = pilaO.pop()
+			tipoDer = pTipos.pop()
+
+			opdoIzq = pilaO.pop()
+			tipoIzq = pTipos.pop()
+
+			tipoRes = cuboSemantico[tipoIzq][tipoDer][op];
+
+			if tipoRes != "Error":
+				temp = generaResDir(tipoRes)
+				genera_cuadruplo = Cuadruplo(op,opdoIzq,opdoDer,temp)
+				push_cuadruplo(genera_cuadruplo)
+				pTipos.push(tipoRes)
+				pilaO.push(temp)
+			else:
+				sys.exit("Error. Tipos Incompatibles.")
+
+
+'''
+	============================================
+	12. Meter = en POper
+	============================================
+'''
+def exp_12(asignOper):
 	global POper
 	POper.push(asignOper)
 
 
 '''
 	============================================
-	9. Si top(POper) es = , sacar = de POper
+	13. Si top(POper) es = , sacar = de POper
 	============================================
 '''
-def exp_9():
+def exp_13():
 	global POper
 	global pTipos
 	global pilaO
@@ -173,8 +258,6 @@ def exp_9():
 			res = pilaO.pop()
 			tipoRes = pTipos.pop()
 
-			
-
 			revisaTipoRes = cuboSemantico[tipoRes][tipoDer][op];
 
 			if revisaTipoRes != "Error":
@@ -183,6 +266,15 @@ def exp_9():
 				push_cuadruplo(genera_cuadruplo)
 			else:
 				sys.exit("Error. Tipos Incompatibles.")
+
+def estatuto_print():
+	global pilaO
+	global pTipos
+
+	res = pilaO.pop()
+	pTipos.pop()
+	genera_cuadruplo = Cuadruplo("print", "", "", res)
+	push_cuadruplo(genera_cuadruplo)
 
 '''
 	=====================================================================

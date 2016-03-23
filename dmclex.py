@@ -41,7 +41,9 @@ reserved = {
   'startFill' : 'STARTFILL',
   'stopFill' : 'STOPFILL',
   'and' : 'AND',
-  'or' : 'OR'
+  'or' : 'OR',
+  'true' : 'TRUE',
+  'false' : 'FALSE'
 }
 
 tokens = ( 'PROGRAM','CTESTRING','COLON', 'SEMICOLON','VAR', 'NOTEQUAL', 'LESSTHAN', 
@@ -50,12 +52,12 @@ tokens = ( 'PROGRAM','CTESTRING','COLON', 'SEMICOLON','VAR', 'NOTEQUAL', 'LESSTH
            'RPARENTHESIS', 'ELSE', 'ID','INT', 'FLOAT', 'CTEINT', 'CTEFLOAT', 'BEGIN',
            'END','BOOL','STRING','FUNC','VOID','MAIN','WHILE','RETURN','RANDOM','LINEWIDTH',
            'LINECOLOR','LINE','SQUARE','CIRCLE','STAR','TRIANGLE','ARC','STARTFILL','STOPFILL',
-           'LESSEQUAL','GREATEREQUAL','EQUALEQUAL','LSQUAREBRACKET','RSQUAREBRACKET', 'CTEBOOL','AND','OR')
+           'LESSEQUAL','GREATEREQUAL','EQUALEQUAL','LSQUAREBRACKET','RSQUAREBRACKET',
+           'AND','OR','TRUE','FALSE')
 
 # Regular expression rules for simple tokens
 t_ignore = ' \t'
 t_CTEINT = r'[0-9]+'
-t_CTEBOOL = r'["true"|"false"]'
 t_CTEFLOAT = r'[0-9]+\.+[0-9]+'
 t_COLON	= r':'
 t_SEMICOLON	= r';'

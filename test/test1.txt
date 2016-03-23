@@ -2,10 +2,9 @@ begin program ejemplo2;
 {
 
 	func bool prueba(x:int)
-	var a:int;b:float;
+	var a,b,c:bool;
 	{	
-		a = 2.0 * 1;
-		b = a;
+		c = 1 > 2;
 	};
 
 	main() 
