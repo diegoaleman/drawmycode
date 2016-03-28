@@ -309,9 +309,15 @@ def p_asignacion(p):
 
 def p_exp_asign(p):
 	'''exp_asign :'''
-	temp_dirvar = dirproc[dirActual]['Vars'][p[-1]]['Dir']
-	temp_tipovar = dirproc[dirActual]['Vars'][p[-1]]['Tipo']
-	exp_1(temp_dirvar,temp_tipovar)
+	try:
+		temp_dirvar = dirproc[dirActual]['Vars'][p[-1]]['Dir']
+		temp_tipovar = dirproc[dirActual]['Vars'][p[-1]]['Tipo']
+		exp_1(temp_dirvar,temp_tipovar)
+	except KeyError as key:
+		print 'Variable %s no esta declarada' % key
+		sys.exit()
+	
+	
 
 def p_exp_12(p):
 	'''exp_12 :'''
@@ -496,9 +502,13 @@ def p_r(p):
 
 def p_exp_1(p):
 	'''exp_1 :'''
-	temp_dirvar = dirproc[dirActual]['Vars'][p[-2]]['Dir']
-	temp_tipovar = dirproc[dirActual]['Vars'][p[-2]]['Tipo']
-	exp_1(temp_dirvar,temp_tipovar)	
+	try:
+		temp_dirvar = dirproc[dirActual]['Vars'][p[-2]]['Dir']
+		temp_tipovar = dirproc[dirActual]['Vars'][p[-2]]['Tipo']
+		exp_1(temp_dirvar,temp_tipovar)	
+	except KeyError as key:
+		print 'Variable %s no esta declarada' % key
+		sys.exit()
 
 def p_condicion(p):
 	'''condicion : IF LPARENTHESIS expresion RPARENTHESIS bloque s'''
