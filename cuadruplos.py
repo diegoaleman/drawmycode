@@ -6,7 +6,13 @@ import sys
 pilaO = Stack()
 POper = Stack()
 pTipos = Stack()
+pSaltos = Stack()
+
+# Inicia con el index 0
 cuadruplos = []
+
+# Inicia con el index 0
+contSaltos = 0
 
 class Cuadruplo:
 
@@ -15,6 +21,7 @@ class Cuadruplo:
 		self.opdoIzq = operandoIzq
 		self.opdoDer = operandoDer
 		self.res = temp
+		
 '''
 	===================================================
 	Inserta estructura Cuadruplo en lista de cuadruplos
@@ -22,9 +29,10 @@ class Cuadruplo:
 '''
 def push_cuadruplo(cuadruplo):
 	global cuadruplos
-	global cont_saltos
+	global contSaltos
 
 	cuadruplos.append(cuadruplo)
+	contSaltos+=1
 
 ''' 
 	============================================
@@ -267,6 +275,11 @@ def exp_13():
 			else:
 				sys.exit("Error. Tipos Incompatibles.")
 
+'''
+	============================================
+	Estatuto PRINT
+	============================================
+'''
 def estatuto_print():
 	global pilaO
 	global pTipos
@@ -275,6 +288,104 @@ def estatuto_print():
 	pTipos.pop()
 	genera_cuadruplo = Cuadruplo("print", "", "", res)
 	push_cuadruplo(genera_cuadruplo)
+
+'''
+	============================================
+	Estatuto IF 1
+	============================================
+'''
+def estatuto_if_1():
+	global pilaO
+	global pTipos
+	global pSaltos
+
+	auxTipo = pTipos.pop()
+	if auxTipo != "bool":
+		sys.exit("Error Semantico.")
+	else:
+		res = pilaO.pop()
+		genera_cuadruplo = Cuadruplo("GOTOF", res, "", "")
+		push_cuadruplo(genera_cuadruplo)
+	pSaltos.push(contSaltos-1)
+
+
+
+'''
+	============================================
+	Estatuto ELSE
+	============================================
+'''
+def estatuto_else():
+	global pilaO
+	global pTipos
+	global cuadruplos
+	global pSaltos
+
+	genera_cuadruplo = Cuadruplo("GOTO", "", "", "")
+	push_cuadruplo(genera_cuadruplo)
+	falso = pSaltos.pop()
+	cuadruplos[falso].res = contSaltos
+	pSaltos.push(contSaltos-1)
+
+'''
+	============================================
+	Estatuto ENDIF
+	============================================
+'''
+def estatuto_endif():
+	global pilaO
+	global pTipos
+	global cuadruplos
+	global pSaltos
+
+	fin = pSaltos.pop()
+	cuadruplos[fin].res = contSaltos
+
+'''
+	============================================
+	Estatuto WHILE 1
+	============================================
+'''
+def estatuto_while_1():
+	global pSaltos
+
+	pSaltos.push(contSaltos)
+
+'''
+	============================================
+	Estatuto WHILE 2
+	============================================
+'''
+def estatuto_while_2():
+	global pilaO
+	global pTipos
+	global pSaltos
+
+	auxTipo = pTipos.pop()
+	if auxTipo != "bool":
+		sys.exit("Error Semantico.")
+	else:
+		res = pilaO.pop()
+		genera_cuadruplo = Cuadruplo("GOTOF", res, "", "")
+		push_cuadruplo(genera_cuadruplo)
+	pSaltos.push(contSaltos-1)
+
+'''
+	============================================
+	Estatuto WHILE 3
+	============================================
+'''
+def estatuto_while_3():
+	global pSaltos
+
+	falso = pSaltos.pop()
+	retorno = pSaltos.pop()
+
+	genera_cuadruplo = Cuadruplo("GOTO", "", "", retorno)
+	push_cuadruplo(genera_cuadruplo)
+
+	cuadruplos[falso].res = contSaltos
+
 
 '''
 	=====================================================================
@@ -305,13 +416,16 @@ def printPilas():
 	print pilaO.getElements()
 	print pTipos.getElements()
 	print POper.getElements()
+	print pSaltos.getElements()
 	print_cuadruplos(cuadruplos)
 
 def print_cuadruplos(currentCuadList):
 	print "Tabla Cuadruplos"
+	index = 0
 	for currentCuad in currentCuadList:
 		if currentCuad:
-			print currentCuad.op, " , ", currentCuad.opdoIzq, " , ", currentCuad.opdoDer," , ",currentCuad.res
+			print index, " " ,currentCuad.op, " , ", currentCuad.opdoIzq, " , ", currentCuad.opdoDer," , ",currentCuad.res
 		else:
 			print "List is empty"
+		index += 1
 	pass

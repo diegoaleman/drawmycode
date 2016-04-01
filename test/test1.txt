@@ -1,16 +1,45 @@
 begin program ejemplo2;
 {
 
-	func bool prueba(x:int)
-	var a,b,c:bool;
+	func int prueba(d:bool,x:int)
+	var c,a,b:int; e:string;
 	{	
-		c = 1 > 2;
+		if (a > b)
+		{
+			if (a < c )
+			{
+				print (a);
+			}
+			else {
+				a = 2;
+			};
+
+			c = a + 2;
+			print (c);
+		}
+		else 
+		{
+			print (b);
+
+			while (1 < 2) 
+			{
+				while (1 > 2) 
+				{
+					print (c);
+				};
+				print (c);
+			};
+		};
+		
+		e = "hola";
 	};
+	endfunc
 
 	main() 
 	var num:int;
 	{
 	};
+	endfunc
 		
 };
 end

@@ -31,6 +31,7 @@ auxMatrixVarsDir = {}
 varsGlobalesDir = {}
 varsLocalesDir = {}
 
+tablaConstantes = {}
 
 nombrePrograma = None
 scope = "Global"
@@ -160,7 +161,7 @@ def p_b(p):
 			|'''
 
 def p_funcion(p):
-	'''funcion : FUNC g ID altaFuncion LPARENTHESIS h RPARENTHESIS funcvars bloque SEMICOLON'''
+	'''funcion : FUNC g ID altaFuncion LPARENTHESIS h RPARENTHESIS funcvars bloque SEMICOLON ENDFUNC'''
 
 def p_funcvars(p):
 	'''funcvars : vars
@@ -223,6 +224,7 @@ def p_h(p):
 		varsLocalesDir[elem] = auxVarsDir[elem]
 		varsLocalesDir[elem]['Scope'] = 'Local'
 		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
+	dirproc[nombreFunc]['NumParams'] = len(auxVarsDir)
 	dirproc[nombreFunc]['Vars'] = varsLocalesDir
 
 def p_param(p):
@@ -246,7 +248,7 @@ def p_j(p):
 			|'''
 
 def p_main(p):
-	'''main : MAIN altaMain LPARENTHESIS RPARENTHESIS k bloque SEMICOLON'''
+	'''main : MAIN altaMain LPARENTHESIS RPARENTHESIS k bloque SEMICOLON ENDFUNC'''
 
 # Funcion para dar de alta el main en el DirProc
 def p_altaMain(p):
@@ -464,6 +466,10 @@ def p_exp_cte_int(p):
 	global contDirIntCte
 	temp_dircte = contDirIntCte
 	temp_tipocte = "int"
+	# Busca constante encontrada en tabla de constantes, si no existe la crea
+	if not p[-1] in tablaConstantes:
+		tablaConstantes[p[-1]] = {"Dir":temp_dircte, "Tipo":temp_tipocte}
+
 	exp_1(temp_dircte,temp_tipocte)	
 	contDirIntCte += 1
 
@@ -473,6 +479,9 @@ def p_exp_cte_float(p):
 	global contDirFloatCte
 	temp_dircte = contDirFloatCte
 	temp_tipocte = "float"
+	# Busca constante encontrada en tabla de constantes, si no existe la crea
+	if not p[-1] in tablaConstantes:
+		tablaConstantes[p[-1]] = {"Dir":temp_dircte, "Tipo":temp_tipocte}
 	exp_1(temp_dircte,temp_tipocte)	
 	contDirFloatCte += 1
 
@@ -485,6 +494,9 @@ def p_exp_cte_bool(p):
 	global contDirBoolCte
 	temp_dircte = contDirBoolCte
 	temp_tipocte = "bool"
+	# Busca constante encontrada en tabla de constantes, si no existe la crea
+	if not p[-1] in tablaConstantes:
+		tablaConstantes[p[-1]] = {"Dir":temp_dircte, "Tipo":temp_tipocte}
 	exp_1(temp_dircte,temp_tipocte)	
 	contDirBoolCte += 1
 
@@ -493,6 +505,9 @@ def p_exp_cte_string(p):
 	global contDirStringCte
 	temp_dircte = contDirStringCte
 	temp_tipocte = "string"
+	# Busca constante encontrada en tabla de constantes, si no existe la crea
+	if not p[-1] in tablaConstantes:
+		tablaConstantes[p[-1]] = {"Dir":temp_dircte, "Tipo":temp_tipocte}
 	exp_1(temp_dircte,temp_tipocte)	
 	contDirStringCte += 1
 
@@ -511,15 +526,37 @@ def p_exp_1(p):
 		sys.exit()
 
 def p_condicion(p):
-	'''condicion : IF LPARENTHESIS expresion RPARENTHESIS bloque s'''
+	'''condicion : IF LPARENTHESIS expresion RPARENTHESIS estatuto_if_1 bloque s estatuto_endif'''
+
+def p_estatuto_if_1(p):
+	'''estatuto_if_1 :'''
+	estatuto_if_1()
 
 def p_s(p):
-	'''s : ELSE bloque
+	'''s : ELSE estatuto_else bloque
 			|'''
+def p_estatuto_else(p):
+	'''estatuto_else :'''
+	estatuto_else()
+
+def p_estatuto_endif(p):
+	'''estatuto_endif :'''
+	estatuto_endif()
 
 def p_ciclo(p):
-	'''ciclo : WHILE LPARENTHESIS expresion RPARENTHESIS bloque'''
+	'''ciclo : WHILE estatuto_while_1 LPARENTHESIS expresion RPARENTHESIS estatuto_while_2 bloque estatuto_while_3'''
 
+def p_estatuto_while_1(p):
+	'''estatuto_while_1 :'''
+	estatuto_while_1()
+
+def p_estatuto_while_2(p):
+	'''estatuto_while_2 :'''
+	estatuto_while_2()
+
+def p_estatuto_while_3(p):
+	'''estatuto_while_3 :'''
+	estatuto_while_3()
 
 def p_escritura(p):
 	'''escritura : PRINT LPARENTHESIS ah RPARENTHESIS'''
@@ -537,7 +574,7 @@ def p_ai(p):
 			|'''
 
 def p_llamadafunc(p):
-	'''llamadafunc : LPARENTHESIS t RPARENTHESIS'''
+	'''llamadafunc : CALL ID LPARENTHESIS t RPARENTHESIS'''
 
 def p_t(p):
 	'''t : u
@@ -639,8 +676,17 @@ if __name__ == '__main__':
 			
 			if (dmcparser.parse(data, tracking=True) == 'Success'):
 				print "Valid"
+				
+				for key, value in dirproc.iteritems():
+					print key, value
+
+				print tablaConstantes
 				printPilas()
-				print dirproc
+				'''
+				for var, dire in dirproc['prueba']['Vars'].iteritems():
+				    if dire['Dir'] == 20002:
+				        print var
+				'''
 
 		except EOFError:
 	   		print(EOFError)

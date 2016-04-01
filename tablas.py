@@ -1,4 +1,3 @@
-dircproc = {}
 
 '''
 	============================================
@@ -55,3 +54,13 @@ def set_dir(tipo):
 		assignedDir = contDirString
 		contDirString += 1
 	return assignedDir
+
+'''
+	=================================================================
+	Regresa variable correspondiente a funcion y direccion de memoria
+	=================================================================
+'''
+def get_var(proc, dire):
+	for var, varelems in dirproc[proc]['Vars'].iteritems():
+		if varelems['Dir'] == dire:
+			return var

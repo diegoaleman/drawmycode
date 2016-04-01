@@ -43,7 +43,9 @@ reserved = {
   'and' : 'AND',
   'or' : 'OR',
   'true' : 'TRUE',
-  'false' : 'FALSE'
+  'false' : 'FALSE',
+  'endfunc' : 'ENDFUNC',
+  'call' : 'CALL'
 }
 
 tokens = ( 'PROGRAM','CTESTRING','COLON', 'SEMICOLON','VAR', 'NOTEQUAL', 'LESSTHAN', 
@@ -53,7 +55,7 @@ tokens = ( 'PROGRAM','CTESTRING','COLON', 'SEMICOLON','VAR', 'NOTEQUAL', 'LESSTH
            'END','BOOL','STRING','FUNC','VOID','MAIN','WHILE','RETURN','RANDOM','LINEWIDTH',
            'LINECOLOR','LINE','SQUARE','CIRCLE','STAR','TRIANGLE','ARC','STARTFILL','STOPFILL',
            'LESSEQUAL','GREATEREQUAL','EQUALEQUAL','LSQUAREBRACKET','RSQUAREBRACKET',
-           'AND','OR','TRUE','FALSE')
+           'AND','OR','TRUE','FALSE', 'ENDFUNC','CALL')
 
 # Regular expression rules for simple tokens
 t_ignore = ' \t'
