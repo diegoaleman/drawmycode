@@ -64,3 +64,13 @@ def get_var(proc, dire):
 	for var, varelems in dirproc[proc]['Vars'].iteritems():
 		if varelems['Dir'] == dire:
 			return var
+
+'''
+	==========================================================================
+	Regresa valor de variable correspondiente a funcion y direccion de memoria
+	==========================================================================
+'''
+def get_varValue(proc, dire):
+	for var, varelems in dirproc[proc]['Vars'].iteritems():
+		if varelems['Dir'] == dire:
+			return var

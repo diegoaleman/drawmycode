@@ -1,0 +1,20 @@
+begin program test0;
+var a:int;
+{
+
+	func int prueba(d:bool,x:int)
+	var b:int; e:string;
+	{	
+		a = 2;
+		b = a + 2;
+	};
+	endfunc
+
+	main() 
+	var num:int;
+	{
+	};
+	endfunc
+		
+};
+end

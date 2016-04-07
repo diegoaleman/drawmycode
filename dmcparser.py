@@ -38,6 +38,7 @@ scope = "Global"
 nombreFunc = None
 tipo = None
 dirActual = None
+dirGlobal = None
 
 
 def p_programa(p):
@@ -52,11 +53,13 @@ def p_altaPrograma(p):
 	'''altaPrograma :'''
 	global nombrePrograma
 	global dirActual
+	global dirGlobal
 	# Da de alta el programa en el DirProc
 	nombre = p[-1]
 
 	nombrePrograma = nombre
 	dirActual = nombrePrograma
+	dirGlobal = nombrePrograma
 	dirproc[nombrePrograma] = {}
 	dirproc[nombrePrograma] = {'Tipo': 'programa', 'Vars': {}}
 	
@@ -72,6 +75,7 @@ def p_a(p):
 		varsGlobalesDir[elem] = auxVarsDir[elem]
 		varsGlobalesDir[elem]['Scope'] = 'Global'
 		varsGlobalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
+		varsGlobalesDir[elem]['Valor'] = None
 	dirproc[nombrePrograma]['Vars'] = varsGlobalesDir
 	# Eliminar las variables que ya se guardaron como globales
 	remove = [k for k in auxVarsDir]
@@ -176,6 +180,7 @@ def p_funcvars(p):
 		varsLocalesDir[elem] = auxVarsDir[elem]
 		varsLocalesDir[elem]['Scope'] = 'Local'
 		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
+		varsLocalesDir[elem]['Valor'] = None
 	dirproc[nombreFunc]['Vars'] = varsLocalesDir
 	# Eliminar las variables que ya se guardaron como locales
 	remove = [k for k in auxVarsDir]
@@ -277,6 +282,7 @@ def p_k(p):
 		varsLocalesDir[elem] = auxVarsDir[elem]
 		varsLocalesDir[elem]['Scope'] = 'Local'
 		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
+		varsLocalesDir[elem]['Valor'] = None
 	dirproc[nombreFunc]['Vars'] = varsLocalesDir
 
 	# Copia solo las variables que son matrices
@@ -311,13 +317,23 @@ def p_asignacion(p):
 
 def p_exp_asign(p):
 	'''exp_asign :'''
+
+	# Busca variable en proc actual
 	try:
 		temp_dirvar = dirproc[dirActual]['Vars'][p[-1]]['Dir']
 		temp_tipovar = dirproc[dirActual]['Vars'][p[-1]]['Tipo']
 		exp_1(temp_dirvar,temp_tipovar)
 	except KeyError as key:
-		print 'Variable %s no esta declarada' % key
-		sys.exit()
+		# Si no lo encuentra, busca variable en proc global
+		try:
+			temp_dirvar = dirproc[dirGlobal]['Vars'][p[-1]]['Dir'];
+			temp_tipovar = dirproc[dirGlobal]['Vars'][p[-1]]['Tipo'];
+			exp_1(temp_dirvar,temp_tipovar)	
+		except KeyError as key:
+			print 'Variable %s no esta declarada' % key
+			sys.exit()
+
+	
 	
 	
 
@@ -517,13 +533,24 @@ def p_r(p):
 
 def p_exp_1(p):
 	'''exp_1 :'''
+	# Busca variable en proc actual
 	try:
 		temp_dirvar = dirproc[dirActual]['Vars'][p[-2]]['Dir']
 		temp_tipovar = dirproc[dirActual]['Vars'][p[-2]]['Tipo']
 		exp_1(temp_dirvar,temp_tipovar)	
 	except KeyError as key:
-		print 'Variable %s no esta declarada' % key
-		sys.exit()
+		# Si no lo encuentra, busca variable en proc global
+		try:
+			temp_dirvar = dirproc[dirGlobal]['Vars'][p[-2]]['Dir'];
+			temp_tipovar = dirproc[dirGlobal]['Vars'][p[-2]]['Tipo'];
+			exp_1(temp_dirvar,temp_tipovar)	
+		except KeyError as key:
+			print 'Variable %s no esta declarada' % key
+			sys.exit()
+
+	
+
+		
 
 def p_condicion(p):
 	'''condicion : IF LPARENTHESIS expresion RPARENTHESIS estatuto_if_1 bloque s estatuto_endif'''
