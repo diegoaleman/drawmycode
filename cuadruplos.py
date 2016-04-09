@@ -1,6 +1,7 @@
 from structs import *
 from cubosemantico import *
 from tablas import *
+from dmcparser import *
 import sys
 
 pilaO = Stack()
@@ -69,21 +70,20 @@ def exp_3(plus_minus):
 
 ''' 
 	============================================
-	4. Si top(POper) == '+' o '-'
+	4. Si top(POper) == '*' o '/'
 	============================================
 '''
 def exp_4():
 	global POper
 	global pTipos
 	global pilaO
-
 	if not POper.isEmpty():
 		if POper.peek() == '*' or POper.peek() == '/':
 			op = POper.pop()
 
 			opdoDer = pilaO.pop()
 			tipoDer = pTipos.pop()
-
+			
 			opdoIzq = pilaO.pop()
 			tipoIzq = pTipos.pop()
 
@@ -105,7 +105,7 @@ def exp_4():
 	5. Si top(POper) == '+' o '-'
 	============================================
 '''
-def exp_5():
+def exp_5(dirGlobal,dirActual):
 	global POper
 	global pTipos
 	global pilaO
@@ -116,7 +116,7 @@ def exp_5():
 
 			opdoDer = pilaO.pop()
 			tipoDer = pTipos.pop()
-
+			
 			opdoIzq = pilaO.pop()
 			tipoIzq = pTipos.pop()
 
@@ -386,6 +386,14 @@ def estatuto_while_3():
 
 	cuadruplos[falso].res = contSaltos
 
+'''
+	=========================================================
+	Regresa numero del cuadruplo en el que inicia la funcion
+	=========================================================
+'''
+def altaInicioFunc():
+	global contSaltos
+	return contSaltos
 
 '''
 	=====================================================================
@@ -413,10 +421,10 @@ def generaResDir(tipoRes):
 	return dirTemp
 
 def printPilas():
-	print pilaO.getElements()
-	print pTipos.getElements()
-	print POper.getElements()
-	print pSaltos.getElements()
+	print "PilaO ", pilaO.getElements()
+	print "pTipos ", pTipos.getElements()
+	print "POper ", POper.getElements()
+	print "pSaltos ", pSaltos.getElements()
 	print_cuadruplos(cuadruplos)
 
 def print_cuadruplos(currentCuadList):

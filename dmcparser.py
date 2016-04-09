@@ -165,8 +165,10 @@ def p_b(p):
 			|'''
 
 def p_funcion(p):
-	'''funcion : FUNC g ID altaFuncion LPARENTHESIS h RPARENTHESIS funcvars bloque SEMICOLON ENDFUNC'''
+	'''funcion : FUNC g ID altaFuncion LPARENTHESIS h RPARENTHESIS funcvars altaInicioFunc bloque SEMICOLON ENDFUNC accionRetorno'''
 
+def p_accionRetorno(p):
+	'''accionRetorno :'''
 def p_funcvars(p):
 	'''funcvars : vars
 			|'''
@@ -174,13 +176,14 @@ def p_funcvars(p):
 	global auxVarsDir
 	global varsLocalesDir
 	global auxMatrixVarsDir
-	
+
 	# Copia solo las variables locales
 	for elem in auxVarsDir:
 		varsLocalesDir[elem] = auxVarsDir[elem]
 		varsLocalesDir[elem]['Scope'] = 'Local'
 		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
 		varsLocalesDir[elem]['Valor'] = None
+	dirproc[nombreFunc]['NumLocales'] = len(auxVarsDir)
 	dirproc[nombreFunc]['Vars'] = varsLocalesDir
 	# Eliminar las variables que ya se guardaron como locales
 	remove = [k for k in auxVarsDir]
@@ -210,6 +213,13 @@ def p_altaFuncion(p):
 	dirproc[nombreFunc] = {}
 	dirproc[nombreFunc] = {'Tipo': p[-2], 'Vars': {}}
 
+def p_altaInicioFunc(p):
+	'''altaInicioFunc :'''
+	global dirActual
+
+	inicio = altaInicioFunc()
+	dirproc[dirActual]['Inicio'] = inicio
+
 def p_g(p):
 	'''g : INT
 			| BOOL
@@ -227,10 +237,12 @@ def p_h(p):
 	# Copia solo las variables locales como parametros
 	for elem in auxVarsDir:
 		varsLocalesDir[elem] = auxVarsDir[elem]
-		varsLocalesDir[elem]['Scope'] = 'Local'
+		varsLocalesDir[elem]['Scope'] = 'Param'
 		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
 	dirproc[nombreFunc]['NumParams'] = len(auxVarsDir)
-	dirproc[nombreFunc]['Vars'] = varsLocalesDir
+	dirproc[nombreFunc]['Params'] = varsLocalesDir
+	varsLocalesDir = {}
+	auxVarsDir = {}
 
 def p_param(p):
 	'''param : ID COLON tipo saveParamVar j'''
@@ -318,20 +330,26 @@ def p_asignacion(p):
 def p_exp_asign(p):
 	'''exp_asign :'''
 
-	# Busca variable en proc actual
+	# Busca variable en variables locales del proc
 	try:
 		temp_dirvar = dirproc[dirActual]['Vars'][p[-1]]['Dir']
 		temp_tipovar = dirproc[dirActual]['Vars'][p[-1]]['Tipo']
 		exp_1(temp_dirvar,temp_tipovar)
 	except KeyError as key:
-		# Si no lo encuentra, busca variable en proc global
+		# Busca variable en parametros  del proc
 		try:
-			temp_dirvar = dirproc[dirGlobal]['Vars'][p[-1]]['Dir'];
-			temp_tipovar = dirproc[dirGlobal]['Vars'][p[-1]]['Tipo'];
-			exp_1(temp_dirvar,temp_tipovar)	
+			temp_dirvar = dirproc[dirActual]['Params'][p[-1]]['Dir']
+			temp_tipovar = dirproc[dirActual]['Params'][p[-1]]['Tipo']
+			exp_1(temp_dirvar,temp_tipovar)
 		except KeyError as key:
-			print 'Variable %s no esta declarada' % key
-			sys.exit()
+			# Si no lo encuentra, busca variable en proc global
+			try:
+				temp_dirvar = dirproc[dirGlobal]['Vars'][p[-1]]['Dir'];
+				temp_tipovar = dirproc[dirGlobal]['Vars'][p[-1]]['Tipo'];
+				exp_1(temp_dirvar,temp_tipovar)	
+			except KeyError as key:
+				print 'Variable %s no esta declarada' % key
+				sys.exit()
 
 	
 	
@@ -402,7 +420,7 @@ def p_exp(p):
 
 def p_exp_5(p):
 	'''exp_5 :'''
-	exp_5()
+	exp_5(dirGlobal,dirActual)
 
 def p_ab(p):
 	'''ab : ab2 exp_3 exp
@@ -533,20 +551,26 @@ def p_r(p):
 
 def p_exp_1(p):
 	'''exp_1 :'''
-	# Busca variable en proc actual
+	# Busca variable en variables local en proc actual
 	try:
 		temp_dirvar = dirproc[dirActual]['Vars'][p[-2]]['Dir']
 		temp_tipovar = dirproc[dirActual]['Vars'][p[-2]]['Tipo']
 		exp_1(temp_dirvar,temp_tipovar)	
 	except KeyError as key:
-		# Si no lo encuentra, busca variable en proc global
+		# Busca variable en parametros del proc actual
 		try:
-			temp_dirvar = dirproc[dirGlobal]['Vars'][p[-2]]['Dir'];
-			temp_tipovar = dirproc[dirGlobal]['Vars'][p[-2]]['Tipo'];
+			temp_dirvar = dirproc[dirActual]['Params'][p[-2]]['Dir']
+			temp_tipovar = dirproc[dirActual]['Params'][p[-2]]['Tipo']
 			exp_1(temp_dirvar,temp_tipovar)	
 		except KeyError as key:
-			print 'Variable %s no esta declarada' % key
-			sys.exit()
+			# Si no lo encuentra, busca variable en proc global
+			try:
+				temp_dirvar = dirproc[dirGlobal]['Vars'][p[-2]]['Dir'];
+				temp_tipovar = dirproc[dirGlobal]['Vars'][p[-2]]['Tipo'];
+				exp_1(temp_dirvar,temp_tipovar)	
+			except KeyError as key:
+				print 'Variable %s no esta declarada' % key
+				sys.exit()
 
 	
 
@@ -601,7 +625,15 @@ def p_ai(p):
 			|'''
 
 def p_llamadafunc(p):
-	'''llamadafunc : CALL ID LPARENTHESIS t RPARENTHESIS'''
+	'''llamadafunc : CALL ID estatuto_llamadafunc_1 LPARENTHESIS t RPARENTHESIS'''
+
+def p_estatuto_llamadafunc_1(p):
+	'''estatuto_llamadafunc_1 :'''
+	funcionKey = p[-1]
+	if not funcionKey in dirproc:
+		print 'Funcion %s no existe' % funcionKey
+		sys.exit()
+
 
 def p_t(p):
 	'''t : u
@@ -682,7 +714,6 @@ def p_startfillfunc(p):
 def p_stopfillfunc(p):
 	'''stopfillfunc : STOPFILL LPARENTHESIS RPARENTHESIS'''
 
-
 def p_error(p):
     print('Syntax error in token %s with value %s in line %s' % (p.type, p.value, p.lineno))
     sys.exit()
@@ -707,6 +738,7 @@ if __name__ == '__main__':
 				for key, value in dirproc.iteritems():
 					print key, value
 
+				print "Tabla de Constantes"
 				print tablaConstantes
 				printPilas()
 				'''

@@ -1,18 +1,20 @@
 begin program test0;
-var a:int;
+	var z:bool; y:int;
 {
 
 	func int prueba(d:bool,x:int)
-	var b:int; e:string;
+	var a,b:int; e:string;
 	{	
-		a = 2;
-		b = a + 2;
+		x = 2;
+		b = a + 2 * b;
 	};
 	endfunc
+
 
 	main() 
 	var num:int;
 	{
+		call prueba(z,y);
 	};
 	endfunc
 		

@@ -248,4 +248,3 @@ cuboSemantico = {
         }, 
     }, 
 }
-test = cuboSemantico['int']['float']['+']
