@@ -1,60 +1,174 @@
+'''
+	============================================
+	Direcciones para variables globales 
+	============================================
+'''
+memGlobalInt = 1
+memGlobalIntInicio = 1
+memGlobalFloat = 1000
+memGlobalFloatInicio = 1000
+memGlobalBool = 2000
+memGlobalBoolInicio = 2000
+memGlobalString = 3000
+memGlobalStringInicio = 3000
 
 '''
 	============================================
-	Direcciones para variables globales y locales
+	Direcciones para variables locales y params
 	============================================
 '''
-contDirInt = 1
-contDirFloat = 10000
-contDirBool = 20000
-contDirString = 30000
+memLocalInt = 4000
+memLocalIntInicio = 4000
+memLocalFloat = 5000
+memLocalFloatInicio = 5000
+memLocalBool = 6000
+memLocalBoolInicio = 6000
+memLocalString = 7000
+memLocalStringInicio = 7000
 
 '''
 	============================================
 	Direcciones para variables temporales
 	============================================
 '''
-contDirIntTemp = 1000
-contDirFloatTemp = 11000
-contDirBoolTemp = 21000
-contDirStringTemp = 31000
+memIntTemp = 8000
+memIntTempInicio = 8000
+memFloatTemp = 9000
+memFloatTempInicio = 9000
+memBoolTemp = 10000
+memBoolTempInicio = 10000
+memStringTemp = 11000
+memStringTempInicio = 11000
 
 '''
 	============================================
 	Direcciones para constantes
 	============================================
 '''
-contDirIntCte = 2000
-contDirFloatCte = 12000
-contDirBoolCte = 22000
-contDirStringCte = 32000
+memIntCte = 12000
+memIntCteInicio = 12000
+memFloatCte = 13000
+memFloatCteInicio = 13000
+memBoolCte = 14000
+memBoolCteInicio = 14000
+memStringCte = 15000
+memStringCteInicio = 15000
+
 
 '''
-	=====================================================
-	Asigna direccion a una variable de acuerdo a su tipo
-	=====================================================
+	=======================================================================
+	Reinicar contadores de direcciones de memoria de variables y constantes
+	========================================================================
 '''
-def set_dir(tipo):
-	global contDirInt
-	global contDirFloat
-	global contDirBool
-	global contDirString
+def resetMemoriaLocal():
+	global memLocalInt
+	global memLocalFloat
+	global memLocalBool
+	global memLocalString
+	global memIntTemp
+	global memFloatTemp
+	global memBoolTemp
+	global memStringTemp
+	memLocalInt = memLocalIntInicio
+	memLocalFloat = memLocalFloatInicio
+	memLocalBool = memLocalBoolInicio
+	memLocalString = memLocalStringInicio 
+	memIntTemp = memIntTempInicio
+	memFloatTemp = memFloatTempInicio
+	memBoolTemp = memBoolTempInicio
+	memStringTemp = memStringTempInicio
+
+
+'''
+	========================================================================
+	Asigna direccion de memoria a una variable global de acuerdo a su tipo
+	========================================================================
+'''
+
+def set_dir_global(tipo):
+	global memGlobalInt
+	global memGlobalFloat
+	global memGlobalBool
+	global memGlobalString
 
 	assignedDir = None
 	if tipo == 'int':
-		assignedDir = contDirInt
-		contDirInt += 1
+		assignedDir = memGlobalInt
+		memGlobalInt += 1
 	elif tipo == 'float':
-		assignedDir = contDirFloat
-		contDirFloat += 1
+		assignedDir = memGlobalFloat
+		memGlobalFloat += 1
 	elif tipo == 'bool':
-		assignedDir = contDirBool
-		contDirBool += 1
+		assignedDir = memGlobalBool
+		memGlobalBool += 1
 	elif tipo == 'string':
-		assignedDir = contDirString
-		contDirString += 1
+		assignedDir = memGlobalString
+		memGlobalString += 1
 	return assignedDir
 
+
+'''
+	========================================================================
+	Asigna direccion de memoria a una variable local de acuerdo a su tipo
+	========================================================================
+'''
+def set_dir_local(tipo):
+	global memLocalInt
+	global memLocalFloat
+	global memLocalBool
+	global memLocalString
+
+	assignedDir = None
+	if tipo == 'int':
+		assignedDir = memLocalInt
+		memLocalInt += 1
+	elif tipo == 'float':
+		assignedDir = memLocalFloat
+		memLocalFloat += 1
+	elif tipo == 'bool':
+		assignedDir = memLocalBool
+		memLocalBool += 1
+	elif tipo == 'string':
+		assignedDir = memLocalString
+		memLocalString += 1
+	return assignedDir
+
+'''
+	=====================================================================
+	Genera direccion para el temporal de una operacion para un cuadruplo
+	======================================================================
+'''
+def set_dir_temp(tipoTemp):
+	global memIntTemp
+	global memFloatTemp
+	global memBoolTemp
+	global memStringTemp
+
+	if tipoTemp == "int":
+		memIntTemp += 1
+		dirTemp  = memIntTemp
+	elif tipoTemp == "float":
+		memFloatTemp +=1
+		dirTemp = memFloatTemp
+	elif tipoTemp == "bool":
+		memBoolTemp +=1
+		dirTemp = memBoolTemp
+	elif tipoTemp == "String":
+		memStringTemp +=1
+		dirTemp = memStringTemp
+	return dirTemp
+
+def get_Total_Temp_Int():
+	return memIntTemp - memIntTempInicio
+
+def get_Total_Temp_Float():
+	return memFloatTemp - memFloatTempInicio
+
+def get_Total_Temp_Bool():
+	return memBoolTemp - memBoolTempInicio
+
+def get_Total_Temp_String():
+	return memStringTemp - memStringTempInicio
 '''
 	=================================================================
 	Regresa variable correspondiente a funcion y direccion de memoria

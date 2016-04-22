@@ -25,6 +25,7 @@ from dmclex import tokens
 dirproc = {}
 varsList = []
 matrixList = []
+paramsList = []
 auxvars = {}
 auxVarsDir = {}
 auxMatrixVarsDir = {}
@@ -37,14 +38,29 @@ nombrePrograma = None
 scope = "Global"
 nombreFunc = None
 tipo = None
-dirActual = None
-dirGlobal = None
+funcActual = None
+funcGlobal = None
+funcLlamada = None
 
+contTamFuncInt = 0
+contTamFuncFloat = 0
+contTamFuncBool = 0
+contTamFuncString = 0
+
+totalInts = 0
+totalFloats = 0
+totalBools = 0
+totalStrings = 0
+
+paramCounter = 0
 
 def p_programa(p):
-	'''programa : BEGIN PROGRAM createDirProc ID altaPrograma SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END'''
+	'''programa : BEGIN PROGRAM goto_main_quad createDirProc ID altaPrograma SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END'''
 	p[0] = "Success"
 
+def p_goto_main_quad(p):
+	'''goto_main_quad :'''
+	goto_main_quad()
 def p_createDirProc(p):
 	'''createDirProc :'''
 	dirproc = {}
@@ -52,14 +68,16 @@ def p_createDirProc(p):
 def p_altaPrograma(p):
 	'''altaPrograma :'''
 	global nombrePrograma
-	global dirActual
-	global dirGlobal
+	global funcActual
+	global funcGlobal
+	global scope
+
 	# Da de alta el programa en el DirProc
 	nombre = p[-1]
-
+	scope = "Global"
 	nombrePrograma = nombre
-	dirActual = nombrePrograma
-	dirGlobal = nombrePrograma
+	funcActual = nombrePrograma
+	funcGlobal = nombrePrograma
 	dirproc[nombrePrograma] = {}
 	dirproc[nombrePrograma] = {'Tipo': 'programa', 'Vars': {}}
 	
@@ -106,11 +124,28 @@ def p_f(p):
 			| matrix'''	
 	global varsList
 	global auxVarsDir
-	
+	global scope 
+	global totalStrings
+	global totalInts
+	global totalFloats
+	global totalBools
+
 	while (len(varsList) > 0):
-		# Le asigna una direccion a la variable
-		assignedDir = set_dir(tipo)
-		# Guarda el tipo y direccionde la variable en el diccionario auxiliar de variables
+		# Le asigna una direccion a la variable de acuerdo a scope
+		if scope == "Global":
+			assignedDir = set_dir_global(tipo)
+		elif scope == "Local":
+			assignedDir = set_dir_local(tipo)
+		
+		if tipo == 'int':
+			totalInts += 1
+		elif tipo == 'float':
+			totalFloats += 1
+		elif tipo == 'string':
+			totalStrings += 1
+		elif tipo == 'bool':
+			totalBools += 1
+		# Guarda el tipo y direccion de la variable en el diccionario auxiliar de variables
 		auxVarsDir[varsList.pop()] = {'Tipo' : tipo, 'Dir' : assignedDir}
 
 def p_saveTipo(p):
@@ -144,7 +179,10 @@ def p_matrix(p):
 	
 	while (len(matrixList) > 0):
 		# Le asigna una direccion a la variable 
-		assignedDir = set_dir('int')
+		if scope == "Global":
+			assignedDir = set_dir_global('int')
+		elif scope == "Local":
+			assignedDir = set_dir_local('int')
 		# Guarda el tipo y direccion de la variable en el diccionario auxiliar de variables
 		auxMatrixVarsDir[matrixList.pop()] = {'Tipo' : 'int', 'Dir' : assignedDir}
 
@@ -169,6 +207,21 @@ def p_funcion(p):
 
 def p_accionRetorno(p):
 	'''accionRetorno :'''
+	global totalStrings
+	global totalInts
+	global totalFloats
+	global totalBools
+	totalTemps = generaAccionRetorno()
+	totalInts += totalTemps['totalTempInts']
+	totalFloats += totalTemps['totalTempFloats']
+	totalStrings += totalTemps['totalTempStrings']
+	totalBools += totalTemps['totalTempBools']
+
+	dirproc[funcActual]['Tamano'] = {'ints' : totalInts, 'floats' : totalFloats, 'bools' : totalBools, 'strings' : totalStrings}
+
+	resetMemoriaLocal()
+
+
 def p_funcvars(p):
 	'''funcvars : vars
 			|'''
@@ -176,6 +229,10 @@ def p_funcvars(p):
 	global auxVarsDir
 	global varsLocalesDir
 	global auxMatrixVarsDir
+	global contTamFuncInt
+	global contTamFuncFloat
+	global contTamFuncBool
+	global contTamFuncString
 
 	# Copia solo las variables locales
 	for elem in auxVarsDir:
@@ -205,20 +262,42 @@ def p_altaFuncion(p):
 	'''altaFuncion :'''
 	global nombreFunc
 	global varsLocalesDir
-	global dirActual
+	global funcActual
+	global scope 
+	global totalInts
+	global totalFloats
+	global totalStrings
+	global totalBools
+
+	resetMemoriaLocal()
+	totalFloats = 0
+	totalStrings = 0
+	totalInts = 0
+	totalBools = 0
 	# Reinicializa diccionario de variables locales
+	scope = "Local"
 	varsLocalesDir = {}
 	nombreFunc = p[-1]
-	dirActual = nombreFunc
-	dirproc[nombreFunc] = {}
-	dirproc[nombreFunc] = {'Tipo': p[-2], 'Vars': {}}
+	if nombreFunc != "MAIN":
+		if not nombreFunc in dirproc:
+			funcActual = nombreFunc
+			dirproc[nombreFunc] = {}
+			dirproc[nombreFunc] = {'Tipo': p[-2], 'Vars': {}}
+		else:
+			print 'Ya existe una funcion con el nombre "%s"' % nombreFunc
+			sys.exit()
+	else:
+		sys.exit('La funcion no puede llamarse main')
+
+
+	
 
 def p_altaInicioFunc(p):
 	'''altaInicioFunc :'''
-	global dirActual
+	global funcActual
 
 	inicio = altaInicioFunc()
-	dirproc[dirActual]['Inicio'] = inicio
+	dirproc[funcActual]['Inicio'] = inicio
 
 def p_g(p):
 	'''g : INT
@@ -233,16 +312,13 @@ def p_h(p):
 	global varsList
 	global auxVarsDir
 	global varsLocalesDir
-	
+	global paramsList
 	# Copia solo las variables locales como parametros
-	for elem in auxVarsDir:
-		varsLocalesDir[elem] = auxVarsDir[elem]
-		varsLocalesDir[elem]['Scope'] = 'Param'
-		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
 	dirproc[nombreFunc]['NumParams'] = len(auxVarsDir)
-	dirproc[nombreFunc]['Params'] = varsLocalesDir
+	dirproc[nombreFunc]['OrderedParams'] = paramsList
 	varsLocalesDir = {}
 	auxVarsDir = {}
+	paramsList = []
 
 def p_param(p):
 	'''param : ID COLON tipo saveParamVar j'''
@@ -251,14 +327,31 @@ def p_saveParamVar(p):
 	'''saveParamVar :'''
 	global varsList
 	global auxVarsDir
+	global totalStrings
+	global totalInts
+	global totalFloats
+	global totalBools
+	global paramsList
+	
 	# Obtiene el nombre de la variable de parametro 
 	paramID = p[-3]
+	paramsList.append(paramID)
 	# Obtiene el tipo de la variable de parametro 
 	tipo = p[-1]
 	# Le asigna una direccion a la variable
-	assignedDir = set_dir(tipo)
+	if tipo == 'int':
+		totalInts += 1
+	elif tipo == 'float':
+		totalFloats += 1
+	elif tipo == 'string':
+		totalStrings += 1
+	elif tipo == 'bool':
+		totalBools += 1
+
+	assignedDir = set_dir_local(tipo)
 	# Guarda en un diccionario el nombre, tipo y direccion.
-	auxVarsDir[paramID] = {'Tipo' : tipo, 'Dir' : assignedDir}
+	auxVarsDir[paramID] = {'Tipo' : tipo, 'Dir' : assignedDir, 'Scope' : 'Local'}
+	dirproc[nombreFunc]['Params'] = auxVarsDir
 
 def p_j(p):
 	'''j : COMMA param
@@ -266,18 +359,42 @@ def p_j(p):
 
 def p_main(p):
 	'''main : MAIN altaMain LPARENTHESIS RPARENTHESIS k bloque SEMICOLON ENDFUNC'''
+	global totalStrings
+	global totalInts
+	global totalFloats
+	global totalBools
+
+	totalTemps = generaAccionRetorno()
+	totalInts += totalTemps['totalTempInts']
+	totalFloats += totalTemps['totalTempFloats']
+	totalStrings += totalTemps['totalTempStrings']
+	totalBools += totalTemps['totalTempBools']
+	dirproc[funcActual]['Tamano'] = {'ints' : totalInts, 'floats' : totalFloats, 'bools' : totalBools, 'strings' : totalStrings}
+	generaAccionEndMain()
 
 # Funcion para dar de alta el main en el DirProc
 def p_altaMain(p):
 	'''altaMain :'''
 	global nombreFunc
 	global varsLocalesDir
-	global dirActual
+	global funcActual
+	global scope 
+	global totalInts
+	global totalFloats
+	global totalStrings
+	global totalBools
 
+	
 	# Reinicializa diccionario de variables locales
+	totalFloats = 0
+	totalStrings = 0
+	totalInts = 0
+	totalBools = 0
+	resetMemoriaLocal()
 	varsLocalesDir = {}
+	scope = "Local"
 	nombreFunc = 'main'
-	dirActual = nombreFunc
+	funcActual = nombreFunc
 	dirproc[nombreFunc] = {}
 	dirproc[nombreFunc] = {'Tipo': 'void', 'Vars': {}}
 
@@ -332,20 +449,20 @@ def p_exp_asign(p):
 
 	# Busca variable en variables locales del proc
 	try:
-		temp_dirvar = dirproc[dirActual]['Vars'][p[-1]]['Dir']
-		temp_tipovar = dirproc[dirActual]['Vars'][p[-1]]['Tipo']
+		temp_dirvar = dirproc[funcActual]['Vars'][p[-1]]['Dir']
+		temp_tipovar = dirproc[funcActual]['Vars'][p[-1]]['Tipo']
 		exp_1(temp_dirvar,temp_tipovar)
 	except KeyError as key:
 		# Busca variable en parametros  del proc
 		try:
-			temp_dirvar = dirproc[dirActual]['Params'][p[-1]]['Dir']
-			temp_tipovar = dirproc[dirActual]['Params'][p[-1]]['Tipo']
+			temp_dirvar = dirproc[funcActual]['Params'][p[-1]]['Dir']
+			temp_tipovar = dirproc[funcActual]['Params'][p[-1]]['Tipo']
 			exp_1(temp_dirvar,temp_tipovar)
 		except KeyError as key:
 			# Si no lo encuentra, busca variable en proc global
 			try:
-				temp_dirvar = dirproc[dirGlobal]['Vars'][p[-1]]['Dir'];
-				temp_tipovar = dirproc[dirGlobal]['Vars'][p[-1]]['Tipo'];
+				temp_dirvar = dirproc[funcGlobal]['Vars'][p[-1]]['Dir'];
+				temp_tipovar = dirproc[funcGlobal]['Vars'][p[-1]]['Tipo'];
 				exp_1(temp_dirvar,temp_tipovar)	
 			except KeyError as key:
 				print 'Variable %s no esta declarada' % key
@@ -420,7 +537,7 @@ def p_exp(p):
 
 def p_exp_5(p):
 	'''exp_5 :'''
-	exp_5(dirGlobal,dirActual)
+	exp_5()
 
 def p_ab(p):
 	'''ab : ab2 exp_3 exp
@@ -444,6 +561,7 @@ def p_exp_4(p):
 	# Si top(pOper) es * o /
 	'''exp_4 :'''
 	exp_4()
+
 
 def p_ac(p):
 	'''ac : ac2 exp_2 termino
@@ -497,53 +615,67 @@ def p_varcte(p):
 
 def p_exp_cte_int(p):
 	'''exp_cte_int :'''
-	global contDirIntCte
-	temp_dircte = contDirIntCte
+	global memIntCte
 	temp_tipocte = "int"
+	
 	# Busca constante encontrada en tabla de constantes, si no existe la crea
 	if not p[-1] in tablaConstantes:
-		tablaConstantes[p[-1]] = {"Dir":temp_dircte, "Tipo":temp_tipocte}
-
-	exp_1(temp_dircte,temp_tipocte)	
-	contDirIntCte += 1
+		tablaConstantes[p[-1]] = {"Dir":memIntCte, "Tipo":temp_tipocte}
+		exp_1(memIntCte,temp_tipocte)	
+		memIntCte += 1
+	else:
+		exp_1(tablaConstantes[p[-1]]["Dir"],temp_tipocte)	
+	
+	
+	
 
 def p_exp_cte_float(p):
 	'''exp_cte_float :'''
 	'''exp_cte_int :'''
-	global contDirFloatCte
-	temp_dircte = contDirFloatCte
+	global memFloatCte
 	temp_tipocte = "float"
 	# Busca constante encontrada en tabla de constantes, si no existe la crea
 	if not p[-1] in tablaConstantes:
-		tablaConstantes[p[-1]] = {"Dir":temp_dircte, "Tipo":temp_tipocte}
-	exp_1(temp_dircte,temp_tipocte)	
-	contDirFloatCte += 1
+		tablaConstantes[p[-1]] = {"Dir":memFloatCte, "Tipo":temp_tipocte}
+		exp_1(memFloatCte,temp_tipocte)	
+		memFloatCte += 1
+	else:
+		exp_1(tablaConstantes[p[-1]]["Dir"],temp_tipocte)
+	
+	
 
 def p_ctebool(p):
 	'''ctebool : TRUE
 			| FALSE'''
+	p[0] = p[1]
 
 def p_exp_cte_bool(p):
 	'''exp_cte_bool :'''
-	global contDirBoolCte
-	temp_dircte = contDirBoolCte
+	global memBoolCte
 	temp_tipocte = "bool"
 	# Busca constante encontrada en tabla de constantes, si no existe la crea
 	if not p[-1] in tablaConstantes:
-		tablaConstantes[p[-1]] = {"Dir":temp_dircte, "Tipo":temp_tipocte}
-	exp_1(temp_dircte,temp_tipocte)	
-	contDirBoolCte += 1
+		tablaConstantes[p[-1]] = {"Dir":memBoolCte, "Tipo":temp_tipocte}
+		exp_1(memBoolCte,temp_tipocte)
+		memBoolCte += 1
+	else:
+		exp_1(tablaConstantes[p[-1]]["Dir"],temp_tipocte)
+	
+	
 
 def p_exp_cte_string(p):
 	'''exp_cte_string :'''
-	global contDirStringCte
-	temp_dircte = contDirStringCte
+	global memStringCte
 	temp_tipocte = "string"
 	# Busca constante encontrada en tabla de constantes, si no existe la crea
 	if not p[-1] in tablaConstantes:
-		tablaConstantes[p[-1]] = {"Dir":temp_dircte, "Tipo":temp_tipocte}
-	exp_1(temp_dircte,temp_tipocte)	
-	contDirStringCte += 1
+		tablaConstantes[p[-1]] = {"Dir":memStringCte, "Tipo":temp_tipocte}
+		exp_1(memStringCte,temp_tipocte)	
+		memStringCte += 1
+	else:
+		exp_1(tablaConstantes[p[-1]]["Dir"],temp_tipocte)
+	
+	
 
 def p_r(p):
 	'''r : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
@@ -553,20 +685,20 @@ def p_exp_1(p):
 	'''exp_1 :'''
 	# Busca variable en variables local en proc actual
 	try:
-		temp_dirvar = dirproc[dirActual]['Vars'][p[-2]]['Dir']
-		temp_tipovar = dirproc[dirActual]['Vars'][p[-2]]['Tipo']
+		temp_dirvar = dirproc[funcActual]['Vars'][p[-2]]['Dir']
+		temp_tipovar = dirproc[funcActual]['Vars'][p[-2]]['Tipo']
 		exp_1(temp_dirvar,temp_tipovar)	
 	except KeyError as key:
 		# Busca variable en parametros del proc actual
 		try:
-			temp_dirvar = dirproc[dirActual]['Params'][p[-2]]['Dir']
-			temp_tipovar = dirproc[dirActual]['Params'][p[-2]]['Tipo']
+			temp_dirvar = dirproc[funcActual]['Params'][p[-2]]['Dir']
+			temp_tipovar = dirproc[funcActual]['Params'][p[-2]]['Tipo']
 			exp_1(temp_dirvar,temp_tipovar)	
 		except KeyError as key:
 			# Si no lo encuentra, busca variable en proc global
 			try:
-				temp_dirvar = dirproc[dirGlobal]['Vars'][p[-2]]['Dir'];
-				temp_tipovar = dirproc[dirGlobal]['Vars'][p[-2]]['Tipo'];
+				temp_dirvar = dirproc[funcGlobal]['Vars'][p[-2]]['Dir'];
+				temp_tipovar = dirproc[funcGlobal]['Vars'][p[-2]]['Tipo'];
 				exp_1(temp_dirvar,temp_tipovar)	
 			except KeyError as key:
 				print 'Variable %s no esta declarada' % key
@@ -625,26 +757,69 @@ def p_ai(p):
 			|'''
 
 def p_llamadafunc(p):
-	'''llamadafunc : CALL ID estatuto_llamadafunc_1 LPARENTHESIS t RPARENTHESIS'''
+	'''llamadafunc : CALL ID estatuto_llamadafunc_1 LPARENTHESIS estatuto_llamadafunc_2 t estatuto_llamadafunc_5 RPARENTHESIS estatuto_llamadafunc_6'''
 
 def p_estatuto_llamadafunc_1(p):
 	'''estatuto_llamadafunc_1 :'''
-	funcionKey = p[-1]
-	if not funcionKey in dirproc:
-		print 'Funcion %s no existe' % funcionKey
+	global funcLlamada
+	funcLlamada = p[-1]
+	if not funcLlamada in dirproc:
+		print 'Funcion %s no existe' % funcLlamada
 		sys.exit()
 
+def p_estatuto_llamadafunc_2(p):
+	'''estatuto_llamadafunc_2 :'''
+	global paramCounter
+
+	# Genera accion ERA , manda funcion a la que llama
+	tamMemoriaLocalLlamadaFunc = dirproc[funcLlamada]['NumLocales'] + dirproc[funcLlamada]['NumParams']
+	estatuto_llamadafunc_2(funcLlamada, tamMemoriaLocalLlamadaFunc)
+	paramCounter = 0
 
 def p_t(p):
 	'''t : u
 			|'''
 
 def p_u(p):
-	'''u : exp
-			| exp COMMA u'''
+	'''u : exp estatuto_llamadafunc_3
+			| exp estatuto_llamadafunc_3 COMMA estatuto_llamadafunc_4 u'''
+
+def p_estatuto_llamadafunc_3(p):
+	'''estatuto_llamadafunc_3 :'''
+	global paramCounter
+	try:
+		paramActual = dirproc[funcLlamada]['OrderedParams'][paramCounter]
+		dirParamActual = dirproc[funcLlamada]['Params'][paramActual]['Dir']
+		tipoParamActual = dirproc[funcLlamada]['Params'][paramActual]['Tipo']
+		# manda param actual y su tipo
+		estatuto_llamadafunc_3(dirParamActual, tipoParamActual)
+	except IndexError:
+		sys.exit("Numero de parametros es mayor que el numero de argumentos")
+	
+	
+def p_estatuto_llamadafunc_4(p):
+	'''estatuto_llamadafunc_4 :'''
+	global paramCounter
+	paramCounter += 1
+
+def p_estatuto_llamadafunc_5(p):
+	'''estatuto_llamadafunc_5 :'''
+	global paramCounter
+	if not paramCounter == dirproc[funcLlamada]['NumParams'] - 1:
+		sys.exit("Numero de parametros no coincide con el numero de argumentos")
+		
+def p_estatuto_llamadafunc_6(p):
+	'''estatuto_llamadafunc_6 :'''
+	dirInicioFuncLlamada = dirproc[funcLlamada]['Inicio']
+	estatuto_llamadafunc_6(funcLlamada, dirInicioFuncLlamada)
+
+
 
 def p_return(p):
 	'''return : RETURN exp'''
+	global funcActual
+	tipoFuncActual = dirproc[funcActual]['Tipo']
+	estatuto_return(funcActual, tipoFuncActual)
 
 def p_specialfunc(p):
 	'''specialfunc : opfunc
@@ -737,6 +912,7 @@ if __name__ == '__main__':
 				
 				for key, value in dirproc.iteritems():
 					print key, value
+					print "\n"
 
 				print "Tabla de Constantes"
 				print tablaConstantes

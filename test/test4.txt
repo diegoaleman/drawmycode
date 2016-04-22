@@ -1,0 +1,37 @@
+begin program test4;
+	var i,j:int;
+{
+
+	func void uno(a:int)
+	var i:int;
+	{	
+		i = a * 2;
+		if (i < a)
+		{
+			call uno(a+1);
+		};
+
+		print(i);
+	};
+	endfunc
+
+	func int dos(b:int)
+	{	
+		b = b * i + j;
+		return (b*2);
+
+	};
+	endfunc
+
+	main() 
+	{
+		i = 2;
+		j = i*2-1;
+		call uno(j);
+		i = call dos(i);
+		i = call dos(i);
+	};
+	endfunc
+		
+};
+end

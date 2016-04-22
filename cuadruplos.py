@@ -8,6 +8,7 @@ pilaO = Stack()
 POper = Stack()
 pTipos = Stack()
 pSaltos = Stack()
+pEjecucion = Stack()
 
 # Inicia con el index 0
 cuadruplos = []
@@ -35,15 +36,18 @@ def push_cuadruplo(cuadruplo):
 	cuadruplos.append(cuadruplo)
 	contSaltos+=1
 
+def goto_main_quad():
+	genera_cuadruplo = Cuadruplo("GOTO","","","")
+	push_cuadruplo(genera_cuadruplo)
+
 ''' 
 	============================================
-	1. Meter direccion y tipo del ID en PilaO
+	1. Meter direccion y tipo del ID en pilaO
 	============================================
 ''' 
 def exp_1(dirvar,tipo):
 	global pilaO
 	global pTipos
-
 	pilaO.push(dirvar)
 	pTipos.push(tipo)
 
@@ -77,6 +81,7 @@ def exp_4():
 	global POper
 	global pTipos
 	global pilaO
+
 	if not POper.isEmpty():
 		if POper.peek() == '*' or POper.peek() == '/':
 			op = POper.pop()
@@ -90,8 +95,7 @@ def exp_4():
 			tipoRes = cuboSemantico[tipoIzq][tipoDer][op];
 
 			if tipoRes != "Error":
-				temp = generaResDir(tipoRes)			
-				
+				temp = set_dir_temp(tipoRes)			
 				genera_cuadruplo = Cuadruplo(op,opdoIzq,opdoDer,temp)
 				push_cuadruplo(genera_cuadruplo)
 
@@ -105,7 +109,7 @@ def exp_4():
 	5. Si top(POper) == '+' o '-'
 	============================================
 '''
-def exp_5(dirGlobal,dirActual):
+def exp_5():
 	global POper
 	global pTipos
 	global pilaO
@@ -123,8 +127,7 @@ def exp_5(dirGlobal,dirActual):
 			tipoRes = cuboSemantico[tipoIzq][tipoDer][op];
 
 			if tipoRes != "Error":
-				temp = generaResDir(tipoRes)			
-				
+				temp = set_dir_temp(tipoRes)			
 				genera_cuadruplo = Cuadruplo(op,opdoIzq,opdoDer,temp)
 				push_cuadruplo(genera_cuadruplo)
 
@@ -185,7 +188,7 @@ def exp_9():
 			tipoRes = cuboSemantico[tipoIzq][tipoDer][op];
 
 			if tipoRes != "Error":
-				temp = generaResDir(tipoRes)
+				temp = set_dir_temp(tipoRes)
 				genera_cuadruplo = Cuadruplo(op,opdoIzq,opdoDer,temp)
 				push_cuadruplo(genera_cuadruplo)
 				pTipos.push(tipoRes)
@@ -227,7 +230,7 @@ def exp_11():
 			tipoRes = cuboSemantico[tipoIzq][tipoDer][op];
 
 			if tipoRes != "Error":
-				temp = generaResDir(tipoRes)
+				temp = set_dir_temp(tipoRes)
 				genera_cuadruplo = Cuadruplo(op,opdoIzq,opdoDer,temp)
 				push_cuadruplo(genera_cuadruplo)
 				pTipos.push(tipoRes)
@@ -286,7 +289,7 @@ def estatuto_print():
 
 	res = pilaO.pop()
 	pTipos.pop()
-	genera_cuadruplo = Cuadruplo("print", "", "", res)
+	genera_cuadruplo = Cuadruplo("PRINT", "", "", res)
 	push_cuadruplo(genera_cuadruplo)
 
 '''
@@ -337,7 +340,6 @@ def estatuto_endif():
 	global pTipos
 	global cuadruplos
 	global pSaltos
-
 	fin = pSaltos.pop()
 	cuadruplos[fin].res = contSaltos
 
@@ -395,35 +397,80 @@ def altaInicioFunc():
 	global contSaltos
 	return contSaltos
 
-'''
-	=====================================================================
-	Genera direccion para la respuesta de una operacion para un cuadruplo
-	======================================================================
-'''
-def generaResDir(tipoRes):
-	global contDirIntTemp
-	global contDirFloatTemp
-	global contDirBoolTemp
-	global contDirStringTemp
+def generaAccionRetorno():
+	totalTempInts = get_Total_Temp_Int()
+	totalTempFloats = get_Total_Temp_Float()
+	totalTempBools = get_Total_Temp_Bool()
+	totalTempStrings = get_Total_Temp_String()
+	genera_cuadruplo = Cuadruplo("RET", "", "", "")
+	push_cuadruplo(genera_cuadruplo)
+	return {'totalTempInts' : totalTempInts,'totalTempFloats':totalTempFloats,'totalTempBools':totalTempBools,'totalTempStrings':totalTempStrings}
 
-	if tipoRes == "int":
-		dirTemp  = contDirIntTemp
-		contDirIntTemp +=1
-	elif tipoRes == "float":
-		dirTemp = contDirFloatTemp
-		contDirFloatTemp +=1
-	elif tipoRes == "bool":
-		dirTemp = contDirBoolTemp
-		contDirBoolTemp +=1
-	elif tipoRes == "String":
-		dirTemp = contDirStringTemp
-		contDirStringTemp +=1
-	return dirTemp
+def generaAccionEndMain():
+	genera_cuadruplo = Cuadruplo("END", "", "", "")
+	push_cuadruplo(genera_cuadruplo)
+
+
+'''
+	=========================================================
+	Estatuto Llamada Funcion 2
+	=========================================================
+'''
+def estatuto_llamadafunc_2(funcLlamada, tamMemoriaLocalLlamadaFunc):
+	genera_cuadruplo = Cuadruplo("ERA",tamMemoriaLocalLlamadaFunc,funcLlamada,"")
+	push_cuadruplo(genera_cuadruplo)
+
+'''
+	=========================================================
+	Estatuto Llamada Funcion 3
+	=========================================================
+'''
+def estatuto_llamadafunc_3(dirParamActual, tipoParamActual):
+	global pilaO
+	argumento = pilaO.pop()
+	tipoArgumento = pTipos.pop()
+
+	if (tipoArgumento == tipoParamActual):
+		genera_cuadruplo = Cuadruplo("PARAM",argumento,"",dirParamActual)
+		push_cuadruplo(genera_cuadruplo)
+	else:
+		sys.exit('Error. Tipo de argumento "%s"y parametro no coinciden.' % argumento)
+
+def estatuto_llamadafunc_6(funcLlamada,dirInicioFuncLlamada):
+	global contSaltos
+	global pEjecucion
+
+	pEjecucion.push(contSaltos)
+	genera_cuadruplo = Cuadruplo("GOSUB",funcLlamada,"",dirInicioFuncLlamada)
+	push_cuadruplo(genera_cuadruplo)
+
+'''
+	============================================
+	Estatuto RETURN
+	============================================
+'''
+def estatuto_return(funcActual, tipoFuncActual):
+	global pilaO
+	global pTipos
+
+	print pilaO.peek()
+	tipoVarRetorno = pTipos.pop()
+	tipoFunc = tipoFuncActual
+
+	if (tipoFuncActual != 'void') and (tipoVarRetorno==tipoFunc):
+		varRetorno = pilaO.pop()
+		genera_cuadruplo = Cuadruplo("RETURN",funcActual,"",varRetorno)
+		push_cuadruplo(genera_cuadruplo)
+		pilaO.push(varRetorno)
+		pTipos.push(tipoVarRetorno)
+	elif (tipoFuncActual=='void') or (tipoVarRetorno!=tipoFunc):
+		sys.exit("Error. Tipo de variable retorno no coincide con tipo de la funcion.")
+
 
 def printPilas():
-	print "PilaO ", pilaO.getElements()
+	print "pilaO ", pilaO.getElements()
 	print "pTipos ", pTipos.getElements()
-	print "POper ", POper.getElements()
+	print "pOper ", POper.getElements()
 	print "pSaltos ", pSaltos.getElements()
 	print_cuadruplos(cuadruplos)
 
