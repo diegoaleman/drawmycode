@@ -211,7 +211,7 @@ def p_accionRetorno(p):
 	global totalInts
 	global totalFloats
 	global totalBools
-	totalTemps = generaAccionRetorno()
+	totalTemps = generaAccionRetorno(funcActual)
 	totalInts += totalTemps['totalTempInts']
 	totalFloats += totalTemps['totalTempFloats']
 	totalStrings += totalTemps['totalTempStrings']
@@ -278,11 +278,12 @@ def p_altaFuncion(p):
 	scope = "Local"
 	varsLocalesDir = {}
 	nombreFunc = p[-1]
+	dirFunc = set_dir_global(p[-2])
 	if nombreFunc != "MAIN":
 		if not nombreFunc in dirproc:
 			funcActual = nombreFunc
 			dirproc[nombreFunc] = {}
-			dirproc[nombreFunc] = {'Tipo': p[-2], 'Vars': {}}
+			dirproc[nombreFunc] = {'Dir':dirFunc,'Tipo': p[-2], 'Vars': {}}
 		else:
 			print 'Ya existe una funcion con el nombre "%s"' % nombreFunc
 			sys.exit()
@@ -364,7 +365,7 @@ def p_main(p):
 	global totalFloats
 	global totalBools
 
-	totalTemps = generaAccionRetorno()
+	totalTemps = generaAccionRetorno(funcActual)
 	totalInts += totalTemps['totalTempInts']
 	totalFloats += totalTemps['totalTempFloats']
 	totalStrings += totalTemps['totalTempStrings']
@@ -810,8 +811,10 @@ def p_estatuto_llamadafunc_5(p):
 		
 def p_estatuto_llamadafunc_6(p):
 	'''estatuto_llamadafunc_6 :'''
-	dirInicioFuncLlamada = dirproc[funcLlamada]['Inicio']
-	estatuto_llamadafunc_6(funcLlamada, dirInicioFuncLlamada)
+	quadInicioFuncLlamada = dirproc[funcLlamada]['Inicio']
+	tipoFuncLlamada = dirproc[funcLlamada]['Tipo']
+	dirFuncLlamada = dirproc[funcLlamada]['Dir']
+	estatuto_llamadafunc_6(funcLlamada, quadInicioFuncLlamada, tipoFuncLlamada, dirFuncLlamada)
 
 
 

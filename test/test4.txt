@@ -30,6 +30,7 @@ begin program test4;
 		call uno(j);
 		i = call dos(i);
 		i = call dos(i);
+		print(i + (call dos(i+j)));
 	};
 	endfunc
 		

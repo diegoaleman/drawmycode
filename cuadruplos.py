@@ -397,14 +397,16 @@ def altaInicioFunc():
 	global contSaltos
 	return contSaltos
 
-def generaAccionRetorno():
+def generaAccionRetorno(funcActual):
 	totalTempInts = get_Total_Temp_Int()
 	totalTempFloats = get_Total_Temp_Float()
 	totalTempBools = get_Total_Temp_Bool()
 	totalTempStrings = get_Total_Temp_String()
-	genera_cuadruplo = Cuadruplo("RET", "", "", "")
-	push_cuadruplo(genera_cuadruplo)
+	if (funcActual != 'main'):
+		genera_cuadruplo = Cuadruplo("RET", "", "", "")
+		push_cuadruplo(genera_cuadruplo)
 	return {'totalTempInts' : totalTempInts,'totalTempFloats':totalTempFloats,'totalTempBools':totalTempBools,'totalTempStrings':totalTempStrings}
+
 
 def generaAccionEndMain():
 	genera_cuadruplo = Cuadruplo("END", "", "", "")
@@ -436,13 +438,24 @@ def estatuto_llamadafunc_3(dirParamActual, tipoParamActual):
 	else:
 		sys.exit('Error. Tipo de argumento "%s"y parametro no coinciden.' % argumento)
 
-def estatuto_llamadafunc_6(funcLlamada,dirInicioFuncLlamada):
+def estatuto_llamadafunc_6(funcLlamada,quadInicioFuncLlamada,tipoFuncLlamada,dirFuncLlamada):
 	global contSaltos
 	global pEjecucion
+	global pilaO
+	global pTipos
 
 	pEjecucion.push(contSaltos)
-	genera_cuadruplo = Cuadruplo("GOSUB",funcLlamada,"",dirInicioFuncLlamada)
+	genera_cuadruplo = Cuadruplo("GOSUB",funcLlamada,"",quadInicioFuncLlamada)
 	push_cuadruplo(genera_cuadruplo)
+
+	if (tipoFuncLlamada != 'void'):
+		res = set_dir_temp(tipoFuncLlamada)
+		genera_cuadruplo = Cuadruplo("=",dirFuncLlamada,"",res)
+		push_cuadruplo(genera_cuadruplo)
+		pilaO.push(res)
+		pTipos.push(tipoFuncLlamada)
+	
+
 
 '''
 	============================================
@@ -453,7 +466,6 @@ def estatuto_return(funcActual, tipoFuncActual):
 	global pilaO
 	global pTipos
 
-	print pilaO.peek()
 	tipoVarRetorno = pTipos.pop()
 	tipoFunc = tipoFuncActual
 
@@ -461,8 +473,6 @@ def estatuto_return(funcActual, tipoFuncActual):
 		varRetorno = pilaO.pop()
 		genera_cuadruplo = Cuadruplo("RETURN",funcActual,"",varRetorno)
 		push_cuadruplo(genera_cuadruplo)
-		pilaO.push(varRetorno)
-		pTipos.push(tipoVarRetorno)
 	elif (tipoFuncActual=='void') or (tipoVarRetorno!=tipoFunc):
 		sys.exit("Error. Tipo de variable retorno no coincide con tipo de la funcion.")
 
