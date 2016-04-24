@@ -19,6 +19,7 @@ import ply.yacc as yacc
 import sys
 from tablas import *
 from cuadruplos import *
+from Memoria import *
 
 # Get the token map from the lexer.
 from dmclex import tokens
@@ -52,10 +53,15 @@ totalFloats = 0
 totalBools = 0
 totalStrings = 0
 
+totalCtesInts = 0
+totalCtesFloats = 0
+totalCtesBools = 0
+totalCtesStrings = 0
+
 paramCounter = 0
 
 def p_programa(p):
-	'''programa : BEGIN PROGRAM goto_main_quad createDirProc ID altaPrograma SEMICOLON a LBRACKET b main RBRACKET SEMICOLON END'''
+	'''programa : BEGIN PROGRAM goto_main_quad createDirProc ID altaPrograma SEMICOLON a LBRACKET crearGlobalTam b main RBRACKET SEMICOLON END'''
 	p[0] = "Success"
 
 def p_goto_main_quad(p):
@@ -80,7 +86,16 @@ def p_altaPrograma(p):
 	funcGlobal = nombrePrograma
 	dirproc[nombrePrograma] = {}
 	dirproc[nombrePrograma] = {'Tipo': 'programa', 'Vars': {}}
-	
+
+def p_crearGlobalTam(p):
+	'''crearGlobalTam :'''
+	global totalStrings
+	global totalInts
+	global totalFloats
+	global totalBools
+
+	dirproc[funcGlobal]['Tamano'] = {'ints' : totalInts, 'floats' : totalFloats, 'bools' : totalBools, 'strings' : totalStrings, 'tempInts' : 0, 'tempFloats' : 0, 'tempBools' : 0, 'tempStrings' : 0}
+
 def p_a(p):
 	'''a : vars
 			|'''
@@ -212,12 +227,8 @@ def p_accionRetorno(p):
 	global totalFloats
 	global totalBools
 	totalTemps = generaAccionRetorno(funcActual)
-	totalInts += totalTemps['totalTempInts']
-	totalFloats += totalTemps['totalTempFloats']
-	totalStrings += totalTemps['totalTempStrings']
-	totalBools += totalTemps['totalTempBools']
 
-	dirproc[funcActual]['Tamano'] = {'ints' : totalInts, 'floats' : totalFloats, 'bools' : totalBools, 'strings' : totalStrings}
+	dirproc[funcActual]['Tamano'] = {'ints' : totalInts, 'floats' : totalFloats, 'bools' : totalBools, 'strings' : totalStrings, 'tempInts' : totalTemps['totalTempInts'], 'tempFloats' : totalTemps['totalTempFloats'], 'tempBools' : totalTemps['totalTempBools'], 'tempStrings' : totalTemps['totalTempStrings']}
 
 	resetMemoriaLocal()
 
@@ -366,11 +377,7 @@ def p_main(p):
 	global totalBools
 
 	totalTemps = generaAccionRetorno(funcActual)
-	totalInts += totalTemps['totalTempInts']
-	totalFloats += totalTemps['totalTempFloats']
-	totalStrings += totalTemps['totalTempStrings']
-	totalBools += totalTemps['totalTempBools']
-	dirproc[funcActual]['Tamano'] = {'ints' : totalInts, 'floats' : totalFloats, 'bools' : totalBools, 'strings' : totalStrings}
+	dirproc[funcActual]['Tamano'] = {'ints' : totalInts, 'floats' : totalFloats, 'bools' : totalBools, 'strings' : totalStrings, 'tempInts' : totalTemps['totalTempInts'], 'tempFloats' : totalTemps['totalTempFloats'], 'tempBools' : totalTemps['totalTempBools'], 'tempStrings' : totalTemps['totalTempStrings']}
 	generaAccionEndMain()
 
 # Funcion para dar de alta el main en el DirProc
@@ -617,6 +624,8 @@ def p_varcte(p):
 def p_exp_cte_int(p):
 	'''exp_cte_int :'''
 	global memIntCte
+	global totalCtesInts
+
 	temp_tipocte = "int"
 	
 	# Busca constante encontrada en tabla de constantes, si no existe la crea
@@ -624,6 +633,7 @@ def p_exp_cte_int(p):
 		tablaConstantes[p[-1]] = {"Dir":memIntCte, "Tipo":temp_tipocte}
 		exp_1(memIntCte,temp_tipocte)	
 		memIntCte += 1
+		totalCtesInts += 1
 	else:
 		exp_1(tablaConstantes[p[-1]]["Dir"],temp_tipocte)	
 	
@@ -634,12 +644,15 @@ def p_exp_cte_float(p):
 	'''exp_cte_float :'''
 	'''exp_cte_int :'''
 	global memFloatCte
+	global totalCtesFloats
+
 	temp_tipocte = "float"
 	# Busca constante encontrada en tabla de constantes, si no existe la crea
 	if not p[-1] in tablaConstantes:
 		tablaConstantes[p[-1]] = {"Dir":memFloatCte, "Tipo":temp_tipocte}
 		exp_1(memFloatCte,temp_tipocte)	
 		memFloatCte += 1
+		totalCtesFloats += 1
 	else:
 		exp_1(tablaConstantes[p[-1]]["Dir"],temp_tipocte)
 	
@@ -653,12 +666,15 @@ def p_ctebool(p):
 def p_exp_cte_bool(p):
 	'''exp_cte_bool :'''
 	global memBoolCte
+	global totalCtesBools
+
 	temp_tipocte = "bool"
 	# Busca constante encontrada en tabla de constantes, si no existe la crea
 	if not p[-1] in tablaConstantes:
 		tablaConstantes[p[-1]] = {"Dir":memBoolCte, "Tipo":temp_tipocte}
 		exp_1(memBoolCte,temp_tipocte)
 		memBoolCte += 1
+		totalCtesBools += 1
 	else:
 		exp_1(tablaConstantes[p[-1]]["Dir"],temp_tipocte)
 	
@@ -667,12 +683,15 @@ def p_exp_cte_bool(p):
 def p_exp_cte_string(p):
 	'''exp_cte_string :'''
 	global memStringCte
+	global totalCtesStrings
+
 	temp_tipocte = "string"
 	# Busca constante encontrada en tabla de constantes, si no existe la crea
 	if not p[-1] in tablaConstantes:
 		tablaConstantes[p[-1]] = {"Dir":memStringCte, "Tipo":temp_tipocte}
 		exp_1(memStringCte,temp_tipocte)	
 		memStringCte += 1
+		totalCtesStrings += 1
 	else:
 		exp_1(tablaConstantes[p[-1]]["Dir"],temp_tipocte)
 	
@@ -920,12 +939,14 @@ if __name__ == '__main__':
 				print "Tabla de Constantes"
 				print tablaConstantes
 				printPilas()
-				'''
-				for var, dire in dirproc['prueba']['Vars'].iteritems():
-				    if dire['Dir'] == 20002:
-				        print var
-				'''
+				
+				memGlobal = Memoria(dirproc[funcGlobal]['Tamano']['ints'],dirproc[funcGlobal]['Tamano']['floats'],dirproc[funcGlobal]['Tamano']['strings'],dirproc[funcGlobal]['Tamano']['bools'],dirproc[funcGlobal]['Tamano']['tempInts'],dirproc[funcGlobal]['Tamano']['tempFloats'], dirproc[funcGlobal]['Tamano']['tempStrings'], dirproc[funcGlobal]['Tamano']['tempBools'])
+				memActiva = Memoria(dirproc['main']['Tamano']['ints'],dirproc['main']['Tamano']['floats'],dirproc['main']['Tamano']['strings'],dirproc['main']['Tamano']['bools'],dirproc['main']['Tamano']['tempInts'],dirproc['main']['Tamano']['tempFloats'], dirproc['main']['Tamano']['tempStrings'], dirproc['main']['Tamano']['tempBools'])
+				memCtes = Memoria(totalCtesInts,totalCtesFloats,totalCtesStrings,totalCtesBools,0,0,0,0)
 
+				print memGlobal.tempInts[offset]
+				print memActiva.tempInts
+				print memCtes.strings
 		except EOFError:
 	   		print(EOFError)
 	else:

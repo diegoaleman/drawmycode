@@ -1,11 +1,12 @@
 begin program test4;
-	var i,j:int;
+	var i,j:int; str:string;
 {
 
 	func void uno(a:int)
 	var i:int;
 	{	
 		i = a * 2;
+		str = "hola";
 		if (i < a)
 		{
 			call uno(a+1);
@@ -24,6 +25,7 @@ begin program test4;
 	endfunc
 
 	main() 
+	var x:int;
 	{
 		i = 2;
 		j = i*2-1;
