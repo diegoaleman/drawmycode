@@ -1,18 +1,18 @@
 begin program test0;
-	var z:bool; y:int;
+	var z:int; mat[2][3]:int; ya:int;
 {
 
 	func void prueba(x:int, z:float)
-	var a,b:int; c:bool;
+	var a,b:int; c:bool; t[2][3]:int;
 	{	
-		print(a);
+		c = 4 > 2;
 	};
 	endfunc
 
 	main() 
-	var num:int; g:float;
+	var num:int; g:float; m[3][2]:int;
 	{
-
+		mat[1][1] = 2;
 	};
 	endfunc
 		

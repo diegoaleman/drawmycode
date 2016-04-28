@@ -10,10 +10,6 @@
 # *Change the test filename to test other files
 # ------------------------------------------------------------
 
-# int 		-  [1 - 9,999]
-# float 	-  [10,000 - 19,999]
-# bool 		-  [20,000 - 29,999]
-# string 	-  [30,000 - 39,999]
 
 import ply.yacc as yacc
 import sys
@@ -29,10 +25,13 @@ matrixList = []
 paramsList = []
 auxvars = {}
 auxVarsDir = {}
-auxMatrixVarsDir = {}
 varsGlobalesDir = {}
 varsLocalesDir = {}
 
+auxMatrixVarsDir = {}
+auxMatrixVarsDir2 = {}
+DIM = 1
+R = 1
 tablaConstantes = {}
 
 nombrePrograma = None
@@ -42,6 +41,10 @@ tipo = None
 funcActual = None
 funcGlobal = None
 funcLlamada = None
+
+matrixActual = None
+# se usa para saber en que matriz estas leyendo en el bloque
+varActual = None 
 
 contTamFuncInt = 0
 contTamFuncFloat = 0
@@ -102,6 +105,7 @@ def p_a(p):
 	global varsGlobalesDir
 	global auxVarsDir
 	global varsList
+	global auxMatrixVarsDir2
 	global auxMatrixVarsDir
 	# Copia solo las variables globales
 	for elem in auxVarsDir:
@@ -124,7 +128,6 @@ def p_a(p):
 	remove = [k for k in auxMatrixVarsDir]
 	for k in remove: del auxMatrixVarsDir[k]
 
-
 def p_vars(p):
 	'''vars : VAR createGlobalTable c'''
 
@@ -144,24 +147,25 @@ def p_f(p):
 	global totalInts
 	global totalFloats
 	global totalBools
+	if len(p) == 5:
+		while (len(varsList) > 0):
+			# Le asigna una direccion a la variable de acuerdo a scope
+			if scope == "Global":
+				assignedDir = set_dir_global(tipo,1)
+			elif scope == "Local":
+				assignedDir = set_dir_local(tipo,1)
+			
+			if tipo == 'int':
+				totalInts += 1
+			elif tipo == 'float':
+				totalFloats += 1
+			elif tipo == 'string':
+				totalStrings += 1
+			elif tipo == 'bool':
+				totalBools += 1
+			# Guarda el tipo y direccion de la variable en el diccionario auxiliar de variables
+			auxVarsDir[varsList.pop()] = {'Tipo' : tipo, 'Dir' : assignedDir}
 
-	while (len(varsList) > 0):
-		# Le asigna una direccion a la variable de acuerdo a scope
-		if scope == "Global":
-			assignedDir = set_dir_global(tipo)
-		elif scope == "Local":
-			assignedDir = set_dir_local(tipo)
-		
-		if tipo == 'int':
-			totalInts += 1
-		elif tipo == 'float':
-			totalFloats += 1
-		elif tipo == 'string':
-			totalStrings += 1
-		elif tipo == 'bool':
-			totalBools += 1
-		# Guarda el tipo y direccion de la variable en el diccionario auxiliar de variables
-		auxVarsDir[varsList.pop()] = {'Tipo' : tipo, 'Dir' : assignedDir}
 
 def p_saveTipo(p):
 	'''saveTipo :'''
@@ -188,27 +192,75 @@ def p_tipo(p):
 
 def p_matrix(p):
 	'''matrix :  mataux COLON INT'''
-	global matrixList
-	global auxMatrixVarsDir
-	
-	
-	while (len(matrixList) > 0):
-		# Le asigna una direccion a la variable 
-		if scope == "Global":
-			assignedDir = set_dir_global('int')
-		elif scope == "Local":
-			assignedDir = set_dir_local('int')
-		# Guarda el tipo y direccion de la variable en el diccionario auxiliar de variables
-		auxMatrixVarsDir[matrixList.pop()] = {'Tipo' : 'int', 'Dir' : assignedDir}
+
 
 def p_mataux(p):
-	'''mataux : ID saveMatrixID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET
-			| ID saveMatrixID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET COMMA mataux'''
-
+	'''mataux : ID saveMatrixID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET almacenaLimites
+			| ID saveMatrixID LSQUAREBRACKET CTEINT RSQUAREBRACKET LSQUAREBRACKET CTEINT RSQUAREBRACKET almacenaLimites COMMA mataux'''
 def p_saveMatrixID(p):
 	'''saveMatrixID :'''
-	matrixList.append(p[-1])
+	global auxMatrixVarsDir
+	global matrixActual
+	global DIM
+	global R 
+	DIM = 1
+	R = 1
+	matrixActual = p[-1]
+	auxMatrixVarsDir[p[-1]] = {'Tipo': 'int','Dim':{}}
 
+def p_almacenaLimites(p):
+	'''almacenaLimites :'''
+	global auxMatrixVarsDir
+	global auxMatrixVarsDir2
+	global R
+	global DIM
+	global totalInts
+
+	auxMatrixVarsDir[matrixActual]['Dim'] = {
+			DIM: {
+				'Li' : 0,
+				'Ls' : int(p[-5]) - 1
+			}
+	}
+	R = (int(auxMatrixVarsDir[matrixActual]['Dim'][DIM]['Ls']) - int(auxMatrixVarsDir[matrixActual]['Dim'][DIM]['Li']) + 1) * R
+	DIM = DIM + 1
+
+	auxMatrixVarsDir2 = {
+			DIM: {
+				'Li' : 0,
+				'Ls' : int(p[-2]) - 1
+			}
+	}
+	auxMatrixVarsDir[matrixActual]['Dim'].update(auxMatrixVarsDir2)
+	R = (int(auxMatrixVarsDir[matrixActual]['Dim'][DIM]['Ls']) - int(auxMatrixVarsDir[matrixActual]['Dim'][DIM]['Li']) + 1) * R
+	DIM = 1
+	SUMA = 0
+	AUX = R
+	while (DIM <= len(auxMatrixVarsDir[matrixActual]['Dim'])):
+		mDIM = R / ((int(auxMatrixVarsDir[matrixActual]['Dim'][DIM]['Ls']) - int(auxMatrixVarsDir[matrixActual]['Dim'][DIM]['Li']) + 1))
+		R = mDIM
+		SUMA = SUMA + int(auxMatrixVarsDir[matrixActual]['Dim'][DIM]['Li']) * mDIM
+		auxMatrixVarsDir2 = {
+			'm' : mDIM
+		}
+		auxMatrixVarsDir[matrixActual]['Dim'][DIM].update(auxMatrixVarsDir2)
+		DIM = DIM + 1
+	K = SUMA
+	DIM = DIM - 1
+	auxMatrixVarsDir2={
+		'm' : K
+	}
+	auxMatrixVarsDir[matrixActual]['Dim'][DIM].update(auxMatrixVarsDir2)
+	totalInts += AUX
+	if scope == 'Global':
+		auxMatrixVarsDir2={
+			'Dir' : set_dir_global('int',AUX)
+		}
+	elif scope == 'Local':
+		auxMatrixVarsDir2={
+			'Dir' : set_dir_local('int',AUX)
+		}
+	auxMatrixVarsDir[matrixActual].update(auxMatrixVarsDir2)
 def p_e(p):
 	'''e : c 
 			|'''
@@ -250,7 +302,6 @@ def p_funcvars(p):
 		varsLocalesDir[elem] = auxVarsDir[elem]
 		varsLocalesDir[elem]['Scope'] = 'Local'
 		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
-		varsLocalesDir[elem]['Valor'] = None
 	dirproc[nombreFunc]['NumLocales'] = len(auxVarsDir)
 	dirproc[nombreFunc]['Vars'] = varsLocalesDir
 	# Eliminar las variables que ya se guardaron como locales
@@ -289,7 +340,7 @@ def p_altaFuncion(p):
 	scope = "Local"
 	varsLocalesDir = {}
 	nombreFunc = p[-1]
-	dirFunc = set_dir_global(p[-2])
+	dirFunc = set_dir_global(p[-2],1)
 	if nombreFunc != "MAIN":
 		if not nombreFunc in dirproc:
 			funcActual = nombreFunc
@@ -360,7 +411,7 @@ def p_saveParamVar(p):
 	elif tipo == 'bool':
 		totalBools += 1
 
-	assignedDir = set_dir_local(tipo)
+	assignedDir = set_dir_local(tipo,1)
 	# Guarda en un diccionario el nombre, tipo y direccion.
 	auxVarsDir[paramID] = {'Tipo' : tipo, 'Dir' : assignedDir, 'Scope' : 'Local'}
 	dirproc[nombreFunc]['Params'] = auxVarsDir
@@ -405,6 +456,7 @@ def p_altaMain(p):
 	funcActual = nombreFunc
 	dirproc[nombreFunc] = {}
 	dirproc[nombreFunc] = {'Tipo': 'void', 'Vars': {}}
+	iniciaMain()
 
 def p_k(p):
 	'''k : vars
@@ -454,7 +506,8 @@ def p_asignacion(p):
 
 def p_exp_asign(p):
 	'''exp_asign :'''
-
+	global varActual
+	varActual = p[-1]
 	# Busca variable en variables locales del proc
 	try:
 		temp_dirvar = dirproc[funcActual]['Vars'][p[-1]]['Dir']
@@ -489,8 +542,27 @@ def p_exp_13(p):
 	exp_13()
 
 def p_aa(p):
-	'''aa : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
+	'''aa : LSQUAREBRACKET acceso_dimvar_2 exp acceso_dimvar_3 RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
 			|'''
+
+def p_acceso_dimvar_2(p):
+	'''acceso_dimvar_2 :'''
+	acceso_dimvar_2()
+
+def p_acceso_dimvar_3(p):
+	'''acceso_dimvar_3 :'''
+	global varActual
+	print varActual
+	try:
+		accessingMatrix = dirproc[funcActual]['Vars'][varActual]
+		acceso_dimvar_3(accessingMatrix)
+	except KeyError as key:
+		try:
+			accessingMatrix = dirproc[funcGlobal]['Vars'][varActual]
+			acceso_dimvar_3(accessingMatrix)
+		except KeyError as key:
+			print 'Variable %s no esta declarada' % key
+			sys.exit()
 
 def p_expresion(p):
 	'''expresion : specialexp m exp_9 n'''
@@ -619,7 +691,7 @@ def p_varcte(p):
 			| CTEFLOAT exp_cte_float
 			| ctebool exp_cte_bool
 			| CTESTRING exp_cte_string
-			| ID r exp_1'''
+			| ID exp_1 r '''
 
 def p_exp_cte_int(p):
 	'''exp_cte_int :'''
@@ -698,27 +770,28 @@ def p_exp_cte_string(p):
 	
 
 def p_r(p):
-	'''r : LSQUAREBRACKET exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
+	'''r : LSQUAREBRACKET  exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
 			|'''
 
 def p_exp_1(p):
 	'''exp_1 :'''
 	# Busca variable en variables local en proc actual
+	print p[-1]
 	try:
-		temp_dirvar = dirproc[funcActual]['Vars'][p[-2]]['Dir']
-		temp_tipovar = dirproc[funcActual]['Vars'][p[-2]]['Tipo']
+		temp_dirvar = dirproc[funcActual]['Vars'][p[-1]]['Dir']
+		temp_tipovar = dirproc[funcActual]['Vars'][p[-1]]['Tipo']
 		exp_1(temp_dirvar,temp_tipovar)	
 	except KeyError as key:
 		# Busca variable en parametros del proc actual
 		try:
-			temp_dirvar = dirproc[funcActual]['Params'][p[-2]]['Dir']
-			temp_tipovar = dirproc[funcActual]['Params'][p[-2]]['Tipo']
+			temp_dirvar = dirproc[funcActual]['Params'][p[-1]]['Dir']
+			temp_tipovar = dirproc[funcActual]['Params'][p[-1]]['Tipo']
 			exp_1(temp_dirvar,temp_tipovar)	
 		except KeyError as key:
 			# Si no lo encuentra, busca variable en proc global
 			try:
-				temp_dirvar = dirproc[funcGlobal]['Vars'][p[-2]]['Dir'];
-				temp_tipovar = dirproc[funcGlobal]['Vars'][p[-2]]['Tipo'];
+				temp_dirvar = dirproc[funcGlobal]['Vars'][p[-1]]['Dir'];
+				temp_tipovar = dirproc[funcGlobal]['Vars'][p[-1]]['Tipo'];
 				exp_1(temp_dirvar,temp_tipovar)	
 			except KeyError as key:
 				print 'Variable %s no esta declarada' % key
@@ -944,9 +1017,6 @@ if __name__ == '__main__':
 				memActiva = Memoria(dirproc['main']['Tamano']['ints'],dirproc['main']['Tamano']['floats'],dirproc['main']['Tamano']['strings'],dirproc['main']['Tamano']['bools'],dirproc['main']['Tamano']['tempInts'],dirproc['main']['Tamano']['tempFloats'], dirproc['main']['Tamano']['tempStrings'], dirproc['main']['Tamano']['tempBools'])
 				memCtes = Memoria(totalCtesInts,totalCtesFloats,totalCtesStrings,totalCtesBools,0,0,0,0)
 
-				print memGlobal.tempInts[offset]
-				print memActiva.tempInts
-				print memCtes.strings
 		except EOFError:
 	   		print(EOFError)
 	else:

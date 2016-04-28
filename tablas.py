@@ -85,7 +85,7 @@ def resetMemoriaLocal():
 	========================================================================
 '''
 
-def set_dir_global(tipo):
+def set_dir_global(tipo, cant):
 	global memGlobalInt
 	global memGlobalFloat
 	global memGlobalBool
@@ -94,16 +94,16 @@ def set_dir_global(tipo):
 	assignedDir = None
 	if tipo == 'int':
 		assignedDir = memGlobalInt
-		memGlobalInt += 1
+		memGlobalInt += cant
 	elif tipo == 'float':
 		assignedDir = memGlobalFloat
-		memGlobalFloat += 1
+		memGlobalFloat += cant
 	elif tipo == 'bool':
 		assignedDir = memGlobalBool
-		memGlobalBool += 1
+		memGlobalBool += cant
 	elif tipo == 'string':
 		assignedDir = memGlobalString
-		memGlobalString += 1
+		memGlobalString += cant
 	return assignedDir
 
 
@@ -112,7 +112,7 @@ def set_dir_global(tipo):
 	Asigna direccion de memoria a una variable local de acuerdo a su tipo
 	========================================================================
 '''
-def set_dir_local(tipo):
+def set_dir_local(tipo, cant):
 	global memLocalInt
 	global memLocalFloat
 	global memLocalBool
@@ -121,16 +121,16 @@ def set_dir_local(tipo):
 	assignedDir = None
 	if tipo == 'int':
 		assignedDir = memLocalInt
-		memLocalInt += 1
+		memLocalInt += cant
 	elif tipo == 'float':
 		assignedDir = memLocalFloat
-		memLocalFloat += 1
+		memLocalFloat += cant
 	elif tipo == 'bool':
 		assignedDir = memLocalBool
-		memLocalBool += 1
+		memLocalBool += cant
 	elif tipo == 'string':
 		assignedDir = memLocalString
-		memLocalString += 1
+		memLocalString += cant
 	return assignedDir
 
 '''
