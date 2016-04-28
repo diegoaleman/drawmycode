@@ -20,6 +20,7 @@ import sys
 from tablas import *
 from cuadruplos import *
 from Memoria import *
+from maquinaVirtual import *
 
 # Get the token map from the lexer.
 from dmclex import tokens
@@ -939,14 +940,28 @@ if __name__ == '__main__':
 				print "Tabla de Constantes"
 				print tablaConstantes
 				printPilas()
-				
+
+				'''
+				============================================
+				Manda llamar a la maquina virtual
+				============================================
+				'''
 				memGlobal = Memoria(dirproc[funcGlobal]['Tamano']['ints'],dirproc[funcGlobal]['Tamano']['floats'],dirproc[funcGlobal]['Tamano']['strings'],dirproc[funcGlobal]['Tamano']['bools'],dirproc[funcGlobal]['Tamano']['tempInts'],dirproc[funcGlobal]['Tamano']['tempFloats'], dirproc[funcGlobal]['Tamano']['tempStrings'], dirproc[funcGlobal]['Tamano']['tempBools'])
 				memActiva = Memoria(dirproc['main']['Tamano']['ints'],dirproc['main']['Tamano']['floats'],dirproc['main']['Tamano']['strings'],dirproc['main']['Tamano']['bools'],dirproc['main']['Tamano']['tempInts'],dirproc['main']['Tamano']['tempFloats'], dirproc['main']['Tamano']['tempStrings'], dirproc['main']['Tamano']['tempBools'])
 				memCtes = Memoria(totalCtesInts,totalCtesFloats,totalCtesStrings,totalCtesBools,0,0,0,0)
 
-				print memGlobal.tempInts[offset]
-				print memActiva.tempInts
-				print memCtes.strings
+				for key, elems in tablaConstantes.iteritems():
+					direccion = elems['Dir']
+					valor = key
+					memCtes.set_valor_memoria(valor, direccion)
+
+
+				#print memCtes.get_valor_memoria(12000)
+
+				cuadruplos = getCuadruplos()
+				initMaquinaVirtual(memGlobal, memActiva, memCtes, cuadruplos)
+			
+
 		except EOFError:
 	   		print(EOFError)
 	else:

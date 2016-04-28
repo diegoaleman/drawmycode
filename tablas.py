@@ -145,17 +145,21 @@ def set_dir_temp(tipoTemp):
 	global memStringTemp
 
 	if tipoTemp == "int":
-		memIntTemp += 1
+		
 		dirTemp  = memIntTemp
+		memIntTemp += 1
 	elif tipoTemp == "float":
-		memFloatTemp +=1
+		
 		dirTemp = memFloatTemp
+		memFloatTemp +=1
 	elif tipoTemp == "bool":
-		memBoolTemp +=1
+		
 		dirTemp = memBoolTemp
+		memBoolTemp +=1
 	elif tipoTemp == "String":
-		memStringTemp +=1
+		
 		dirTemp = memStringTemp
+		memStringTemp +=1
 	return dirTemp
 
 def get_Total_Temp_Int():

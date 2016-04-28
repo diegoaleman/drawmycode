@@ -2,6 +2,7 @@ from structs import *
 from cubosemantico import *
 from tablas import *
 from dmcparser import *
+from maquinaVirtual import *
 import sys
 
 pilaO = Stack()
@@ -476,6 +477,8 @@ def estatuto_return(funcActual, tipoFuncActual):
 	elif (tipoFuncActual=='void') or (tipoVarRetorno!=tipoFunc):
 		sys.exit("Error. Tipo de variable retorno no coincide con tipo de la funcion.")
 
+def getCuadruplos():
+	return cuadruplos
 
 def printPilas():
 	print "pilaO ", pilaO.getElements()

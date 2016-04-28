@@ -1,0 +1,19 @@
+begin program test5;
+	var i,j:int;
+{
+	main() 
+	var x:int;
+	{
+		if (2 == 2) 
+		{
+			x = 2+1;
+		}
+		else 
+		{
+			x = 3 + 5;
+		};
+	};
+	endfunc
+		
+};
+end
