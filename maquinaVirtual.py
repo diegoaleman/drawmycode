@@ -19,6 +19,8 @@ listaParams = []
 funcionActual = 'main'
 funcionPasada = ''
 params = 0
+existeRetorno = False
+valorRetorno = []
 
 def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	global memCtes
@@ -119,6 +121,8 @@ def getMetodo(op):
 		return param
 	if op == 'RET':
 		return ret
+	if op == 'RETURN':
+		return retorno
 
 
 '''
@@ -130,9 +134,17 @@ cambiar el float
 =========================================================
 '''
 def asignacion(c1, c2, c3):
-	print "asign"
-	value = float(getValue(c1))
-	setValue(value, c3)
+	global existeRetorno
+	global valorRetorno
+
+	if existeRetorno == True:
+		existeRetorno = False
+		setValue(valorRetorno.pop(), c3)
+	else:
+		value = float(getValue(c1))
+		setValue(value, c3)
+
+	print "asign"	
 	print getValue(c3)
 
 def suma(c1, c2, c3):
@@ -227,11 +239,18 @@ def ret(c1, c2, c3):
 	global memActiva
 	global cuadruplo_actual
 	global funcionActual
-
+	
 	p = pila.pop()
 	memActiva = p[2]
+
 	funcionActual = p[1]
 	cuadruplo_actual = p[0]
 
+def retorno(c1, c2, c3):
+	global valorRetorno
+	global existeRetorno
+
+	existeRetorno = True
+	valorRetorno.append(getValue(c3))
 
 
