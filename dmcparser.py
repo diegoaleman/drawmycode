@@ -51,7 +51,7 @@ contTamFuncInt = 0
 contTamFuncFloat = 0
 contTamFuncBool = 0
 contTamFuncString = 0
-
+contNumLocales = 0
 totalInts = 0
 totalFloats = 0
 totalBools = 0
@@ -297,13 +297,14 @@ def p_funcvars(p):
 	global contTamFuncFloat
 	global contTamFuncBool
 	global contTamFuncString
-
+	global contNumLocales
 	# Copia solo las variables locales
 	for elem in auxVarsDir:
 		varsLocalesDir[elem] = auxVarsDir[elem]
 		varsLocalesDir[elem]['Scope'] = 'Local'
 		varsLocalesDir[elem]['Tipo'] = auxVarsDir[elem]['Tipo']
-	dirproc[nombreFunc]['NumLocales'] = len(auxVarsDir)
+	contNumLocales += len(auxVarsDir)
+	dirproc[nombreFunc]['NumLocales'] = contNumLocales
 	dirproc[nombreFunc]['Vars'] = varsLocalesDir
 	# Eliminar las variables que ya se guardaron como locales
 	remove = [k for k in auxVarsDir]
@@ -314,6 +315,8 @@ def p_funcvars(p):
 		varsLocalesDir[elem] = auxMatrixVarsDir[elem]
 		varsLocalesDir[elem]['Scope'] = 'Local'
 		varsLocalesDir[elem]['Tipo'] = auxMatrixVarsDir[elem]['Tipo']
+	contNumLocales += len(auxMatrixVarsDir)
+	dirproc[nombreFunc]['NumLocales'] = contNumLocales
 	dirproc[nombreFunc]['Vars'] = varsLocalesDir
 	# Eliminar las variables que ya se guardaron como globales
 	remove = [k for k in auxMatrixVarsDir]
@@ -466,7 +469,6 @@ def p_k(p):
 	global auxVarsDir
 	global varsLocalesDir
 	global auxMatrixVarsDir
-	
 	# Copia solo las variables locales
 	for elem in auxVarsDir:
 		varsLocalesDir[elem] = auxVarsDir[elem]
@@ -503,7 +505,7 @@ def p_estatutotipos(p):
 			| return'''
 
 def p_asignacion(p):
-	'''asignacion : ID exp_asign aa EQUAL exp_12 expresion exp_13'''
+	'''asignacion : ID exp_asign accessMatrix EQUAL exp_12 expresion exp_13'''
 
 def p_exp_asign(p):
 	'''exp_asign :'''
@@ -542,29 +544,38 @@ def p_exp_13(p):
 	'''exp_13 :'''
 	exp_13()
 
-def p_aa(p):
-	'''aa : LSQUAREBRACKET acceso_dimvar_2 exp acceso_dimvar_3 RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
+def p_accessMatrix(p):
+	'''accessMatrix : LSQUAREBRACKET acceso_dimvar_2 exp acceso_dimvar_3 RSQUAREBRACKET acceso_dimvar_4 LSQUAREBRACKET exp acceso_dimvar_3 RSQUAREBRACKET acceso_dimvar_5
 			|'''
 
 def p_acceso_dimvar_2(p):
 	'''acceso_dimvar_2 :'''
-	acceso_dimvar_2()
-
-def p_acceso_dimvar_3(p):
-	'''acceso_dimvar_3 :'''
+	
 	global varActual
-	print varActual
 	try:
 		accessingMatrix = dirproc[funcActual]['Vars'][varActual]
-		acceso_dimvar_3(accessingMatrix)
+		acceso_dimvar_2(accessingMatrix)
 	except KeyError as key:
 		try:
 			accessingMatrix = dirproc[funcGlobal]['Vars'][varActual]
-			acceso_dimvar_3(accessingMatrix)
+			acceso_dimvar_2(accessingMatrix)
 		except KeyError as key:
-			print 'Variable %s no esta declarada' % key
+			print 'Variable %s no es dimensionada' % key
 			sys.exit()
 
+def p_acceso_dimvar_3(p):
+	'''acceso_dimvar_3 :'''
+	acceso_dimvar_3()
+
+
+
+def p_acceso_dimvar_4(p):
+	'''acceso_dimvar_4 :'''
+	acceso_dimvar_4()
+
+def p_acceso_dimvar_5(p):
+	'''acceso_dimvar_5 :'''
+	acceso_dimvar_5()
 def p_expresion(p):
 	'''expresion : specialexp m exp_9 n'''
 
@@ -692,13 +703,12 @@ def p_varcte(p):
 			| CTEFLOAT exp_cte_float
 			| ctebool exp_cte_bool
 			| CTESTRING exp_cte_string
-			| ID exp_1 r '''
+			| ID exp_1 accessMatrix '''
 
 def p_exp_cte_int(p):
 	'''exp_cte_int :'''
 	global memIntCte
 	global totalCtesInts
-
 	temp_tipocte = "int"
 	
 	# Busca constante encontrada en tabla de constantes, si no existe la crea
@@ -769,15 +779,11 @@ def p_exp_cte_string(p):
 		exp_1(tablaConstantes[p[-1]]["Dir"],temp_tipocte)
 	
 	
-
-def p_r(p):
-	'''r : LSQUAREBRACKET  exp RSQUAREBRACKET LSQUAREBRACKET exp RSQUAREBRACKET
-			|'''
-
 def p_exp_1(p):
 	'''exp_1 :'''
+	global varActual
+	varActual = p[-1]
 	# Busca variable en variables local en proc actual
-	print p[-1]
 	try:
 		temp_dirvar = dirproc[funcActual]['Vars'][p[-1]]['Dir']
 		temp_tipovar = dirproc[funcActual]['Vars'][p[-1]]['Tipo']
@@ -898,7 +904,8 @@ def p_estatuto_llamadafunc_4(p):
 
 def p_estatuto_llamadafunc_5(p):
 	'''estatuto_llamadafunc_5 :'''
-	global paramCounter		
+	global paramCounter
+
 	if dirproc[funcLlamada]['NumParams'] > 0 and not paramCounter == dirproc[funcLlamada]['NumParams'] - 1:
 		sys.exit("Numero de parametros no coincide con el numero de argumentos")
 		
@@ -926,6 +933,7 @@ def p_opfunc(p):
 
 def p_randomfunc(p):
 	'''randomfunc : RANDOM LPARENTHESIS exp COMMA exp RPARENTHESIS'''
+	opfunc_random()
 
 def p_dibujafunc(p):
 	'''dibujafunc : al am an'''
@@ -940,15 +948,19 @@ def p_am(p):
 
 def p_an(p):
 	'''an : dibuja 
-			| startfillfunc dibuja stopfillfunc'''
+			| startfillfunc dibuja SEMICOLON loopDibuja stopfillfunc'''
 
+def p_loopDibuja(p):
+	'''loopDibuja : dibuja SEMICOLON loopDibuja
+			|'''
 
 def p_linewidthfunc(p):
 	'''linewidthfunc : LINEWIDTH LPARENTHESIS exp RPARENTHESIS SEMICOLON'''
+	dibujafunc_linewidth()
 
 def p_linecolorfunc(p):
-	'''linecolorfunc : LINECOLOR LPARENTHESIS exp RPARENTHESIS SEMICOLON'''
-
+	'''linecolorfunc : LINECOLOR LPARENTHESIS exp COMMA exp COMMA exp RPARENTHESIS SEMICOLON'''
+	dibujafunc_linecolor()
 
 def p_dibuja(p):
 	'''dibuja : v RPARENTHESIS'''
@@ -957,33 +969,40 @@ def p_v(p):
 	'''v : LINE lineparam
 			| SQUARE squareparam
 			| CIRCLE circleparam
-			| STAR  starparam
+			| STAR starparam
 			| TRIANGLE triangleparam
 			| ARC arcparam'''
 
 def p_lineparam(p):
 	'''lineparam : LPARENTHESIS exp COMMA exp COMMA exp COMMA exp'''
+	dibujafunc_line()
 
 def p_squareparam(p):
 	'''squareparam : LPARENTHESIS exp COMMA exp COMMA exp'''
+	dibujafunc_square()
 
 def p_circleparam(p):
 	'''circleparam : LPARENTHESIS exp COMMA exp COMMA exp'''
-
+	dibujafunc_circle()
 def p_starparam(p):
 	'''starparam : LPARENTHESIS exp COMMA exp COMMA exp'''
+	dibujafunc_star()
 
 def p_triangleparam(p):
 	'''triangleparam : LPARENTHESIS exp COMMA exp COMMA exp'''
+	dibujafunc_triangle()
 
 def p_arcparam(p):
 	'''arcparam : LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA exp'''
+	dibujafunc_arc()
 
 def p_startfillfunc(p):
-	'''startfillfunc : STARTFILL LPARENTHESIS exp RPARENTHESIS SEMICOLON'''
+	'''startfillfunc : STARTFILL LPARENTHESIS exp COMMA exp COMMA exp RPARENTHESIS SEMICOLON'''
+	dibujafunc_startfill()
 
 def p_stopfillfunc(p):
 	'''stopfillfunc : STOPFILL LPARENTHESIS RPARENTHESIS'''
+	dibujafunc_stopfill()
 
 def p_error(p):
     print('Syntax error in token %s with value %s in line %s' % (p.type, p.value, p.lineno))

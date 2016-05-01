@@ -6,7 +6,7 @@ from maquinaVirtual import *
 import sys
 
 pilaO = Stack()
-POper = Stack()
+pOper = Stack()
 pTipos = Stack()
 pSaltos = Stack()
 pEjecucion = Stack()
@@ -18,6 +18,10 @@ cuadruplos = []
 # Inicia con el index 0
 contSaltos = 0
 actualAccessDIM = 1
+actualAccessMatrix = {}
+actualIDDim = None
+actualDirBaseMatrix = None
+
 
 class Cuadruplo:
 
@@ -57,43 +61,44 @@ def iniciaMain():
 def exp_1(dirvar,tipo):
 	global pilaO
 	global pTipos
+
 	pilaO.push(dirvar)
 	pTipos.push(tipo)
 
 
 ''' 
 	============================================
-	2. Meter * o / en POper
+	2. Meter * o / en pOper
 	============================================
 '''
 def exp_2(product_division):
-	global POper
-	POper.push(product_division)
+	global pOper
+	pOper.push(product_division)
 
 
 ''' 
 	============================================
-	3. Meter + o - en POper
+	3. Meter + o - en pOper
 	============================================
 '''
 def exp_3(plus_minus):
-	global POper
-	POper.push(plus_minus)
+	global pOper
+	pOper.push(plus_minus)
 
 
 ''' 
 	============================================
-	4. Si top(POper) == '*' o '/'
+	4. Si top(pOper) == '*' o '/'
 	============================================
 '''
 def exp_4():
-	global POper
+	global pOper
 	global pTipos
 	global pilaO
 
-	if not POper.isEmpty():
-		if POper.peek() == '*' or POper.peek() == '/':
-			op = POper.pop()
+	if not pOper.isEmpty():
+		if pOper.peek() == '*' or pOper.peek() == '/':
+			op = pOper.pop()
 
 			opdoDer = pilaO.pop()
 			tipoDer = pTipos.pop()
@@ -115,17 +120,17 @@ def exp_4():
 
 '''
 	============================================
-	5. Si top(POper) == '+' o '-'
+	5. Si top(pOper) == '+' o '-'
 	============================================
 '''
 def exp_5():
-	global POper
+	global pOper
 	global pTipos
 	global pilaO
 
-	if not POper.isEmpty():
-		if POper.peek() == '+' or POper.peek() == '-':
-			op = POper.pop()
+	if not pOper.isEmpty():
+		if pOper.peek() == '+' or pOper.peek() == '-':
+			op = pOper.pop()
 
 			opdoDer = pilaO.pop()
 			tipoDer = pTipos.pop()
@@ -147,12 +152,12 @@ def exp_5():
 
 '''
 	============================================
-	6. Meter Fondo Falso en POper
+	6. Meter Fondo Falso en pOper
 	============================================
 '''
 def exp_6():
-	global POper
-	POper.push('[')
+	global pOper
+	pOper.push('[')
 
 '''
 	============================================
@@ -160,33 +165,33 @@ def exp_6():
 	============================================
 '''
 def exp_7():
-	global POper
-	POper.pop()
+	global pOper
+	pOper.pop()
 
 '''
 	============================================
-	8. Meter AND/OR en POper
+	8. Meter AND/OR en pOper
 	============================================
 '''
 def exp_8(and_or):
-	global POper
-	POper.push(and_or)
+	global pOper
+	pOper.push(and_or)
 
 
 '''
 	=====================================================
-	9. Si top(POper) es and o or , sacar and/or de POper
+	9. Si top(pOper) es and o or , sacar and/or de pOper
 	=====================================================
 '''
 def exp_9():
-	global POper
+	global pOper
 	global pTipos
 	global pilaO
 	
 	#printPilas()
-	if not POper.isEmpty():
-		if POper.peek() == 'and' or POper.peek() == 'or':
-			op = POper.pop()
+	if not pOper.isEmpty():
+		if pOper.peek() == 'and' or pOper.peek() == 'or':
+			op = pOper.pop()
 
 			opdoDer = pilaO.pop()
 			tipoDer = pTipos.pop()
@@ -207,28 +212,28 @@ def exp_9():
 
 '''
 	============================================
-	10. Meter < <= > >= <> == en POper
+	10. Meter < <= > >= <> == en pOper
 	============================================
 '''
 def exp_10(oper_logic):
-	global POper
-	POper.push(oper_logic)
+	global pOper
+	pOper.push(oper_logic)
 
 
 '''
 	=====================================================
-	11. Si top(POper) es < <= > >= <> == , sacar de POper
+	11. Si top(pOper) es < <= > >= <> == , sacar de pOper
 	====================================================
 '''
 def exp_11():
-	global POper
+	global pOper
 	global pTipos
 	global pilaO
 	
 	#printPilas()
-	if not POper.isEmpty():
-		if POper.peek() == '<' or POper.peek() == '<=' or POper.peek() == '>' or POper.peek() == '>=' or POper.peek() == '<>' or POper.peek() == '==':
-			op = POper.pop()
+	if not pOper.isEmpty():
+		if pOper.peek() == '<' or pOper.peek() == '<=' or pOper.peek() == '>' or pOper.peek() == '>=' or pOper.peek() == '<>' or pOper.peek() == '==':
+			op = pOper.pop()
 
 			opdoDer = pilaO.pop()
 			tipoDer = pTipos.pop()
@@ -250,27 +255,27 @@ def exp_11():
 
 '''
 	============================================
-	12. Meter = en POper
+	12. Meter = en pOper
 	============================================
 '''
 def exp_12(asignOper):
-	global POper
-	POper.push(asignOper)
+	global pOper
+	pOper.push(asignOper)
 
 
 '''
 	============================================
-	13. Si top(POper) es = , sacar = de POper
+	13. Si top(pOper) es = , sacar = de pOper
 	============================================
 '''
 def exp_13():
-	global POper
+	global pOper
 	global pTipos
 	global pilaO
 	
-	if not POper.isEmpty():
-		if POper.peek() == '=':
-			op = POper.pop()
+	if not pOper.isEmpty():
+		if pOper.peek() == '=':
+			op = pOper.pop()
 
 			opdoDer = pilaO.pop()
 			tipoDer = pTipos.pop()
@@ -454,7 +459,7 @@ def estatuto_llamadafunc_3(dirParamActual, tipoParamActual):
 		genera_cuadruplo = Cuadruplo("PARAM",argumento,"",dirParamActual)
 		push_cuadruplo(genera_cuadruplo)
 	else:
-		sys.exit('Error. Tipo de argumento "%s"y parametro no coinciden.' % argumento)
+		sys.exit('Error. Tipo de argumento y parametro no coinciden.')
 
 '''
 	=========================================================
@@ -507,29 +512,326 @@ def getCuadruplos():
 	Estatuto Variable Dimensionada 2
 	============================================
 '''
-def acceso_dimvar_2():
+def acceso_dimvar_2(accessingMatrix):
 	global pilaO
 	global pDimensionada
-	global POper
+	global pOper
 	global actualAccessDIM
+	global actualIDDim
+	global actualAccessMatrix
+	actualAccessMatrix = accessingMatrix;
 	idDim = pilaO.pop()
+	actualIDDim = idDim
 	actualAccessDIM = 1
 	pDimensionada.push([idDim,actualAccessDIM])
-	POper.push('[')
+	pOper.push('[')
 
 '''
 	============================================
 	Estatuto Variable Dimensionada 3
 	============================================
 '''
-def acceso_dimvar_3(accessingMatrix):
+def acceso_dimvar_3():
 	global pilaO
-	Li_DIM = accessingMatrix['Dim'][actualAccessDIM]['Li']
-	Ls_DIM = accessingMatrix['Dim'][actualAccessDIM]['Ls']
+	global pTipos
+	global actualDirBaseMatrix
+
+	Li_DIM = actualAccessMatrix['Dim'][actualAccessDIM]['Li']
+	Ls_DIM = actualAccessMatrix['Dim'][actualAccessDIM]['Ls']
+	m_DIM = actualAccessMatrix['Dim'][actualAccessDIM]['m']
+	actualDirBaseMatrix = actualAccessMatrix['Dir']
 	genera_cuadruplo = Cuadruplo("VERIFICA",pilaO.peek(),Li_DIM,Ls_DIM)
 	push_cuadruplo(genera_cuadruplo)
-	if actualAccessDIM == 1:
-		print "existe"
+	if actualAccessDIM == 1: #Si siguiente dimension es diferente de nulo
+		aux = pilaO.pop()
+		pTipos.pop()
+		temp = set_dir_temp('int')
+		genera_cuadruplo = Cuadruplo("*",aux,m_DIM,temp)
+		push_cuadruplo(genera_cuadruplo)
+		pilaO.push(temp)
+	if actualAccessDIM == 2:
+		aux2 = pilaO.pop()
+		aux1 = pilaO.pop()
+		pTipos.pop()
+		temp = set_dir_temp('int')
+		genera_cuadruplo = Cuadruplo("+",aux1,aux2,temp)
+		push_cuadruplo(genera_cuadruplo)
+		pilaO.push(temp)
+
+'''
+	============================================
+	Estatuto Variable Dimensionada 4
+	============================================
+'''
+def acceso_dimvar_4():
+	global actualAccessDIM
+	global pDimensionada
+
+	actualAccessDIM = actualAccessDIM + 1
+	pDimensionada.push([actualIDDim,actualAccessDIM])
+
+'''
+	============================================
+	Estatuto Variable Dimensionada 5
+	============================================
+'''
+def acceso_dimvar_5():
+	global pilaO
+	global pTipos
+	global pOper
+	global pDimensionada
+
+	aux1 = pilaO.pop()
+	temp = set_dir_temp('int')
+	genera_cuadruplo = Cuadruplo("+",aux1,actualDirBaseMatrix,temp)
+	push_cuadruplo(genera_cuadruplo)
+
+	pilaO.push(temp)
+	pOper.pop()
+	pDimensionada.pop()
+
+'''
+	============================================
+	Funcion integrada RANDOM
+	============================================
+'''
+def opfunc_random():
+	global pilaO
+	global pTipos
+	superior = pilaO.pop()
+	tipoSuperior = pTipos.pop()
+
+	inferior = pilaO.pop()
+	tipoInferior = pTipos.pop()
+
+	temp = set_dir_temp('int')
+	pilaO.push(temp)
+	pTipos.push('int')
+	genera_cuadruplo = Cuadruplo("RANDOM",inferior,superior,temp)
+	push_cuadruplo(genera_cuadruplo)
+
+'''
+	============================================
+	Line Width
+	============================================
+'''
+def dibujafunc_linewidth():
+	global pilaO
+	global pTipos
+
+	width = pilaO.pop()
+	tipoWidth = pTipos.pop()
+
+	genera_cuadruplo = Cuadruplo("LINEWIDTH",width,"","")
+	push_cuadruplo(genera_cuadruplo)
+
+'''
+	============================================
+	Line Color
+	============================================
+'''
+def dibujafunc_linecolor():
+	global pilaO
+	global pTipos
+
+	blue = pilaO.pop()
+	tipoBlue= pTipos.pop()
+
+	green = pilaO.pop()
+	tipoGreen = pTipos.pop()
+
+	red = pilaO.pop()
+	tipoRed = pTipos.pop()
+	if tipoRed == 'int' and tipoGreen == 'int' and tipoBlue == 'int':
+		genera_cuadruplo = Cuadruplo("LINECOLOR",[red,green,blue],"","")
+		push_cuadruplo(genera_cuadruplo)
+	else:
+		sys.exit("Argumentos de funcion lineColor deben ser de tipo entero.")
+
+'''
+	============================================
+	Dibuja una linea
+	============================================
+'''
+def dibujafunc_line():
+	global pilaO
+	global pTipos
+
+	cordY2 = pilaO.pop()
+	tipoCordY2= pTipos.pop()
+
+	cordX2 = pilaO.pop()
+	tipoCordX2 = pTipos.pop()
+
+	cordY1 = pilaO.pop()
+	tipoCordY1 = pTipos.pop()
+
+	cordX1 = pilaO.pop()
+	tipoCordX1 = pTipos.pop()
+
+	if tipoCordX1 == 'int' and tipoCordY1 == 'int' and tipoCordX2 == 'int' and tipoCordY2 == 'int':
+		genera_cuadruplo = Cuadruplo("LINE",[cordX1,cordY1,cordX2,cordY2],"","")
+		push_cuadruplo(genera_cuadruplo)
+	else:
+		sys.exit("Argumentos de funcion line deben ser de tipo entero.")
+'''
+	============================================
+	Dibuja un cuadrado
+	============================================
+'''
+def dibujafunc_square():
+	global pilaO
+	global pTipos
+
+	tamano = pilaO.pop()
+	tipoTamano= pTipos.pop()
+
+	cordY= pilaO.pop()
+	tipoCordY = pTipos.pop()
+
+	cordX = pilaO.pop()
+	tipoCordX = pTipos.pop()
+
+	if tipoTamano == 'int' and tipoCordY == 'int' and tipoCordX == 'int':
+		genera_cuadruplo = Cuadruplo("SQUARE",[cordX,cordY,tamano],"","")
+		push_cuadruplo(genera_cuadruplo)
+	else:
+		sys.exit("Argumentos de funcion square deben ser de tipo entero.")
+
+'''
+	============================================
+	Dibuja un circulo
+	============================================
+'''
+def dibujafunc_circle():
+	global pilaO
+	global pTipos
+
+	radio = pilaO.pop()
+	tipoRadio = pTipos.pop()
+
+	cordY= pilaO.pop()
+	tipoCordY = pTipos.pop()
+
+	cordX = pilaO.pop()
+	tipoCordX = pTipos.pop()
+
+	if tipoRadio == 'int' and tipoCordY == 'int' and tipoCordX == 'int':
+		genera_cuadruplo = Cuadruplo("CIRCLE",[cordX,cordY,radio],"","")
+		push_cuadruplo(genera_cuadruplo)
+	else:
+		sys.exit("Argumentos de funcion circle deben ser de tipo entero.")
+'''
+	============================================
+	Dibuja una estrella
+	============================================
+'''
+def dibujafunc_star():
+	global pilaO
+	global pTipos
+
+	tamano = pilaO.pop()
+	tipoTamano= pTipos.pop()
+
+	cordY= pilaO.pop()
+	tipoCordY = pTipos.pop()
+
+	cordX = pilaO.pop()
+	tipoCordX = pTipos.pop()
+
+	if tipoTamano == 'int' and tipoCordY == 'int' and tipoCordX == 'int':
+		genera_cuadruplo = Cuadruplo("STAR",[cordX,cordY,tamano],"","")
+		push_cuadruplo(genera_cuadruplo)
+	else:
+		sys.exit("Argumentos de funcion star deben ser de tipo entero.")
+
+'''
+	============================================
+	Dibuja un triangulo
+	============================================
+'''
+def dibujafunc_triangle():
+	global pilaO
+	global pTipos
+
+	tamano = pilaO.pop()
+	tipoTamano= pTipos.pop()
+
+	cordY= pilaO.pop()
+	tipoCordY = pTipos.pop()
+
+	cordX = pilaO.pop()
+	tipoCordX = pTipos.pop()
+
+	if tipoTamano == 'int' and tipoCordY == 'int' and tipoCordX == 'int':
+		genera_cuadruplo = Cuadruplo("TRIANGLE",[cordX,cordY,tamano],"","")
+		push_cuadruplo(genera_cuadruplo)
+	else:
+		sys.exit("Argumentos de funcion triangle deben ser de tipo entero.")
+'''
+	============================================
+	Dibuja un arco
+	============================================
+'''
+def dibujafunc_arc():
+	global pilaO
+	global pTipos
+
+	grados = pilaO.pop()
+	tipoGrados = pTipos.pop()
+
+	cordY2 = pilaO.pop()
+	tipoCordY2= pTipos.pop()
+
+	cordX2 = pilaO.pop()
+	tipoCordX2 = pTipos.pop()
+
+	cordY1 = pilaO.pop()
+	tipoCordY1 = pTipos.pop()
+
+	cordX1 = pilaO.pop()
+	tipoCordX1 = pTipos.pop()
+
+	if tipoCordX1 == 'int' and tipoCordY1 == 'int' and tipoCordX2 == 'int' and tipoCordY2 == 'int' and tipoGrados == 'int':
+		genera_cuadruplo = Cuadruplo("ARC",[cordX1,cordY1,cordX2,cordY2,grados],"","")
+		push_cuadruplo(genera_cuadruplo)
+	else:
+		sys.exit("Argumentos de funcion arc deben ser de tipo entero.")
+
+'''
+	============================================
+	Indice que comienza a rellenar figura
+	============================================
+'''
+def dibujafunc_startfill():
+	global pilaO
+	global pTipos
+
+	blue = pilaO.pop()
+	tipoBlue= pTipos.pop()
+
+	green = pilaO.pop()
+	tipoGreen = pTipos.pop()
+
+	red = pilaO.pop()
+	tipoRed = pTipos.pop()
+
+	if tipoRed == 'int' and tipoGreen == 'int' and tipoBlue == 'int':
+		genera_cuadruplo = Cuadruplo("STARTFILL",[red,green,blue],"","")
+		push_cuadruplo(genera_cuadruplo)
+	else:
+		sys.exit("Argumentos de funcion startFill deben ser de tipo entero.")
+
+'''
+	============================================
+	Indica que termina de rellenar figura
+	============================================
+'''
+def dibujafunc_stopfill():
+
+	genera_cuadruplo = Cuadruplo("STOPFILL",255,255,255)
+	push_cuadruplo(genera_cuadruplo)
+
 
 '''
 	============================================
@@ -539,7 +841,7 @@ def acceso_dimvar_3(accessingMatrix):
 def printPilas():
 	print "pilaO ", pilaO.getElements()
 	print "pTipos ", pTipos.getElements()
-	print "pOper ", POper.getElements()
+	print "pOper ", pOper.getElements()
 	print "pSaltos ", pSaltos.getElements()
 	print "pDimensionada" , pDimensionada.getElements()
 	print_cuadruplos(cuadruplos)

@@ -3,6 +3,9 @@ from dmcparser import *
 from cuadruplos import *
 from Memoria import *
 from copy import deepcopy
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
+from OpenGL.GL import *
 import sys
 
 temporalActual = 0
@@ -33,7 +36,40 @@ def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	memGlobal = mGlobal
 	memActiva = mActiva
 	cuadruplos = cuads
+	#main_openGL()
 	main()
+'''
+def main_openGL():
+	glutInit(sys.argv)
+	#glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
+	glutInitWindowPosition(200, 200)
+	glutInitWindowSize(400,400)
+	glutCreateWindow("DRAWMYCODE")
+	
+	glutDisplayFunc(display)
+	glutKeyboardFunc(myKeyboard)
+
+	glClearColor (1.0, 1.0, 1.0, 1.0);
+	glClear( GL_COLOR_BUFFER_BIT );
+
+	glutMainLoop()
+	#init();
+    #glutDisplayFunc(Display);
+    #glutMainLoop();
+
+
+def display():
+	#glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+	#glClearColor(1.0,1.0,1.0,1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glutSwapBuffers()
+
+def myKeyboard(key, x, y):
+	if key == 'q':
+		sys.exit()
+'''
+
 
 def main():
 	global cuadruplo_actual
@@ -46,23 +82,13 @@ def main():
 
 		print currentCuad.op, currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res
 
-		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN':
+		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN' or currentCuad.op == 'LINE':
 			metodo = getMetodo(currentCuad.op)
 			metodo(currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res)
 
 		
 
 
-	'''
-	for currentCuad in cuadruplos:
-			 
-			metodo = getMetodo(currentCuad.op)
-			metodo(currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res)
-		
-		cuadruplo_actual += 1
-		if currentCuad.op == '+':
-			suma(currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res)
-			'''
 
 def getValue(direccion):
 	if direccion>=1 and direccion<4000: #LOCAL
@@ -123,6 +149,8 @@ def getMetodo(op):
 		return ret
 	if op == 'RETURN':
 		return retorno
+	if op == 'LINE':
+		return line
 
 
 '''
@@ -253,4 +281,24 @@ def retorno(c1, c2, c3):
 	existeRetorno = True
 	valorRetorno.append(getValue(c3))
 
+
+def line(c1, c2, c3):
+	return 1
+	'''
+	x1 = getValue(c1[0])
+	y1 = getValue(c1[1])
+	x2 = getValue(c1[2])
+	y2 = getValue(c1[3])
+	print "LINEA"
+	print x1
+	print y1
+	print x2
+	print y2
+
+	glBegin(GL_LINES);
+	glColor3ub(255, 0, 0)
+	glVertex2f(float(x1), float(y1))
+	glVertex2f(float(x2), float(y2))
+	glEnd()
+'''
 

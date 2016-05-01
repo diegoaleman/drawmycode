@@ -1,0 +1,26 @@
+begin program fibonaccirecursivo;
+{
+	func int fibonacci(n:int)
+	{	
+		if (n == 0)
+		{
+			return 0;
+		};
+	    if (n == 1){
+	    	return 1;
+	    	
+	    } else 
+	    {
+	    	return (call fibonacci(n-1)) + (call fibonacci(n-2));
+	    };
+	};
+	endfunc
+
+	main() 
+	var x:int;
+	{
+		call fibonacci(x);
+	};
+	endfunc
+};
+end

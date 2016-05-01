@@ -1,0 +1,11 @@
+begin program test7;
+{
+	main() 
+	var x:int;
+	{	
+		line(0,0,30,30);
+	};
+	endfunc
+		
+};
+end

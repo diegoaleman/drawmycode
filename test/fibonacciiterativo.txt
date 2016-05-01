@@ -1,0 +1,27 @@
+begin program fibonacciiterativo;
+{
+	func int fibonacci(n:int)
+	var a,b,temp,i:int;
+	{	
+		a = 0;
+	    b = 2;
+	    while(i < n){
+
+			temp = a;
+			a = b;
+			b = temp + b;
+	    };
+		
+	    return a;
+	};
+	endfunc
+
+	main() 
+	var x:int;
+	{	
+
+		x = call fibonacci(10);
+	};
+	endfunc
+};
+end
