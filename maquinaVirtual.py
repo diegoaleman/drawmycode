@@ -36,39 +36,11 @@ def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	memGlobal = mGlobal
 	memActiva = mActiva
 	cuadruplos = cuads
-	#main_openGL()
 	main()
-'''
-def main_openGL():
-	glutInit(sys.argv)
-	#glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
-	glutInitWindowPosition(200, 200)
-	glutInitWindowSize(400,400)
-	glutCreateWindow("DRAWMYCODE")
-	
-	glutDisplayFunc(display)
-	glutKeyboardFunc(myKeyboard)
-
-	glClearColor (1.0, 1.0, 1.0, 1.0);
-	glClear( GL_COLOR_BUFFER_BIT );
-
-	glutMainLoop()
-	#init();
-    #glutDisplayFunc(Display);
-    #glutMainLoop();
+	main_openGL()
 
 
-def display():
-	#glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-	#glClearColor(1.0,1.0,1.0,1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glutSwapBuffers()
 
-def myKeyboard(key, x, y):
-	if key == 'q':
-		sys.exit()
-'''
 
 
 def main():
@@ -283,8 +255,6 @@ def retorno(c1, c2, c3):
 
 
 def line(c1, c2, c3):
-	return 1
-	'''
 	x1 = getValue(c1[0])
 	y1 = getValue(c1[1])
 	x2 = getValue(c1[2])
@@ -294,11 +264,49 @@ def line(c1, c2, c3):
 	print y1
 	print x2
 	print y2
-
-	glBegin(GL_LINES);
+	'''
 	glColor3ub(255, 0, 0)
-	glVertex2f(float(x1), float(y1))
-	glVertex2f(float(x2), float(y2))
+	glBegin(GL_LINES);
+	glVertex3f(float(x1), float(y1),0.0)
+	glVertex3f(float(x2), float(y2),0.0)
 	glEnd()
-'''
+	'''
+
+def main_openGL():
+	glutInit(sys.argv)
+	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB)
+	glutInitWindowSize (500, 500)
+	glutInitWindowPosition (100, 100)
+	glutCreateWindow ('DRAWMYCODE')
+	init()
+	glutDisplayFunc(display)
+	glutKeyboardFunc(myKeyboard)
+	glutMainLoop()
+
+def init():
+	glClearColor (0.0, 0.0, 0.0, 0.0)
+   # initialize viewing values  
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0)
+	 
+
+def display():
+	#glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+	#glClearColor(1.0,1.0,1.0,1.0);
+	glClear(GL_COLOR_BUFFER_BIT)
+	glColor3ub(255, 0, 0)
+	glBegin(GL_LINES)
+	glVertex3f (0.25, 0.25, 0.0)
+	glVertex3f (0.75, 0.25, 0.0)
+	glVertex3f (0.75, 0.75, 0.0)
+	glVertex3f (0.25, 0.75, 0.0)
+	glEnd()
+
+	glutSwapBuffers()
+	
+
+def myKeyboard(key, x, y):
+	if key == 'q':
+		sys.exit()
 
