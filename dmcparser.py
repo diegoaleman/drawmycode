@@ -16,6 +16,10 @@ import sys
 from tablas import *
 from cuadruplos import *
 from Memoria import *
+import OpenGL
+from OpenGL.GL import *     
+from OpenGL.GLU import *    
+from OpenGL.GLUT import *
 
 # Get the token map from the lexer.
 from dmclex import tokens
