@@ -2,21 +2,31 @@ from structs import *
 from dmcparser import *
 from cuadruplos import *
 from Memoria import *
+from copy import deepcopy
 import sys
 
 temporalActual = 0
 cuadruplo_actual = 0
 
+dirproc = []
 memGlobal = []
 memActiva = []
+memPasada = []
 memCtes = []
 cuadruplos = []
+pila = []
+listaParams = []
+funcionActual = 'main'
+funcionPasada = ''
+params = 0
 
-def initMaquinaVirtual(mGlobal, mActiva, mCtes, cuads):
+def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	global memCtes
 	global memGlobal
 	global memActiva
 	global cuadruplos
+	global dirproc
+	dirproc = dProc
 	memCtes = mCtes
 	memGlobal = mGlobal
 	memActiva = mActiva
@@ -30,14 +40,15 @@ def main():
 	while cuadruplo_actual < cuadruplos_totales:
 
 		currentCuad = cuadruplos[cuadruplo_actual]
+		cuadruplo_actual =  cuadruplo_actual + 1
 
 		print currentCuad.op, currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res
 
-		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF':
+		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN':
 			metodo = getMetodo(currentCuad.op)
 			metodo(currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res)
 
-		cuadruplo_actual =  cuadruplo_actual + 1
+		
 
 
 	'''
@@ -53,9 +64,9 @@ def main():
 
 def getValue(direccion):
 	if direccion>=1 and direccion<4000: #LOCAL
-		return memActiva.get_valor_memoria(direccion)
-	if direccion>=4000 and direccion<8000: #GLOBAL
 		return memGlobal.get_valor_memoria(direccion)
+	if direccion>=4000 and direccion<8000: #GLOBAL
+		return memActiva.get_valor_memoria(direccion)
 	if direccion>=8000 and direccion<12000: #TEMPORAL
 		return memActiva.get_valor_memoria(direccion)
 	if direccion>=12000 and direccion<16000: #CONSTANTE
@@ -64,9 +75,9 @@ def getValue(direccion):
 
 def setValue(valor, direccion):
 	if direccion>=1 and direccion<4000: #LOCAL
-		return memActiva.set_valor_memoria(valor, direccion)
-	if direccion>=4000 and direccion<8000: #GLOBAL
 		return memGlobal.set_valor_memoria(valor, direccion)
+	if direccion>=4000 and direccion<8000: #GLOBAL
+		return memActiva.set_valor_memoria(valor, direccion)
 	if direccion>=8000 and direccion<12000: #TEMPORAL
 		return memActiva.set_valor_memoria(valor, direccion)
 	if direccion>=12000 and direccion<16000: #CONSTANTE
@@ -98,6 +109,16 @@ def getMetodo(op):
 		return less_equal_than
 	if op == 'GOTOF':
 		return gotof
+	if op == 'GOTO':
+		return goto
+	if op == 'ERA':
+		return era
+	if op == 'GOSUB':
+		return gosub
+	if op == 'PARAM':
+		return param
+	if op == 'RET':
+		return ret
 
 
 '''
@@ -159,171 +180,58 @@ def gotof(c1, c2, c3):
 	value = getValue(c1)
 	if value == False:
 		cuadruplo_actual = c3
+def goto(c1, c2, c3):
+	global cuadruplo_actual
+	cuadruplo_actual = c3
 
+def era(c1, c2, c3):
+	global pila
+	global cuadruplo_actual
+	global memActiva
+	global memPasada
+	global funcionActual
+	global funcionPasada
+	global dirproc
+	global params
 
+	params = 0
+	funcionPasada = funcionActual
+	funcionActual = c2
+	memPasada = deepcopy(memActiva)
+	memActiva = Memoria(dirproc[c2]['Tamano']['ints'],dirproc[c2]['Tamano']['floats'],dirproc[c2]['Tamano']['strings'],dirproc[c2]['Tamano']['bools'],dirproc[c2]['Tamano']['tempInts'],dirproc[c2]['Tamano']['tempFloats'], dirproc[c2]['Tamano']['tempStrings'], dirproc[c2]['Tamano']['tempBools'])
 
-	'''
+def param(c1, c2, c3):
+	global params
+	asignacion(c1,c2,c3)
+	params = params + 1
 
-def setValue():
-	return 1
+def gosub(c1, c2, c3):
+	global params
+	global cuadruplo_actual
+	global pila
+	global memPasada
+	global funcionPasada
+	global dirproc
+	global memActiva
 
-#return memActiva.get_valor_memoria(tipo, direccion)
-
-
-
-
-getTipo(direccion):
-	if direccion>=1 and direccion<4000:
-		if tipo=='int':
-			return 1
-		if tipo=='float':
-			return 1000
-		if tipo=='bool':
-			return 2000
-		if tipo=='string':
-			return 3000
-	if direccion>=4000 and direccion<8000:
-		if tipo=='int':
-			return 4000
-		if tipo=='float':
-			return 5000
-		if tipo=='bool':
-			return 6000
-		if tipo=='string':
-			return 7000
-	if direccion>=8000 and direccion<12000:
-		if tipo=='int':
-			return 8000
-		if tipo=='float':
-			return 9000
-		if tipo=='bool':
-			return 10000
-		if tipo=='string':
-			return 11000
-	if direccion>=12000 and direccion<16000:
-		if tipo=='int':
-			return 12000
-		if tipo=='float':
-			return 13000
-		if tipo=='bool':
-			return 14000
-		if tipo=='string':
-			return 15000
-
-
-'''
-	
-
-
-
-'''
-	
-
-				#suma(2001,2001,2001)
-			#suma(currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res)
-			
-				
-
-				for key, elems in tablaConstantes.iteritems():
-					direccion = elems['Dir']
-					tipo = elems['Tipo']
-					valor = key
-					memCtes.set_valor_memoria(valor, tipo, direccion)
-
-
-
-
-
-
-
-
-					#for key, elems in tablaConstantes:
-	#	print key, elems
-		#if elems['Dir'] == c1:
-		#	print key
-
-
-				
-				memCtes.ints[0] = 4
-
-				print "MEMORIA GLOBAL"
-				print memCtes.ints[0]
-
-				print memGlobal.tempInts[offset]
-				print memActiva.tempInts
-				print memCtes.strings
-				'''
-
-
-
-
-
-
-
-
-
-	
-'''
-def getEntConstante(c):
-	for key, elems in tablaConstantes.iteritems():
-		if elems['Dir'] == c:
-			return key
-
-def getEntTemp(c):
-	return varTemporales[1000-c]
-
-
-def getEntero(c):
-	if c>=1 and c<=999:
-		return getEntGL(c)
-	elif c>=1000 and c<=1999:
-		return getEntTemp(c)
-	elif c>=2000 and c<=9999:
-		return getEntConstante(c)
+	if params == len(dirproc[c1]['OrderedParams']):
+		pila.append([cuadruplo_actual, funcionPasada, memPasada])
+		params = 0
+		cuadruplo_actual = c3
 	else:
-		return -1
-
-def get(c):
-	if c>=1 and c<=9999:
-		return getEntero(c)
-	elif c>=10000 and c<=19999:
-		return getFloat(c)
-	elif c>=20000 and c<=29000:
-		return getBool(c)
-	elif c<=30000 and c<= 39000:
-		return getString(c)
-
-def suma(c1,c2,c3):
-	print "diego"
-	varTemporales[1000-c3] = float(get(c1)) + float(get(c2))
-	print varTemporales[1000-c3]
-
-	#for key, elems in tablaConstantes:
-	#	print key, elems
-		#if elems['Dir'] == c1:
-		#	print key
+		print 'Numero incorrecto de parametros en funcion'
+		sys.exit()
 
 
+def ret(c1, c2, c3):
+	global memActiva
+	global cuadruplo_actual
+	global funcionActual
 
-if currentCuad:
-	print cuadruplo_actual, " " ,currentCuad.op, " , ", currentCuad.opdoIzq, " , ", currentCuad.opdoDer," , ",currentCuad.res
-else:
-	print "List is empty"
-
-
-def getEntGL(c):
-
-def getFloat(c):
-
-def getBool(c):
-
-def getString(c):
-
-'''
-	#while cuadruplo_actual < len(cuadruplos):
-	#	cuadruplo_actual += 1
-	#print "diego"
-	#print cuadruplo_actual 
+	p = pila.pop()
+	memActiva = p[2]
+	funcionActual = p[1]
+	cuadruplo_actual = p[0]
 
 
 

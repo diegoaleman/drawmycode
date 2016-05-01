@@ -10,12 +10,14 @@ POper = Stack()
 pTipos = Stack()
 pSaltos = Stack()
 pEjecucion = Stack()
+pDimensionada = Stack()
 
 # Inicia con el index 0
 cuadruplos = []
 
 # Inicia con el index 0
 contSaltos = 0
+actualAccessDIM = 1
 
 class Cuadruplo:
 
@@ -38,9 +40,15 @@ def push_cuadruplo(cuadruplo):
 	contSaltos+=1
 
 def goto_main_quad():
+	global pSaltos
 	genera_cuadruplo = Cuadruplo("GOTO","","","")
 	push_cuadruplo(genera_cuadruplo)
+	pSaltos.push(0);
 
+def iniciaMain():
+	global pSaltos
+	inicioMain = pSaltos.pop()
+	cuadruplos[inicioMain].res = contSaltos
 ''' 
 	============================================
 	1. Meter direccion y tipo del ID en pilaO
@@ -398,6 +406,11 @@ def altaInicioFunc():
 	global contSaltos
 	return contSaltos
 
+'''
+	=========================================================
+	Genera Accion Retorno cuando termina una funcion
+	=========================================================
+'''
 def generaAccionRetorno(funcActual):
 	totalTempInts = get_Total_Temp_Int()
 	totalTempFloats = get_Total_Temp_Float()
@@ -408,7 +421,11 @@ def generaAccionRetorno(funcActual):
 		push_cuadruplo(genera_cuadruplo)
 	return {'totalTempInts' : totalTempInts,'totalTempFloats':totalTempFloats,'totalTempBools':totalTempBools,'totalTempStrings':totalTempStrings}
 
-
+'''
+	=========================================================
+	Genera Accion End al final de MAIN
+	=========================================================
+'''
 def generaAccionEndMain():
 	genera_cuadruplo = Cuadruplo("END", "", "", "")
 	push_cuadruplo(genera_cuadruplo)
@@ -439,6 +456,11 @@ def estatuto_llamadafunc_3(dirParamActual, tipoParamActual):
 	else:
 		sys.exit('Error. Tipo de argumento "%s"y parametro no coinciden.' % argumento)
 
+'''
+	=========================================================
+	Estatuto Llamada Funcion 6
+	=========================================================
+'''
 def estatuto_llamadafunc_6(funcLlamada,quadInicioFuncLlamada,tipoFuncLlamada,dirFuncLlamada):
 	global contSaltos
 	global pEjecucion
@@ -480,13 +502,53 @@ def estatuto_return(funcActual, tipoFuncActual):
 def getCuadruplos():
 	return cuadruplos
 
+'''
+	============================================
+	Estatuto Variable Dimensionada 2
+	============================================
+'''
+def acceso_dimvar_2():
+	global pilaO
+	global pDimensionada
+	global POper
+	global actualAccessDIM
+	idDim = pilaO.pop()
+	actualAccessDIM = 1
+	pDimensionada.push([idDim,actualAccessDIM])
+	POper.push('[')
+
+'''
+	============================================
+	Estatuto Variable Dimensionada 3
+	============================================
+'''
+def acceso_dimvar_3(accessingMatrix):
+	global pilaO
+	Li_DIM = accessingMatrix['Dim'][actualAccessDIM]['Li']
+	Ls_DIM = accessingMatrix['Dim'][actualAccessDIM]['Ls']
+	genera_cuadruplo = Cuadruplo("VERIFICA",pilaO.peek(),Li_DIM,Ls_DIM)
+	push_cuadruplo(genera_cuadruplo)
+	if actualAccessDIM == 1:
+		print "existe"
+
+'''
+	============================================
+	Imprime las pilas
+	============================================
+'''
 def printPilas():
 	print "pilaO ", pilaO.getElements()
 	print "pTipos ", pTipos.getElements()
 	print "pOper ", POper.getElements()
 	print "pSaltos ", pSaltos.getElements()
+	print "pDimensionada" , pDimensionada.getElements()
 	print_cuadruplos(cuadruplos)
 
+'''
+	============================================
+	Imprime los cuadruplos
+	============================================
+'''
 def print_cuadruplos(currentCuadList):
 	print "Tabla Cuadruplos"
 	index = 0

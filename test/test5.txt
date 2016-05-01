@@ -1,19 +1,29 @@
 begin program test5;
 	var i,j:int;
 {
+
+	func int uno(x:int, y:int)
+	var i:int;
+	{	
+		i = 2;
+		return (i);
+	};
+	endfunc
+
+	func void dos()
+	{	
+		j = 1;
+	};
+	endfunc
+
+
 	main() 
 	var x:int;
 	{
-		if (2 == 2) 
-		{
-			x = 2+1;
-		}
-		else 
-		{
-			x = 3 + 5;
-		};
+		x = call uno(1,2);
 	};
 	endfunc
 		
 };
 end
+
