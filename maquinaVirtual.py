@@ -36,27 +36,10 @@ def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	memGlobal = mGlobal
 	memActiva = mActiva
 	cuadruplos = cuads
+	print len(cuads)
 	main()
-	main_openGL()
 
 
-
-
-
-def main():
-	global cuadruplo_actual
-	print "----------------------"
-	cuadruplos_totales = len(cuadruplos)
-	while cuadruplo_actual < cuadruplos_totales:
-
-		currentCuad = cuadruplos[cuadruplo_actual]
-		cuadruplo_actual =  cuadruplo_actual + 1
-
-		print currentCuad.op, currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res
-
-		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN' or currentCuad.op == 'LINE':
-			metodo = getMetodo(currentCuad.op)
-			metodo(currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res)
 
 		
 
@@ -264,49 +247,64 @@ def line(c1, c2, c3):
 	print y1
 	print x2
 	print y2
-	'''
+	
 	glColor3ub(255, 0, 0)
 	glBegin(GL_LINES);
 	glVertex3f(float(x1), float(y1),0.0)
 	glVertex3f(float(x2), float(y2),0.0)
 	glEnd()
-	'''
-
-def main_openGL():
-	glutInit(sys.argv)
-	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB)
-	glutInitWindowSize (500, 500)
-	glutInitWindowPosition (100, 100)
-	glutCreateWindow ('DRAWMYCODE')
-	init()
-	glutDisplayFunc(display)
-	glutKeyboardFunc(myKeyboard)
-	glutMainLoop()
-
-def init():
-	glClearColor (0.0, 0.0, 0.0, 0.0)
-   # initialize viewing values  
-	glMatrixMode(GL_PROJECTION)
-	glLoadIdentity()
-	glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0)
-	 
-
-def display():
-	#glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-	#glClearColor(1.0,1.0,1.0,1.0);
-	glClear(GL_COLOR_BUFFER_BIT)
-	glColor3ub(255, 0, 0)
-	glBegin(GL_LINES)
-	glVertex3f (0.25, 0.25, 0.0)
-	glVertex3f (0.75, 0.25, 0.0)
-	glVertex3f (0.75, 0.75, 0.0)
-	glVertex3f (0.25, 0.75, 0.0)
-	glEnd()
-
-	glutSwapBuffers()
 	
 
 def myKeyboard(key, x, y):
 	if key == 'q':
 		sys.exit()
+
+window = 0                                             # glut window number
+width, height = 500, 400   
+
+def refresh2d(width, height):
+    glViewport(0, 0, width, height)
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    glOrtho(-width, width, -height, height, 0.0, 100.0)
+    glMatrixMode (GL_MODELVIEW)
+    glLoadIdentity()
+
+def draw():                           # set color to white
+	glutSwapBuffers() 
+
+def main():
+	global cuadruplo_actual
+	glutInit(sys.argv)
+	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB)
+	glutInitWindowSize (500, 500)
+	glutInitWindowPosition (100, 100)
+	glutCreateWindow ('DRAWMYCODE')
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) # clear the screen
+	glLoadIdentity()  
+	refresh2d(width, height)                      
+	glColor3f(1.0, 1.0, 1.0)
+
+	print "----------------------"
+	cuadruplos_totales = len(cuadruplos)
+	while cuadruplo_actual < cuadruplos_totales:
+		currentCuad = cuadruplos[cuadruplo_actual]
+		cuadruplo_actual =  cuadruplo_actual + 1
+
+		print currentCuad.op, currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res
+
+		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN' or currentCuad.op == 'LINE':
+			metodo = getMetodo(currentCuad.op)
+			metodo(currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res)
+		
+
+	glutKeyboardFunc(myKeyboard)
+	glutDisplayFunc(draw)
+	glutIdleFunc(draw)
+	glutMainLoop()
+
+
+
+	
+	exit(-1)
 
