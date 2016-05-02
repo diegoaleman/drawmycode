@@ -114,6 +114,8 @@ def getMetodo(op):
 		return circle
 	if op == 'TRIANGLE':
 		return triangle
+	if op == 'PRINT':
+		return imprime
 
 '''
 =========================================================
@@ -304,7 +306,9 @@ def triangle(c1, c2, c3):
 	glVertex3f(-0.5, 0, 0)
 	glVertex3f(0, 1, 0)
 	glEnd()
-	
+
+def imprime(c1, c2, c3):
+	print getValue(c3)
 
 def myKeyboard(key, x, y):
 	if key == 'q':
@@ -344,7 +348,7 @@ def main():
 
 		print currentCuad.op, currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res
 
-		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN' or currentCuad.op == 'LINE' or currentCuad.op == 'SQUARE' or currentCuad.op == 'CIRCLE' or currentCuad.op == 'TRIANGLE':
+		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN' or currentCuad.op == 'LINE' or currentCuad.op == 'SQUARE' or currentCuad.op == 'CIRCLE' or currentCuad.op == 'TRIANGLE' or currentCuad.op == 'PRINT':
 			metodo = getMetodo(currentCuad.op)
 			metodo(currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res)
 		
