@@ -26,6 +26,7 @@ funcionPasada = ''
 params = 0
 existeRetorno = False
 valorRetorno = []
+value = None 
 
 def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	global memCtes
@@ -38,7 +39,6 @@ def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	memGlobal = mGlobal
 	memActiva = mActiva
 	cuadruplos = cuads
-	print len(cuads)
 	main()
 
 
@@ -59,9 +59,9 @@ def getValue(direccion):
 
 
 def setValue(valor, direccion):
-	if direccion>=1 and direccion<4000: #LOCAL
+	if direccion>=1 and direccion<4000: #GLOBAL
 		return memGlobal.set_valor_memoria(valor, direccion)
-	if direccion>=4000 and direccion<8000: #GLOBAL
+	if direccion>=4000 and direccion<8000: #LOCAL
 		return memActiva.set_valor_memoria(valor, direccion)
 	if direccion>=8000 and direccion<12000: #TEMPORAL
 		return memActiva.set_valor_memoria(valor, direccion)
@@ -128,22 +128,21 @@ cambiar el float
 def asignacion(c1, c2, c3):
 	global existeRetorno
 	global valorRetorno
+	global value
 
 	if existeRetorno == True:
 		existeRetorno = False
 		setValue(valorRetorno.pop(), c3)
 	else:
-		print "Diegoasdlfkajs"
-		print c1
 		if (c1>=1 and c1<1000) or (c1>=4000 and c1<5000) or (c1>=12000 and c1<13000):
 			value = int(getValue(c1))
 		if (c1>=1000 and c1<2000) or (c1>=5000 and c1<6000) or (c1>=13000 and c1<14000):
 			value = float(getValue(c1))
 		if (c1>=2000 and c1<3000) or (c1>=6000 and c1<7000) or (c1>=14000 and c1<15000):
-			value = str(getValue(c1))
-			if value == 'true':
+			x = str(getValue(c1))
+			if x == 'true':
 				value = True
-			elif value == 'false':
+			elif x == 'false':
 				value = False
 			else:
 				sys.exit()
@@ -153,14 +152,16 @@ def asignacion(c1, c2, c3):
 		setValue(value, c3)
 
 	print "asign"	
-	print type(getValue(c3))
+	print getValue(c1)
 	print getValue(c3)
 
 def suma(c1, c2, c3):
+	global value
 	value = float(getValue(c1)) + float(getValue(c2))
 	setValue(value, c3)
 
 def resta(c1, c2, c3):
+	global value
 	value = float(getValue(c1)) - float(getValue(c2))
 	setValue(value, c3)
 

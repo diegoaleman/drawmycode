@@ -1,9 +1,12 @@
 begin program ejemplo2;
 {
 
-	func int prueba(d:bool,x:int)
+	func void prueba()
 	var c,a,b:int; e:string;
 	{	
+		a = 10;
+		b = 200;
+		c = 100;
 		if (a > b)
 		{
 			if (a < c )
@@ -21,23 +24,25 @@ begin program ejemplo2;
 		{
 			print (b);
 
-			while (1 < 2) 
+			while (a < c) 
 			{
-				while (1 > 2) 
+				while (b > c) 
 				{
 					print (c);
+					b = b - 10;
 				};
+				a = a + 10;
 				print (c);
 			};
 		};
 		
-		e = "hola";
 	};
 	endfunc
 
 	main() 
 	var num:int;
 	{
+		call prueba();
 	};
 	endfunc
 		
