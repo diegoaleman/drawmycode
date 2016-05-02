@@ -501,6 +501,8 @@ def estatuto_return(funcActual, tipoFuncActual):
 		varRetorno = pilaO.pop()
 		genera_cuadruplo = Cuadruplo("RETURN",funcActual,"",varRetorno)
 		push_cuadruplo(genera_cuadruplo)
+		genera_cuadruplo = Cuadruplo("RET","","","")
+		push_cuadruplo(genera_cuadruplo)
 	elif (tipoFuncActual=='void') or (tipoVarRetorno!=tipoFunc):
 		sys.exit("Error. Tipo de variable retorno no coincide con tipo de la funcion.")
 
@@ -586,7 +588,7 @@ def acceso_dimvar_5():
 	genera_cuadruplo = Cuadruplo("+",aux1,actualDirBaseMatrix,temp)
 	push_cuadruplo(genera_cuadruplo)
 
-	pilaO.push(temp)
+	pilaO.push("("+ str(temp) + ")")
 	pOper.pop()
 	pDimensionada.pop()
 
