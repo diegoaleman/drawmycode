@@ -136,7 +136,6 @@ def asignacion(c1, c2, c3):
 	global existeRetorno
 	global valorRetorno
 	global value
-	print getValue(c3)
 	if existeRetorno == True:
 		existeRetorno = False
 		setValue(valorRetorno, c3)
@@ -178,13 +177,15 @@ def asignacion(c1, c2, c3):
 					value = False
 				else:
 					sys.exit()
+
 			if (c1>=3000 and c1<4000) or (c1>=7000 and c1<8000) or (c1>=11000 and c1<12000) or (c1>=15000 and c1<16000):
 				value = str(getValue(c1))
 
 			setValue(value, c3)
+			print getValue(c3)
 
-	print "asign"	
-	print getValue(c3)
+		print "asign"	
+		print getValue(getValue(m))
 
 
 def suma(c1, c2, c3):
@@ -206,8 +207,20 @@ def suma(c1, c2, c3):
 		print getValue(c1)
 		print c2
 		print getValue(c3)
-
+	# Operacion normal de suma 
 	else:
+		# En caso de que sea una matriz
+		m1 = str(c1)
+		m2 = str(c2)
+		if m1[0] == '(':
+			l = len(c1)
+			m1 = int(c1[1:l-1])
+			c1 = getValue(m1)
+		if m2[0] == '(':
+			l = len(c2)
+			m2 = int(c2[1:l-1])
+			c2 = getValue(m2)
+
 		value = float(getValue(c1)) + float(getValue(c2))
 		setValue(value, c3)
 
@@ -215,6 +228,17 @@ def suma(c1, c2, c3):
 
 def resta(c1, c2, c3):
 	global value
+	m1 = str(c1)
+	m2 = str(c2)
+	if m1[0] == '(':
+		l = len(c1)
+		m1 = int(c1[1:l-1])
+		c1 = getValue(m1)
+	if m2[0] == '(':
+		l = len(c2)
+		m2 = int(c2[1:l-1])
+		c2 = getValue(m2)
+
 	value = float(getValue(c1)) - float(getValue(c2))
 	setValue(value, c3)
 	
@@ -228,6 +252,16 @@ def multiplicacion(c1, c2, c3):
 		value = float(getValue(c1)) * float(c2)
 		print getValue(c3)
 	else:
+		m1 = str(c1)
+		m2 = str(c2)
+		if m1[0] == '(':
+			l = len(c1)
+			m1 = int(c1[1:l-1])
+			c1 = getValue(m1)
+		if m2[0] == '(':
+			l = len(c2)
+			m2 = int(c2[1:l-1])
+			c2 = getValue(m2)
 		value = float(getValue(c1)) * float(getValue(c2))
 	
 	setValue(value, c3)
@@ -236,36 +270,116 @@ def multiplicacion(c1, c2, c3):
 
 def division(c1, c2, c3):
 	global value
+	m1 = str(c1)
+	m2 = str(c2)
+	if m1[0] == '(':
+		l = len(c1)
+		m1 = int(c1[1:l-1])
+		c1 = getValue(m1)
+	if m2[0] == '(':
+		l = len(c2)
+		m2 = int(c2[1:l-1])
+		c2 = getValue(m2)
+
 	value = float(getValue(c1)) / float(getValue(c2))
 	setValue(value, c3)
 
 def greater_than(c1, c2, c3):
 	global value
+	m1 = str(c1)
+	m2 = str(c2)
+	if m1[0] == '(':
+		l = len(c1)
+		m1 = int(c1[1:l-1])
+		c1 = getValue(m1)
+	if m2[0] == '(':
+		l = len(c2)
+		m2 = int(c2[1:l-1])
+		c2 = getValue(m2)
+
 	value = float(getValue(c1)) > float(getValue(c2))
 	setValue(value, c3)
 
 def less_than(c1, c2, c3):
 	global value
+	m1 = str(c1)
+	m2 = str(c2)
+	if m1[0] == '(':
+		l = len(c1)
+		m1 = int(c1[1:l-1])
+		c1 = getValue(m1)
+	if m2[0] == '(':
+		l = len(c2)
+		m2 = int(c2[1:l-1])
+		c2 = getValue(m2)
+
 	value = float(getValue(c1)) < float(getValue(c2))
 	setValue(value, c3)
 
 def different(c1, c2, c3):
 	global value
+	m1 = str(c1)
+	m2 = str(c2)
+	if m1[0] == '(':
+		l = len(c1)
+		m1 = int(c1[1:l-1])
+		c1 = getValue(m1)
+	if m2[0] == '(':
+		l = len(c2)
+		m2 = int(c2[1:l-1])
+		c2 = getValue(m2)
+
 	value = float(getValue(c1)) != float(getValue(c2))
 	setValue(value, c3)
 
 def equal(c1, c2, c3):
 	global value
-	value = float(getValue(c1)) == float(getValue(c2))
-	setValue(value, c3)
+	m1 = str(c1)
+	m2 = str(c2)
+	if m1[0] == '(':
+		l = len(c1)
+		m1 = int(c1[1:l-1])
+		c1 = getValue(m1)
+	if m2[0] == '(':
+		l = len(c2)
+		m2 = int(c2[1:l-1])
+		c2 = getValue(m2)
+	if ((c1>=2000 and c1<3000) or (c1>=6000 and c1<7000) or (c1>=10000 and c1<11000) or (c1>=14000 and c1<15000) and ((c2>=2000 and c2<3000) or (c2>=6000 and c2<7000) or (c2>=10000 and c2<11000) or (c2>=14000 and c2<15000))):
+		value = getValue(c1) == getValue(c2)
+		setValue(value, c3)
+	else:
+		value = float(getValue(c1)) == float(getValue(c2))
+		setValue(value, c3)
 
 def greater_equal_than(c1, c2, c3):
 	global value
+	m1 = str(c1)
+	m2 = str(c2)
+	if m1[0] == '(':
+		l = len(c1)
+		m1 = int(c1[1:l-1])
+		c1 = getValue(m1)
+	if m2[0] == '(':
+		l = len(c2)
+		m2 = int(c2[1:l-1])
+		c2 = getValue(m2)
+
 	value = float(getValue(c1)) >= float(getValue(c2))
 	setValue(value, c3)
 
 def less_equal_than(c1, c2, c3):
 	global value
+	m1 = str(c1)
+	m2 = str(c2)
+	if m1[0] == '(':
+		l = len(c1)
+		m1 = int(c1[1:l-1])
+		c1 = getValue(m1)
+	if m2[0] == '(':
+		l = len(c2)
+		m2 = int(c2[1:l-1])
+		c2 = getValue(m2)
+
 	value = float(getValue(c1)) <= float(getValue(c2))
 	setValue(value, c3)
 
