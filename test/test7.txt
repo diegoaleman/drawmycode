@@ -3,7 +3,7 @@ begin program test7;
 	main() 
 	var x:int;
 	{	
-		line(0,0,30,30);
+		triangle(0,0,200);
 	};
 	endfunc
 		

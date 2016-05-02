@@ -59,8 +59,8 @@ tokens = ( 'PROGRAM','CTESTRING','COLON', 'SEMICOLON','VAR', 'NOTEQUAL', 'LESSTH
 
 # Regular expression rules for simple tokens
 t_ignore = ' \t'
-t_CTEINT = r'[0-9]+'
-t_CTEFLOAT = r'[0-9]+\.+[0-9]+'
+t_CTEINT = r'-?[0-9]+'
+t_CTEFLOAT = r'-?[0-9]+\.+[0-9]+'
 t_COLON	= r':'
 t_SEMICOLON	= r';'
 t_COMMA	= r','
