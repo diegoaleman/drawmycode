@@ -1050,7 +1050,7 @@ if __name__ == '__main__':
 					memCtes.set_valor_memoria(valor, direccion)
 
 
-				print memCtes.get_valor_memoria(12000)
+		
 
 				cuadruplos = getCuadruplos()
 				initMaquinaVirtual(dirproc, memGlobal, memActiva, memCtes, cuadruplos)

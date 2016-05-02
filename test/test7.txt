@@ -1,10 +1,9 @@
 begin program test7;
 {
 	main() 
-	var x:int;
+	var x:float;
 	{	
-		x = 2;
-		print (x);
+		x = 1;
 	};
 	endfunc
 		

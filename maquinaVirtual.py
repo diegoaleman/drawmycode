@@ -133,10 +133,27 @@ def asignacion(c1, c2, c3):
 		existeRetorno = False
 		setValue(valorRetorno.pop(), c3)
 	else:
-		value = float(getValue(c1))
+		print "Diegoasdlfkajs"
+		print c1
+		if (c1>=1 and c1<1000) or (c1>=4000 and c1<5000) or (c1>=12000 and c1<13000):
+			value = int(getValue(c1))
+		if (c1>=1000 and c1<2000) or (c1>=5000 and c1<6000) or (c1>=13000 and c1<14000):
+			value = float(getValue(c1))
+		if (c1>=2000 and c1<3000) or (c1>=6000 and c1<7000) or (c1>=14000 and c1<15000):
+			value = str(getValue(c1))
+			if value == 'true':
+				value = True
+			elif value == 'false':
+				value = False
+			else:
+				sys.exit()
+		if (c1>=3000 and c1<4000) or (c1>=7000 and c1<8000) or (c1>=15000 and c1<16000):
+			value = str(getValue(c1))
+
 		setValue(value, c3)
 
 	print "asign"	
+	print type(getValue(c3))
 	print getValue(c3)
 
 def suma(c1, c2, c3):
