@@ -18,6 +18,7 @@ from cuadruplos import *
 from Memoria import *
 from maquinaVirtual import *
 
+
 # Get the token map from the lexer.
 from dmclex import tokens
 dirproc = {}

@@ -3,6 +3,7 @@ from dmcparser import *
 from cuadruplos import *
 from Memoria import *
 from copy import deepcopy
+import OpenGL
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from OpenGL.GL import *
