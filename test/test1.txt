@@ -1,7 +1,7 @@
 begin program ejemplo2;
 {
 
-	func void prueba()
+	func void MAIN()
 	var c,a,b:int; e:string;
 	{	
 		a = 10;
@@ -42,7 +42,7 @@ begin program ejemplo2;
 	main() 
 	var num:int;
 	{
-		call prueba();
+		call main();
 	};
 	endfunc
 		

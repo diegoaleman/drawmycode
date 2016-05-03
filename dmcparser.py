@@ -346,7 +346,7 @@ def p_altaFuncion(p):
 	varsLocalesDir = {}
 	nombreFunc = p[-1]
 	dirFunc = set_dir_global(p[-2],1)
-	if nombreFunc != "MAIN":
+	if nombreFunc != "MAIN" or nombreFunc != "main":
 		if not nombreFunc in dirproc:
 			funcActual = nombreFunc
 			dirproc[nombreFunc] = {}
@@ -895,7 +895,7 @@ def p_estatuto_llamadafunc_3(p):
 		# manda param actual y su tipo
 		estatuto_llamadafunc_3(dirParamActual, tipoParamActual)
 	except IndexError:
-		sys.exit("Numero de parametros es mayor que el numero de argumentos")
+		sys.exit("Numero de parametros no coincide con el numero de argumentos")
 	
 	
 def p_estatuto_llamadafunc_4(p):
@@ -1006,7 +1006,7 @@ def p_stopfillfunc(p):
 	dibujafunc_stopfill()
 
 def p_error(p):
-    print('Syntax error in token %s with value %s in line %s' % (p.type, p.value, p.lineno))
+    print('Error de sintaxis en token %s con valor %s en linea %s' % (p.type, p.value, p.lineno))
     sys.exit()
 
 # Build the parser
@@ -1060,4 +1060,4 @@ if __name__ == '__main__':
 		except EOFError:
 	   		print(EOFError)
 	else:
-		print('File missing')
+		print('Falta archivo')

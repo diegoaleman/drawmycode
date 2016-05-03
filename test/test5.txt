@@ -6,14 +6,14 @@ begin program test5;
 	{	
 		b = 1 + 1;
 		print (c);
-		return (b*2);
+		return (2.0);
 	};
 	endfunc
 
 	main() 
 	var x:int;
 	{	
-		x = call dos(0,1);
+		x = call dos(1);
 		print (x);
 	};
 	endfunc

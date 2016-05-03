@@ -1,4 +1,4 @@
-begin program factorialiterativo;
+begin program factorialciclico;
 var a, f : int;
 {
 	func int factorial(n :int)

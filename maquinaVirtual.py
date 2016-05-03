@@ -173,9 +173,9 @@ def asignacion(c1, c2, c3):
 				value = float(getValue(c1))
 			if (c1>=2000 and c1<3000) or (c1>=6000 and c1<7000) or (c1>=10000 and c1<11000) or (c1>=14000 and c1<15000):
 				x = str(getValue(c1))
-				if x == 'true':
+				if x == 'True':
 					value = True
-				elif x == 'false':
+				elif x == 'False':
 					value = False
 				else:
 					sys.exit()
@@ -195,9 +195,9 @@ def asignacion(c1, c2, c3):
 				value = float(getValue(c1))
 			if (c1>=2000 and c1<3000) or (c1>=6000 and c1<7000) or (c1>=10000 and c1<11000) or (c1>=14000 and c1<15000):
 				x = str(getValue(c1))
-				if x == 'true':
+				if x == 'True':
 					value = True
-				elif x == 'false':
+				elif x == 'False':
 					value = False
 				else:
 					sys.exit()
@@ -364,7 +364,14 @@ def equal(c1, c2, c3):
 		m2 = int(c2[1:l-1])
 		c2 = getValue(m2)
 	if ((c1>=2000 and c1<3000) or (c1>=6000 and c1<7000) or (c1>=10000 and c1<11000) or (c1>=14000 and c1<15000) and ((c2>=2000 and c2<3000) or (c2>=6000 and c2<7000) or (c2>=10000 and c2<11000) or (c2>=14000 and c2<15000))):
-		value = getValue(c1) == getValue(c2)
+		x = str(getValue(c2))
+		if x == 'True':
+			c2 = True
+		elif x == 'False':
+			c2 = False
+		else:
+			sys.exit()
+		value = getValue(c1) == c2
 		setValue(value, c3)
 	else:
 		value = float(getValue(c1)) == float(getValue(c2))
@@ -508,7 +515,7 @@ def verifica(c1, c2, c3):
 	value = int(getValue(c1))
 
 	if not (value>=c2 and value<=c3):
-		print 'Array overflow'
+		print 'Index fuera de los limites'
 		sys.exit()
 
 
@@ -687,10 +694,10 @@ def imprime(c1, c2, c3):
 	if m[0] == '(':
 		l = len(c3)
 		m = int(c3[1:l-1])
-		print "OUTPUT :" , getValue(getValue(m))
+		print getValue(getValue(m))
 		printWindow(getValue(getValue(m)))
 	else:
-		print "OUTPUT :", getValue(c3)
+		print getValue(c3)
 		printWindow(getValue(c3))
 
 def myKeyboard(key, x, y):

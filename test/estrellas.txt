@@ -1,4 +1,4 @@
-begin program test7;
+begin program estrellas;
 {
 	main() 
 	var x,y,cont,red,green,blue:int;
@@ -17,12 +17,7 @@ begin program test7;
 			stopFill();
 			cont = cont + 1;
 		};
-		
-		
-
-
 	};
-	endfunc
-		
+	endfunc	
 };
 end

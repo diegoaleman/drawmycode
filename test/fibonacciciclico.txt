@@ -1,4 +1,4 @@
-begin program fibonacciiterativo;
+begin program fibonacciciclico;
 {
 	func int fibonacci(n:int)
 	var a,b,temp,i,posX,posY:int;

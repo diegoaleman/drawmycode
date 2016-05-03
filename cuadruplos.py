@@ -380,7 +380,7 @@ def estatuto_while_2():
 
 	auxTipo = pTipos.pop()
 	if auxTipo != "bool":
-		sys.exit("Error Semantico.")
+		sys.exit("Error Semantico. Se requiere operacion booleana")
 	else:
 		res = pilaO.pop()
 		genera_cuadruplo = Cuadruplo("GOTOF", res, "", "")
@@ -505,7 +505,7 @@ def estatuto_return(funcActual, tipoFuncActual):
 		genera_cuadruplo = Cuadruplo("RET","","","")
 		push_cuadruplo(genera_cuadruplo)
 	elif (tipoFuncActual=='void') or (tipoVarRetorno!=tipoFunc):
-		sys.exit("Error. Tipo de variable retorno no coincide con tipo de la funcion.")
+		sys.exit("Error. Tipo de valor retorno no coincide con tipo de la funcion.")
 
 def getCuadruplos():
 	return cuadruplos
@@ -625,8 +625,11 @@ def dibujafunc_linewidth():
 	width = pilaO.pop()
 	tipoWidth = pTipos.pop()
 
-	genera_cuadruplo = Cuadruplo("LINEWIDTH",width,"","")
-	push_cuadruplo(genera_cuadruplo)
+	if (tipoWidth == 'int' or tipoWidth == 'float'):
+		genera_cuadruplo = Cuadruplo("LINEWIDTH",width,"","")
+		push_cuadruplo(genera_cuadruplo)
+	else:
+		sys.exit("Error. Argumentos de funcion lineWidth deben ser numericos.")
 
 '''
 	============================================
@@ -649,7 +652,7 @@ def dibujafunc_linecolor():
 		genera_cuadruplo = Cuadruplo("LINECOLOR",[red,green,blue],"","")
 		push_cuadruplo(genera_cuadruplo)
 	else:
-		sys.exit("Argumentos de funcion lineColor deben ser de tipo entero.")
+		sys.exit("Error. Argumentos de funcion lineColor deben ser de tipo entero.")
 
 '''
 	============================================
@@ -672,11 +675,11 @@ def dibujafunc_line():
 	cordX1 = pilaO.pop()
 	tipoCordX1 = pTipos.pop()
 
-	if tipoCordX1 == 'int' and tipoCordY1 == 'int' and tipoCordX2 == 'int' and tipoCordY2 == 'int':
+	if (tipoCordX1 == 'int' or tipoCordX1 == 'float') and (tipoCordY1 == 'int' or tipoCordY1 == 'float') and (tipoCordX2 == 'int' or tipoCordX2 == 'float') and (tipoCordY2 == 'int' or tipoCordY2 == 'float'):
 		genera_cuadruplo = Cuadruplo("LINE",[cordX1,cordY1,cordX2,cordY2],"","")
 		push_cuadruplo(genera_cuadruplo)
 	else:
-		sys.exit("Argumentos de funcion line deben ser de tipo entero.")
+		sys.exit("Error. Argumentos de funcion line deben ser numericos.")
 '''
 	============================================
 	Dibuja un cuadrado
@@ -695,11 +698,11 @@ def dibujafunc_square():
 	cordX = pilaO.pop()
 	tipoCordX = pTipos.pop()
 
-	if tipoTamano == 'int' and tipoCordY == 'int' and tipoCordX == 'int':
+	if (tipoTamano == 'int' or tipoTamano == 'float') and (tipoCordY == 'int' or tipoCordY == 'float') and (tipoCordX == 'int' or tipoCordX == 'float'):
 		genera_cuadruplo = Cuadruplo("SQUARE",[cordX,cordY,tamano],"","")
 		push_cuadruplo(genera_cuadruplo)
 	else:
-		sys.exit("Argumentos de funcion square deben ser de tipo entero.")
+		sys.exit("Error. Argumentos de funcion square deben ser numericos.")
 
 '''
 	============================================
@@ -719,11 +722,11 @@ def dibujafunc_circle():
 	cordX = pilaO.pop()
 	tipoCordX = pTipos.pop()
 
-	if tipoRadio == 'int' and tipoCordY == 'int' and tipoCordX == 'int':
+	if (tipoRadio == 'int' or tipoRadio == 'float') and (tipoCordY == 'int' or tipoCordY == 'float') and (tipoCordX == 'int' or tipoCordX == 'float'):
 		genera_cuadruplo = Cuadruplo("CIRCLE",[cordX,cordY,radio],"","")
 		push_cuadruplo(genera_cuadruplo)
 	else:
-		sys.exit("Argumentos de funcion circle deben ser de tipo entero.")
+		sys.exit("Error. Argumentos de funcion circle deben ser numericos.")
 '''
 	============================================
 	Dibuja una estrella
@@ -742,11 +745,11 @@ def dibujafunc_star():
 	cordX = pilaO.pop()
 	tipoCordX = pTipos.pop()
 
-	if tipoTamano == 'int' and tipoCordY == 'int' and tipoCordX == 'int':
+	if (tipoTamano == 'int' or tipoTamano == 'float') and (tipoCordY == 'int' or tipoCordY == 'float') and (tipoCordX == 'int' or tipoCordX == 'float'):
 		genera_cuadruplo = Cuadruplo("STAR",[cordX,cordY,tamano],"","")
 		push_cuadruplo(genera_cuadruplo)
 	else:
-		sys.exit("Argumentos de funcion star deben ser de tipo entero.")
+		sys.exit("Error. Argumentos de funcion star deben ser numericos.")
 
 '''
 	============================================
@@ -766,11 +769,11 @@ def dibujafunc_triangle():
 	cordX = pilaO.pop()
 	tipoCordX = pTipos.pop()
 
-	if tipoTamano == 'int' and tipoCordY == 'int' and tipoCordX == 'int':
+	if (tipoTamano == 'int' or tipoTamano == 'float') and (tipoCordY == 'int' or tipoCordY == 'float') and (tipoCordX == 'int' or tipoCordX == 'float'):
 		genera_cuadruplo = Cuadruplo("TRIANGLE",[cordX,cordY,tamano],"","")
 		push_cuadruplo(genera_cuadruplo)
 	else:
-		sys.exit("Argumentos de funcion triangle deben ser de tipo entero.")
+		sys.exit("Error. Argumentos de funcion triangle deben ser numericos.")
 '''
 	============================================
 	Dibuja un arco
@@ -792,11 +795,11 @@ def dibujafunc_arc():
 	cordX1 = pilaO.pop()
 	tipoCordX1 = pTipos.pop()
 
-	if tipoCordX1 == 'int' and tipoCordY1 == 'int' and tipoCordX2 == 'int' and tipoCordY2 == 'int':
+	if (tipoCordX1 == 'int' or tipoCordX1 == 'float') and (tipoCordY1 == 'int' or tipoCordY1 == 'float') and (tipoCordX2 == 'int' or tipoCordX2 == 'float') and (tipoCordY2 == 'int' or tipoCordY2 == 'float'):
 		genera_cuadruplo = Cuadruplo("ARC",[cordX1,cordY1,cordX2,cordY2],"","")
 		push_cuadruplo(genera_cuadruplo)
 	else:
-		sys.exit("Argumentos de funcion arc deben ser de tipo entero.")
+		sys.exit("Error. Argumentos de funcion arc deben ser numericos.")
 
 '''
 	============================================
@@ -820,7 +823,7 @@ def dibujafunc_startfill():
 		genera_cuadruplo = Cuadruplo("STARTFILL",[red,green,blue],"","")
 		push_cuadruplo(genera_cuadruplo)
 	else:
-		sys.exit("Argumentos de funcion startFill deben ser de tipo entero.")
+		sys.exit("Error. Argumentos de funcion startFill deben ser de tipo entero.")
 
 '''
 	============================================

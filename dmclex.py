@@ -42,8 +42,8 @@ reserved = {
   'stopFill' : 'STOPFILL',
   'and' : 'AND',
   'or' : 'OR',
-  'true' : 'TRUE',
-  'false' : 'FALSE',
+  'True' : 'TRUE',
+  'False' : 'FALSE',
   'endfunc' : 'ENDFUNC',
   'call' : 'CALL'
 }
@@ -100,7 +100,7 @@ def t_newline(t):
 
 # Error handling rule
 def t_error(t):
-    print("Lexer error %s" % t.value[0])
+    print("Error de lexico %s" % t.value[0])
     exit(-1)
     t.lexer.skip(1)
 

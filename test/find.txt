@@ -1,0 +1,44 @@
+begin program find;
+{
+      func void findNumber (n:int, number:int) 
+      var mat1[2][3]:int; j,i:int; found:bool;
+      {
+            mat1[0][0] = 3;
+            mat1[0][1] = -2;
+            mat1[0][2] = 5;
+            mat1[1][0] = 3;
+            mat1[1][1] = 0;
+            mat1[1][2] = 4;
+            found = False;
+            i = 0;
+            j = 0;
+            while(i < 2)
+            {
+                  j = 0;
+                  while(j<3)
+                  {
+                        if (mat1[i][j] == number){
+                              print ("Numero encontrado en posicion");
+                              print (i, j);
+                              found = True;
+
+                        };
+                        j = j + 1;
+                  };
+            i = i + 1;
+            };
+            if (found == False)
+            {
+                  print("Numero no encontado");
+            };
+      };
+      endfunc
+
+      main() 
+      var x:int;
+      {     
+            call findNumber(4,0);
+      };
+      endfunc
+};
+end
