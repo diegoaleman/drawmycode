@@ -1,0 +1,11 @@
+begin program test6;
+{
+
+	main() 
+	{
+		arc(200,200,200,300);
+
+	};
+	endfunc
+};
+end

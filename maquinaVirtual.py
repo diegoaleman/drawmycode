@@ -139,6 +139,8 @@ def getMetodo(op):
 		return stopfill
 	if op == 'RANDOM':
 		return random
+	if op == 'STAR':
+		return star
 
 '''
 =========================================================
@@ -643,6 +645,34 @@ def random(c1, c2, c3):
 	rand = randint(inf,sup)
 	setValue(rand, c3)
 
+def star(c1, c2, c3):
+
+	x = float(getValue(c1[0]))
+	y = float(getValue(c1[1]))
+	tam = float(getValue(c1[2]))
+
+	glPushMatrix()
+	glTranslated(x, y, 0)
+	glScalef(tam, tam, 0)
+	
+	glBegin(GL_POLYGON)
+	glVertex2f(x-10,  y+00)
+	glVertex2f(x+10,  y+00)
+	glVertex2f(x+00,  y-05)
+	glEnd()
+	glBegin(GL_POLYGON)
+	glVertex2f(x+00,  y+7.5)
+	glVertex2f(x+2.5, y-2.5)
+	glVertex2f(x-05,  y-10)
+	glEnd()
+	glBegin(GL_POLYGON)
+	glVertex2f(x+00,  y+7.5)
+	glVertex2f(x+05,  y-10)
+	glVertex2f(x-2.5, y-2.5)
+	glEnd()
+
+	glPopMatrix()
+
 
 def imprime(c1, c2, c3):
 	m = str(c3)
@@ -693,10 +723,10 @@ def main():
 
 		print currentCuad.op, currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res
 
-		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN' or currentCuad.op == 'LINE' or currentCuad.op == 'SQUARE' or currentCuad.op == 'CIRCLE' or currentCuad.op == 'TRIANGLE' or currentCuad.op == 'PRINT' or currentCuad.op == 'VERIFICA' or currentCuad.op == 'LINEWIDTH' or currentCuad.op == 'LINECOLOR' or currentCuad.op == 'STARTFILL' or currentCuad.op == 'STOPFILL' or currentCuad.op == 'RANDOM' or currentCuad.op == 'ARC':
+		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN' or currentCuad.op == 'LINE' or currentCuad.op == 'SQUARE' or currentCuad.op == 'CIRCLE' or currentCuad.op == 'TRIANGLE' or currentCuad.op == 'PRINT' or currentCuad.op == 'VERIFICA' or currentCuad.op == 'LINEWIDTH' or currentCuad.op == 'LINECOLOR' or currentCuad.op == 'STARTFILL' or currentCuad.op == 'STOPFILL' or currentCuad.op == 'RANDOM' or currentCuad.op == 'ARC' or currentCuad.op == 'STAR':
 			metodo = getMetodo(currentCuad.op)
 			metodo(currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res)
-			glutSwapBuffers()
+			#glutSwapBuffers()
 
 	glutKeyboardFunc(myKeyboard)
 	glutDisplayFunc(draw)

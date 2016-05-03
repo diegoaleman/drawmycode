@@ -1,0 +1,11 @@
+begin program test6;
+{
+
+	main() 
+	{
+		star(0,0,50);
+
+	};
+	endfunc
+};
+end
