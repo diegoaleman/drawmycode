@@ -657,6 +657,7 @@ def myKeyboard(key, x, y):
 	if key == 'q' or key == 'Q':
 		sys.exit()
 
+
 width, height = 500, 500   
 
 def refresh2d(width, height):
