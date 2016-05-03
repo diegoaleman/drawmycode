@@ -1,7 +1,8 @@
 begin program fibonaccirecursivo;
 {
 	func int fibonacci(n:int)
-	{	print (n); 
+	var res:int;
+	{	
 		if (n == 0)
 		{
 			return 0;
@@ -10,8 +11,12 @@ begin program fibonaccirecursivo;
 	    	return 1;
 	    	
 	    } else 
-	    {
-	    	return (call fibonacci(n - 1)) + (call fibonacci(n - 2));
+	    {	
+	    	res = (call fibonacci(n - 1)) + (call fibonacci(n - 2));
+	    	startFill(250,128,114);
+			star(res,res,n);
+			stopFill();
+			return res;
 	    };
 	};
 	endfunc

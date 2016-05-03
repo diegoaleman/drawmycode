@@ -1,10 +1,26 @@
 begin program test7;
 {
 	main() 
-	var x:int;
+	var x,y,cont,red,green,blue:int;
 	{	
-	x= 1;
-		x = 1 + 1;
+		cont = 0;
+		while (cont < 100)
+		{
+			x= random(-100,100);
+			y = random(-100,100);
+			red = random(0,255);
+			green = random(0,255);
+			blue = random(0,255);
+			startFill(red,green,blue);
+			star(x,y,4);
+			arc(x,y,x,y);
+			stopFill();
+			cont = cont + 1;
+		};
+		
+		
+
+
 	};
 	endfunc
 		

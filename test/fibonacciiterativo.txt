@@ -1,12 +1,14 @@
 begin program fibonacciiterativo;
 {
 	func int fibonacci(n:int)
-	var a,b,temp,i:int;
+	var a,b,temp,i,posX,posY:int;
 	{	
 		a = 0;
 		b = 1;
 		i = 1;
 		temp = 0;
+		posX = -200;
+		posY = 0;
 		if (n == 0){
 			return 0;
 		};
@@ -16,6 +18,9 @@ begin program fibonacciiterativo;
 			a = b;
 			b = temp;
 			i = i + 1;
+			startFill(250,128,114);
+			star(b,b,i);
+			stopFill();
 		};
 		return b;
 	};

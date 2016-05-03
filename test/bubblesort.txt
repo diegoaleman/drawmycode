@@ -7,7 +7,6 @@ begin program bubblesortiterativo;
             arr[0][1] = 6;
             arr[0][2] = 1;
             arr[0][3] = 4;
-            print (1);
             i = 0;
             j = 0;
             while(i < (n - 1))
@@ -25,7 +24,6 @@ begin program bubblesortiterativo;
                   i = i + 1;
             };
 
-            print (10000000);
             print (arr[0][0]);
             print (arr[0][1]);
             print (arr[0][2]);

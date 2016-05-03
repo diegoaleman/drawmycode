@@ -306,6 +306,7 @@ def estatuto_print():
 	genera_cuadruplo = Cuadruplo("PRINT", "", "", res)
 	push_cuadruplo(genera_cuadruplo)
 
+
 '''
 	============================================
 	Estatuto IF 1

@@ -4,11 +4,12 @@ var a, f : int;
 	func int factorial(n:int)
 	var result:int;
 	{
+
+		
 		if(n==1){
 	   		return 1;
 	   	};
 	    result = call factorial(n - 1) * n;
-
 	    return result;
 	};
 	endfunc

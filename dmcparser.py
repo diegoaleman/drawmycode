@@ -851,7 +851,7 @@ def p_estatuto_print(p):
 
 def p_ah(p):
 	'''ah : expresion estatuto_print ai
-			| CTESTRING estatuto_print ai'''
+			| CTESTRING exp_cte_string estatuto_print ai'''
 
 def p_ai(p):
 	'''ai : COMMA ah
@@ -1024,6 +1024,7 @@ if __name__ == '__main__':
 			# Parse the data
 			
 			if (dmcparser.parse(data, tracking=True) == 'Success'):
+				
 				print "Valid"
 				
 				for key, value in dirproc.iteritems():
@@ -1033,7 +1034,7 @@ if __name__ == '__main__':
 				print "Tabla de Constantes"
 				print tablaConstantes
 				printPilas()
-
+				
 				'''
 				============================================
 				Manda llamar a la maquina virtual

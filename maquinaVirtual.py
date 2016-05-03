@@ -36,6 +36,8 @@ existeVerifica = False
 existeVerificaDos = False
 
 fill = False
+posXPrint = -450
+posYPrint = 400
 
 def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	global memCtes
@@ -49,10 +51,6 @@ def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	memActiva = mActiva
 	cuadruplos = cuads
 	main()
-
-
-
-		
 
 
 
@@ -186,8 +184,8 @@ def asignacion(c1, c2, c3):
 
 			setValue(value, getValue(m))
 
-			print "asign"	
-			print getValue(getValue(m))
+			#print "asign"	
+			#print getValue(getValue(m))
 
 		else:
 
@@ -224,10 +222,10 @@ def suma(c1, c2, c3):
 		value = int(getValue(c1)) + int(c2)
 		setValue(value, c3)
 
-		print "Aqui"
-		print getValue(c1)
-		print c2
-		print getValue(c3)
+		#print "Aqui"
+		#print getValue(c1)
+		#print c2
+		#print getValue(c3)
 	# Operacion normal de suma 
 	else:
 		# En caso de que sea una matriz
@@ -271,7 +269,7 @@ def multiplicacion(c1, c2, c3):
 	if existeVerifica:
 		existeVerifica = False
 		value = float(getValue(c1)) * float(c2)
-		print getValue(c3)
+		#print getValue(c3)
 	else:
 		m1 = str(c1)
 		m2 = str(c2)
@@ -440,8 +438,8 @@ def param(c1, c2, c3):
 
 	params = params + 1
 
-	print listaParamsMemActual
-	print listaParamsMemNueva
+	#print listaParamsMemActual
+	#print listaParamsMemNueva
 
 def gosub(c1, c2, c3):
 	global params
@@ -529,13 +527,7 @@ def line(c1, c2, c3):
 	y1 = getValue(c1[1])
 	x2 = getValue(c1[2])
 	y2 = getValue(c1[3])
-	print "LINEA"
-	print x1
-	print y1
-	print x2
-	print y2
 	
-
 	glBegin(GL_LINES);
 	glVertex3f(float(x1), float(y1),0.0)
 	glVertex3f(float(x2), float(y2),0.0)
@@ -654,23 +646,39 @@ def star(c1, c2, c3):
 	glPushMatrix()
 	glTranslated(x, y, 0)
 	glScalef(tam, tam, 0)
-	
-	glBegin(GL_POLYGON)
-	glVertex2f(x-10,  y+00)
-	glVertex2f(x+10,  y+00)
-	glVertex2f(x+00,  y-05)
-	glEnd()
-	glBegin(GL_POLYGON)
-	glVertex2f(x+00,  y+7.5)
-	glVertex2f(x+2.5, y-2.5)
-	glVertex2f(x-05,  y-10)
-	glEnd()
-	glBegin(GL_POLYGON)
-	glVertex2f(x+00,  y+7.5)
-	glVertex2f(x+05,  y-10)
-	glVertex2f(x-2.5, y-2.5)
-	glEnd()
+	if fill:
 
+		glBegin(GL_POLYGON)
+		glVertex2f(x-10,  y+00)
+		glVertex2f(x+10,  y+00)
+		glVertex2f(x+00,  y-05)
+		glEnd()
+		glBegin(GL_POLYGON)
+		glVertex2f(x+00,  y+7.5)
+		glVertex2f(x+2.5, y-2.5)
+		glVertex2f(x-05,  y-10)
+		glEnd()
+		glBegin(GL_POLYGON)
+		glVertex2f(x+00,  y+7.5)
+		glVertex2f(x+05,  y-10)
+		glVertex2f(x-2.5, y-2.5)
+		glEnd()
+	else:
+		glBegin(GL_LINE_LOOP)
+		glVertex2f(x-10,  y+00)
+		glVertex2f(x+10,  y+00)
+		glVertex2f(x+00,  y-05)
+		glEnd()
+		glBegin(GL_LINE_LOOP)
+		glVertex2f(x+00,  y+7.5)
+		glVertex2f(x+2.5, y-2.5)
+		glVertex2f(x-05,  y-10)
+		glEnd()
+		glBegin(GL_LINE_LOOP)
+		glVertex2f(x+00,  y+7.5)
+		glVertex2f(x+05,  y-10)
+		glVertex2f(x-2.5, y-2.5)
+		glEnd()
 	glPopMatrix()
 
 
@@ -680,8 +688,10 @@ def imprime(c1, c2, c3):
 		l = len(c3)
 		m = int(c3[1:l-1])
 		print "OUTPUT :" , getValue(getValue(m))
+		printWindow(getValue(getValue(m)))
 	else:
 		print "OUTPUT :", getValue(c3)
+		printWindow(getValue(c3))
 
 def myKeyboard(key, x, y):
 	if key == 'q' or key == 'Q':
@@ -690,6 +700,24 @@ def myKeyboard(key, x, y):
 
 width, height = 500, 500   
 
+def printWindow(output):
+	global posYPrint
+	global posXPrint
+	output = str(output)
+	glLineWidth(2)
+	glColor3f(0.0, 0.0, 0.0)
+	glPushMatrix()
+	glTranslated(posXPrint,posYPrint,0)
+	glScalef(0.3,0.3,0.0)
+	for ch in output:
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, ord(ch))
+	glPopMatrix()
+	if posYPrint > -400:
+		posYPrint = posYPrint - 60
+	else:
+		posYPrint = 400;
+		posXPrint = posXPrint + 100;
+	
 def refresh2d(width, height):
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	glClearColor(1.0,1.0,1.0,1.0)
@@ -700,6 +728,16 @@ def refresh2d(width, height):
 	glMatrixMode (GL_MODELVIEW)
 	glLoadIdentity()
 
+def reshape(w, h):
+    global width, height
+    width = w
+    height = h
+    glViewport(0, 0, width, height)
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    glOrtho(-width, width, -height, height, 0.0, 100.0)
+    glMatrixMode (GL_MODELVIEW)
+    
 def draw():                         
 	glutSwapBuffers() 
 
@@ -721,7 +759,7 @@ def main():
 		currentCuad = cuadruplos[cuadruplo_actual]
 		cuadruplo_actual =  cuadruplo_actual + 1
 
-		print currentCuad.op, currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res
+		#print currentCuad.op, currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res
 
 		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN' or currentCuad.op == 'LINE' or currentCuad.op == 'SQUARE' or currentCuad.op == 'CIRCLE' or currentCuad.op == 'TRIANGLE' or currentCuad.op == 'PRINT' or currentCuad.op == 'VERIFICA' or currentCuad.op == 'LINEWIDTH' or currentCuad.op == 'LINECOLOR' or currentCuad.op == 'STARTFILL' or currentCuad.op == 'STOPFILL' or currentCuad.op == 'RANDOM' or currentCuad.op == 'ARC' or currentCuad.op == 'STAR':
 			metodo = getMetodo(currentCuad.op)
@@ -731,6 +769,7 @@ def main():
 	glutKeyboardFunc(myKeyboard)
 	glutDisplayFunc(draw)
 	glutIdleFunc(draw)
+	glutReshapeFunc(reshape)
 	glutMainLoop()
 
 
