@@ -1,0 +1,10 @@
+begin program milunints;
+{
+      main() 
+      var :int;
+      {     
+      	x=0;
+      };
+      endfunc
+};
+end
