@@ -2,9 +2,10 @@ begin program test5;
 	var i,j:int;
 {
 
-	func int dos(b:int)
+	func int dos(b:int,c:int)
 	{	
-		b = b + 1;
+		b = 1 + 1;
+		print (c);
 		return (b*2);
 	};
 	endfunc
@@ -12,7 +13,8 @@ begin program test5;
 	main() 
 	var x:int;
 	{	
-		x = call dos(0);
+		x = call dos(0,1);
+		print (x);
 	};
 	endfunc
 		

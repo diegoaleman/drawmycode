@@ -1,34 +1,28 @@
 begin program bubblesortiterativo;
 {
       func void bubbleSort (n:int) 
-      var arr[1][5]:int; notsorted:int; j,tmp,i:int;
+      var arr[1][5]:int; notsorted:int; j,hold,i:int;
       {
             arr[0][0] = 5;
             arr[0][1] = 6;
             arr[0][2] = 1;
-            arr[0][3] = 3;
-            arr[0][4] = 2;
+            arr[0][3] = 4;
             print (1);
-
-            notsorted = 1;
-            j = 1;
-            tmp = 0;
-            while (notsorted == 1)  {
-                  print (22222222);
-                  notsorted = 0;
-                  j = j + 1;
-                  i = 0;
-                  while(i < (n - j)) {
-                        if (arr[0][i] > arr[0][i + 1]) {
-                              tmp = arr[0][i];
-                              arr[0][i] = arr[0][i + 1];
-                              arr[0][i + 1] = tmp;
-                              notsorted = 1;
-
+            i = 0;
+            j = 0;
+            while(i < (n - 1))
+            {     j = 0;
+                  while(j < (n - 1))
+                  {
+                        if(arr[0][j] > arr[0][j+1])
+                        {
+                              hold=arr[0][j];
+                              arr[0][j]=arr[0][j+1];
+                              arr[0][j+1]=hold;
                         };
-                  i = i + 1;
+                        j = j + 1;
                   };
-                  
+                  i = i + 1;
             };
 
             print (10000000);
@@ -36,7 +30,6 @@ begin program bubblesortiterativo;
             print (arr[0][1]);
             print (arr[0][2]);
             print (arr[0][3]);
-            print (arr[0][4]);
       };
       endfunc
 
@@ -44,7 +37,7 @@ begin program bubblesortiterativo;
       var x:int;
       {     
 
-            call bubbleSort(5);
+            call bubbleSort(4);
       };
       endfunc
 };

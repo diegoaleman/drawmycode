@@ -140,11 +140,16 @@ def asignacion(c1, c2, c3):
 		existeRetorno = False
 		setValue(valorRetorno, c3)
 	else:
+		m1 = str(c1)
+		if m1[0] == '(':
+			l1 = len(c1)
+			m1 = int(c1[1:l1-1])
+			c1 = getValue(m1)
+
 		m = str(c3)
 		if m[0] == '(':
 			l = len(c3)
 			m = int(c3[1:l-1])
-			print  "M", getValue(m)
 
 			if (c1>=1 and c1<1000) or (c1>=4000 and c1<5000) or (c1>=8000 and c1<9000) or (c1>=12000 and c1<13000):
 				value = int(getValue(c1))
@@ -162,6 +167,9 @@ def asignacion(c1, c2, c3):
 				value = str(getValue(c1))
 
 			setValue(value, getValue(m))
+
+			print "asign"	
+			print getValue(getValue(m))
 
 		else:
 
@@ -182,11 +190,6 @@ def asignacion(c1, c2, c3):
 				value = str(getValue(c1))
 
 			setValue(value, c3)
-			print getValue(c3)
-
-		print "asign"	
-		print getValue(getValue(m))
-
 
 def suma(c1, c2, c3):
 	global value
@@ -570,9 +573,9 @@ def imprime(c1, c2, c3):
 	if m[0] == '(':
 		l = len(c3)
 		m = int(c3[1:l-1])
-		print getValue(getValue(m))
+		print "OUTPUT :" , getValue(getValue(m))
 	else:
-		print getValue(c3)
+		print "OUTPUT :", getValue(c3)
 
 def myKeyboard(key, x, y):
 	if key == 'q':

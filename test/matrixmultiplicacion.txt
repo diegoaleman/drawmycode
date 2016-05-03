@@ -1,0 +1,58 @@
+begin program matrixmultiplication;
+{
+      func void bubbleSort (n:int) 
+      var mat1[2][3]:int; mat2[3][2]:int; mult[2][2]:int; j,i,k:int;
+      {
+            mat1[0][0] = 3;
+            mat1[0][1] = -2;
+            mat1[0][2] = 5;
+            mat1[1][0] = 3;
+            mat1[1][1] = 0;
+            mat1[1][2] = 4;
+
+            print (2222222);
+
+            mat2[0][0] = 2;
+            mat2[0][1] = 3;
+            mat2[1][0] = -9;
+            mat2[1][1] = 0;
+            mat2[2][0] = 0;
+            mat2[2][1] = 4;
+
+            print (111111);
+            i = 0;
+            j = 0;
+            k = 0;
+            while(i < 2)
+            {
+                  j = 0;
+                  while(j<2)
+                  {
+                        k = 0;
+                        while(k<3)
+                        {
+                              mult[i][j]= mult[i][j] + mat1[i][k] * mat2[k][j];
+                              k = k + 1;
+                        };
+                        j = j + 1;
+                  };
+            i = i + 1;
+            };
+
+            print (10000000);
+            print (mult[0][0]);
+            print (mult[0][1]);
+            print (mult[1][0]);
+            print (mult[1][1]);
+      };
+      endfunc
+
+      main() 
+      var x:int; mat3[1][1]:int;
+      {     
+            mat3[0][0] = 4;
+            call bubbleSort(mat3[0][0]);
+      };
+      endfunc
+};
+end
