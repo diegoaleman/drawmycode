@@ -779,9 +779,6 @@ def dibujafunc_arc():
 	global pilaO
 	global pTipos
 
-	grados = pilaO.pop()
-	tipoGrados = pTipos.pop()
-
 	cordY2 = pilaO.pop()
 	tipoCordY2= pTipos.pop()
 
@@ -794,8 +791,8 @@ def dibujafunc_arc():
 	cordX1 = pilaO.pop()
 	tipoCordX1 = pTipos.pop()
 
-	if tipoCordX1 == 'int' and tipoCordY1 == 'int' and tipoCordX2 == 'int' and tipoCordY2 == 'int' and tipoGrados == 'int':
-		genera_cuadruplo = Cuadruplo("ARC",[cordX1,cordY1,cordX2,cordY2,grados],"","")
+	if tipoCordX1 == 'int' and tipoCordY1 == 'int' and tipoCordX2 == 'int' and tipoCordY2 == 'int':
+		genera_cuadruplo = Cuadruplo("ARC",[cordX1,cordY1,cordX2,cordY2],"","")
 		push_cuadruplo(genera_cuadruplo)
 	else:
 		sys.exit("Argumentos de funcion arc deben ser de tipo entero.")

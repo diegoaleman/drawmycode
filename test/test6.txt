@@ -3,16 +3,21 @@ begin program test6;
 {
 
 	main() 
-	var x:int;fg:float;mat[1][2]:int;
+	var x,y:int;fg:float;mat[1][2]:int;
 	{
-		x = random(1,3);
-		mat[0][0] = 2;
-		mat[0][1] = 3; 
-		lineWidth(4);
-		lineColor(100,0,255);
-		startFill(1,1,1);
-		line(mat[0][0],2,mat[0][1],4);
-		stopFill();
+		x = 0;
+		y = 1000;
+		while (x < 1000){
+			line(0,-x,x,100);
+			x = x + 10;
+		};
+
+		while (y > 0){
+			lineColor(0,0,255);
+			line(y,-y,0,-y);
+			y = y - 10;
+			circle(0,y,100);
+		};
 
 	};
 	endfunc

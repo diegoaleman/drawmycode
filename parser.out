@@ -186,7 +186,7 @@ Rule 180   squareparam -> LPARENTHESIS exp COMMA exp COMMA exp
 Rule 181   circleparam -> LPARENTHESIS exp COMMA exp COMMA exp
 Rule 182   starparam -> LPARENTHESIS exp COMMA exp COMMA exp
 Rule 183   triangleparam -> LPARENTHESIS exp COMMA exp COMMA exp
-Rule 184   arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA exp
+Rule 184   arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp
 Rule 185   startfillfunc -> STARTFILL LPARENTHESIS exp COMMA exp COMMA exp RPARENTHESIS SEMICOLON
 Rule 186   stopfillfunc -> STOPFILL LPARENTHESIS RPARENTHESIS
 
@@ -199,7 +199,7 @@ BOOL                 : 19 37
 CALL                 : 145
 CIRCLE               : 175
 COLON                : 11 21 42
-COMMA                : 15 23 44 143 151 160 171 171 179 179 179 180 180 181 181 182 182 183 183 184 184 184 184 185 185
+COMMA                : 15 23 44 143 151 160 171 171 179 179 179 180 180 181 181 182 182 183 183 184 184 184 185 185
 CTEFLOAT             : 118
 CTEINT               : 22 22 23 23 117
 CTESTRING            : 120 142
@@ -310,7 +310,7 @@ estatuto_while_1     : 135
 estatuto_while_2     : 135
 estatuto_while_3     : 135
 estatutotipos        : 53
-exp                  : 65 65 80 81 93 150 151 156 160 160 170 171 171 171 179 179 179 179 180 180 180 181 181 181 182 182 182 183 183 183 184 184 184 184 184 185 185 185
+exp                  : 65 65 80 81 93 150 151 156 160 160 170 171 171 171 179 179 179 179 180 180 180 181 181 181 182 182 182 183 183 183 184 184 184 184 185 185 185
 exp_1                : 121
 exp_10               : 81
 exp_11               : 80
@@ -2542,7 +2542,7 @@ state 151
 state 152
 
     (178) v -> ARC . arcparam
-    (184) arcparam -> . LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA exp
+    (184) arcparam -> . LPARENTHESIS exp COMMA exp COMMA exp COMMA exp
 
     LPARENTHESIS    shift and go to state 196
 
@@ -3407,7 +3407,7 @@ state 195
 
 state 196
 
-    (184) arcparam -> LPARENTHESIS . exp COMMA exp COMMA exp COMMA exp COMMA exp
+    (184) arcparam -> LPARENTHESIS . exp COMMA exp COMMA exp COMMA exp
     (91) exp -> . termino exp_5 ab
     (98) termino -> . factor exp_4 ac
     (105) factor -> . ad
@@ -4130,7 +4130,7 @@ state 234
 
 state 235
 
-    (184) arcparam -> LPARENTHESIS exp . COMMA exp COMMA exp COMMA exp COMMA exp
+    (184) arcparam -> LPARENTHESIS exp . COMMA exp COMMA exp COMMA exp
 
     COMMA           shift and go to state 263
 
@@ -4878,7 +4878,7 @@ state 262
 
 state 263
 
-    (184) arcparam -> LPARENTHESIS exp COMMA . exp COMMA exp COMMA exp COMMA exp
+    (184) arcparam -> LPARENTHESIS exp COMMA . exp COMMA exp COMMA exp
     (91) exp -> . termino exp_5 ab
     (98) termino -> . factor exp_4 ac
     (105) factor -> . ad
@@ -5204,7 +5204,7 @@ state 286
 
 state 287
 
-    (184) arcparam -> LPARENTHESIS exp COMMA exp . COMMA exp COMMA exp COMMA exp
+    (184) arcparam -> LPARENTHESIS exp COMMA exp . COMMA exp COMMA exp
 
     COMMA           shift and go to state 304
 
@@ -5543,7 +5543,7 @@ state 303
 
 state 304
 
-    (184) arcparam -> LPARENTHESIS exp COMMA exp COMMA . exp COMMA exp COMMA exp
+    (184) arcparam -> LPARENTHESIS exp COMMA exp COMMA . exp COMMA exp
     (91) exp -> . termino exp_5 ab
     (98) termino -> . factor exp_4 ac
     (105) factor -> . ad
@@ -5758,7 +5758,7 @@ state 318
 
 state 319
 
-    (184) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp . COMMA exp COMMA exp
+    (184) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp . COMMA exp
 
     COMMA           shift and go to state 328
 
@@ -5953,7 +5953,7 @@ state 327
 
 state 328
 
-    (184) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA . exp COMMA exp
+    (184) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA . exp
     (91) exp -> . termino exp_5 ab
     (98) termino -> . factor exp_4 ac
     (105) factor -> . ad
@@ -6043,61 +6043,19 @@ state 333
 
 state 334
 
-    (184) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp . COMMA exp
+    (184) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp .
 
-    COMMA           shift and go to state 336
+    RPARENTHESIS    reduce using rule 184 (arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp .)
 
 
 state 335
 
     (65) accessMatrix -> LSQUAREBRACKET acceso_dimvar_2 exp acceso_dimvar_3 RSQUAREBRACKET acceso_dimvar_4 LSQUAREBRACKET exp acceso_dimvar_3 . RSQUAREBRACKET acceso_dimvar_5
 
-    RSQUAREBRACKET  shift and go to state 337
+    RSQUAREBRACKET  shift and go to state 336
 
 
 state 336
-
-    (184) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA . exp
-    (91) exp -> . termino exp_5 ab
-    (98) termino -> . factor exp_4 ac
-    (105) factor -> . ad
-    (106) factor -> . ae
-    (107) factor -> . af
-    (108) factor -> . opfunc
-    (109) ad -> . LPARENTHESIS exp_6 expresion RPARENTHESIS exp_7
-    (112) ae -> . ag varcte
-    (113) af -> . llamadafunc
-    (159) opfunc -> . randomfunc
-    (114) ag -> . PLUS
-    (115) ag -> . MINUS
-    (116) ag -> .
-    (145) llamadafunc -> . CALL ID estatuto_llamadafunc_1 LPARENTHESIS estatuto_llamadafunc_2 t estatuto_llamadafunc_5 RPARENTHESIS estatuto_llamadafunc_6
-    (160) randomfunc -> . RANDOM LPARENTHESIS exp COMMA exp RPARENTHESIS
-
-    LPARENTHESIS    shift and go to state 112
-    PLUS            shift and go to state 110
-    MINUS           shift and go to state 108
-    CTEINT          reduce using rule 116 (ag -> .)
-    CTEFLOAT        reduce using rule 116 (ag -> .)
-    CTESTRING       reduce using rule 116 (ag -> .)
-    ID              reduce using rule 116 (ag -> .)
-    TRUE            reduce using rule 116 (ag -> .)
-    FALSE           reduce using rule 116 (ag -> .)
-    CALL            shift and go to state 97
-    RANDOM          shift and go to state 87
-
-    ae                             shift and go to state 107
-    ad                             shift and go to state 103
-    ag                             shift and go to state 104
-    af                             shift and go to state 105
-    randomfunc                     shift and go to state 89
-    termino                        shift and go to state 106
-    llamadafunc                    shift and go to state 109
-    factor                         shift and go to state 111
-    opfunc                         shift and go to state 113
-    exp                            shift and go to state 338
-
-state 337
 
     (65) accessMatrix -> LSQUAREBRACKET acceso_dimvar_2 exp acceso_dimvar_3 RSQUAREBRACKET acceso_dimvar_4 LSQUAREBRACKET exp acceso_dimvar_3 RSQUAREBRACKET . acceso_dimvar_5
     (70) acceso_dimvar_5 -> .
@@ -6129,16 +6087,9 @@ state 337
     RPARENTHESIS    reduce using rule 70 (acceso_dimvar_5 -> .)
     RSQUAREBRACKET  reduce using rule 70 (acceso_dimvar_5 -> .)
 
-    acceso_dimvar_5                shift and go to state 339
+    acceso_dimvar_5                shift and go to state 337
 
-state 338
-
-    (184) arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA exp .
-
-    RPARENTHESIS    reduce using rule 184 (arcparam -> LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA exp .)
-
-
-state 339
+state 337
 
     (65) accessMatrix -> LSQUAREBRACKET acceso_dimvar_2 exp acceso_dimvar_3 RSQUAREBRACKET acceso_dimvar_4 LSQUAREBRACKET exp acceso_dimvar_3 RSQUAREBRACKET acceso_dimvar_5 .
 

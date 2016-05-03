@@ -7,6 +7,8 @@ import OpenGL
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from OpenGL.GL import *
+from math import *
+from random import randint
 import sys
 import math
 
@@ -32,6 +34,8 @@ valorRetorno = None
 value = None 
 existeVerifica = False
 existeVerificaDos = False
+
+fill = False
 
 def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	global memCtes
@@ -119,10 +123,22 @@ def getMetodo(op):
 		return circle
 	if op == 'TRIANGLE':
 		return triangle
+	if op == 'ARC':
+		return arc
 	if op == 'PRINT':
 		return imprime
 	if op == 'VERIFICA':
 		return verifica
+	if op == 'LINEWIDTH':
+		return linewidth
+	if op == 'LINECOLOR':
+		return linecolor
+	if op == 'STARTFILL':
+		return startfill
+	if op == 'STOPFILL':
+		return stopfill
+	if op == 'RANDOM':
+		return random
 
 '''
 =========================================================
@@ -517,7 +533,7 @@ def line(c1, c2, c3):
 	print x2
 	print y2
 	
-	glColor3ub(255, 0, 0)
+
 	glBegin(GL_LINES);
 	glVertex3f(float(x1), float(y1),0.0)
 	glVertex3f(float(x2), float(y2),0.0)
@@ -528,23 +544,32 @@ def square(c1, c2, c3):
 	y1 = float(getValue(c1[1]))
 	size = float(getValue(c1[2]))
 
-	glColor3ub(255, 0, 0)
+	glPushMatrix()
 	glTranslated(x1, y1, 0)
 	glScalef(size, size, 0)
-	
-	glBegin(GL_POLYGON)
-	glVertex3f(1.0, 1.0, 0.0)
-	glVertex3f(-1.0, 1.0, 0.0)
-	glVertex3f(-1.0, -1.0, 0.0)
-	glVertex3f(1.0, -1.0, 0.0)
-	glEnd()
+	if not fill:
+		glBegin(GL_LINE_LOOP)
+		glVertex3f(1.0, 1.0, 0.0)
+		glVertex3f(-1.0, 1.0, 0.0)
+		glVertex3f(-1.0, -1.0, 0.0)
+		glVertex3f(1.0, -1.0, 0.0)
+		glEnd()
+	else:
+		glBegin(GL_POLYGON)
+		glVertex3f(1.0, 1.0, 0.0)
+		glVertex3f(-1.0, 1.0, 0.0)
+		glVertex3f(-1.0, -1.0, 0.0)
+		glVertex3f(1.0, -1.0, 0.0)
+		glEnd()
+	glPopMatrix()
 
 def circle(c1, c2, c3):
 	x = float(getValue(c1[0]))
 	y = float(getValue(c1[1]))
 	radio = float(getValue(c1[2]))
 
-	glColor3ub(255, 0, 0)
+	glPushMatrix()
+
 	glTranslated(x, y, 0)
 	#glScalef(size, size, 0)
 
@@ -552,13 +577,14 @@ def circle(c1, c2, c3):
 	for i in range(100):
 		glVertex2f(x + (radio * math.cos(i * (2 * math.pi) / 100)), y + (radio * math.sin(i * (2 * math.pi) / 100)))
 	glEnd()
+	glPopMatrix()
 
 def triangle(c1, c2, c3):
 	x = float(getValue(c1[0]))
 	y = float(getValue(c1[1]))
 	tam = float(getValue(c1[2]))
 
-	glColor3ub(255, 0, 0)
+	glPushMatrix()
 	glTranslated(x, y, 0)
 	glScalef(tam, tam, 0)
 
@@ -567,6 +593,56 @@ def triangle(c1, c2, c3):
 	glVertex3f(-0.5, 0, 0)
 	glVertex3f(0, 1, 0)
 	glEnd()
+	glPopMatrix()
+
+def arc(c1, c2, c3):
+	x1=float(getValue(c1[0]))
+	y1=float(getValue(c1[1]))
+	x2=float(getValue(c1[2]))
+	y2=float(getValue(c1[3]))
+	PI = 3.14
+	step=5.0;
+	glBegin(GL_LINE_STRIP)
+	angle=x2
+	while angle<=y2:
+		rad  = PI*angle/180
+		x  = x1+100*cos(rad)
+		y  = y1+100*sin(rad)
+		glVertex(x,y,0.0)
+		angle+=step
+	glEnd()
+
+def linewidth(c1, c2, c3):
+	width = float(getValue(c1))
+	glLineWidth(width)
+
+def linecolor(c1, c2, c3):
+	red = int(getValue(c1[0]))
+	green = int(getValue(c1[1]))
+	blue = int(getValue(c1[2]))
+	glColor3ub(red,green,blue)
+
+def startfill(c1, c2, c3):
+	global fill
+	red = int(getValue(c1[0]))
+	green = int(getValue(c1[1]))
+	blue = int(getValue(c1[2]))
+	glColor3ub(red,green,blue)
+	fill = True
+
+def stopfill(c1, c2, c3):
+	global fill
+	glColor3ub(0,0,0)
+	fill = False
+
+def random(c1, c2, c3):
+	global fill
+	inf = int(getValue(c1))
+	sup = int(getValue(c2))
+
+	rand = randint(inf,sup)
+	setValue(rand, c3)
+
 
 def imprime(c1, c2, c3):
 	m = str(c3)
@@ -578,34 +654,35 @@ def imprime(c1, c2, c3):
 		print "OUTPUT :", getValue(c3)
 
 def myKeyboard(key, x, y):
-	if key == 'q':
+	if key == 'q' or key == 'Q':
 		sys.exit()
 
-window = 0                                             # glut window number
 width, height = 500, 500   
 
 def refresh2d(width, height):
-    glViewport(0, 0, width, height)
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    glOrtho(-width, width, -height, height, 0.0, 100.0)
-    glMatrixMode (GL_MODELVIEW)
-    glLoadIdentity()
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+	glClearColor(1.0,1.0,1.0,1.0)
+	glViewport(0, 0, width, height)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	glOrtho(-width, width, -height, height, 0.0, 100.0)
+	glMatrixMode (GL_MODELVIEW)
+	glLoadIdentity()
 
-def draw():                           # set color to white
+def draw():                         
 	glutSwapBuffers() 
 
 def main():
 	global cuadruplo_actual
 	glutInit(sys.argv)
-	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB)
+	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB)
 	glutInitWindowSize (500, 500)
 	glutInitWindowPosition (100, 100)
 	glutCreateWindow ('DRAWMYCODE')
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) # clear the screen
-	glLoadIdentity()  
+	glClearColor(1.0,1.0,1.0,1.0)
+	glColor3ub(0, 0, 0);
 	refresh2d(width, height)                      
-	glColor3f(1.0, 1.0, 1.0)
+	
 
 	print "----------------------"
 	cuadruplos_totales = len(cuadruplos)
@@ -615,10 +692,10 @@ def main():
 
 		print currentCuad.op, currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res
 
-		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN' or currentCuad.op == 'LINE' or currentCuad.op == 'SQUARE' or currentCuad.op == 'CIRCLE' or currentCuad.op == 'TRIANGLE' or currentCuad.op == 'PRINT' or currentCuad.op == 'VERIFICA':
+		if currentCuad.op == '+'  or currentCuad.op == '=' or currentCuad.op == '*' or currentCuad.op == '-' or currentCuad.op == '/' or currentCuad.op == '>' or currentCuad.op == '<' or currentCuad.op == '<>' or currentCuad.op == '==' or currentCuad.op == '>=' or currentCuad.op == '<=' or currentCuad.op == 'GOTOF' or currentCuad.op == 'GOTO'  or currentCuad.op == 'ERA'  or currentCuad.op == 'GOSUB' or currentCuad.op == 'PARAM' or currentCuad.op == 'RET' or currentCuad.op == 'RETURN' or currentCuad.op == 'LINE' or currentCuad.op == 'SQUARE' or currentCuad.op == 'CIRCLE' or currentCuad.op == 'TRIANGLE' or currentCuad.op == 'PRINT' or currentCuad.op == 'VERIFICA' or currentCuad.op == 'LINEWIDTH' or currentCuad.op == 'LINECOLOR' or currentCuad.op == 'STARTFILL' or currentCuad.op == 'STOPFILL' or currentCuad.op == 'RANDOM' or currentCuad.op == 'ARC':
 			metodo = getMetodo(currentCuad.op)
 			metodo(currentCuad.opdoIzq, currentCuad.opdoDer, currentCuad.res)
-		
+			glutSwapBuffers()
 
 	glutKeyboardFunc(myKeyboard)
 	glutDisplayFunc(draw)

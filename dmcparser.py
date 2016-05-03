@@ -994,7 +994,7 @@ def p_triangleparam(p):
 	dibujafunc_triangle()
 
 def p_arcparam(p):
-	'''arcparam : LPARENTHESIS exp COMMA exp COMMA exp COMMA exp COMMA exp'''
+	'''arcparam : LPARENTHESIS exp COMMA exp COMMA exp COMMA exp'''
 	dibujafunc_arc()
 
 def p_startfillfunc(p):
