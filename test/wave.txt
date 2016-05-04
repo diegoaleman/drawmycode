@@ -1,0 +1,25 @@
+begin program wave;
+{
+	main() 
+	var x,y,x2,y2,cont,red,green,blue:int;
+	{	
+		cont = 0;
+		while (cont < 100)
+		{
+			x= random(-200,300);
+			y = random(-100,100);
+			x2 = random(-200,200);
+			y2 = random(-200,200);
+			red = random(0,255);
+			green = random(0,255);
+			blue = random(0,255);
+			lineWidth(3);
+			startFill(red,green,blue);
+			arc(x - 10,y*2,x2+10,y2*10);
+			stopFill();
+			cont = cont + 1;
+		};
+	};
+	endfunc	
+};
+end

@@ -162,15 +162,35 @@ def set_dir_temp(tipoTemp):
 		memStringTemp +=1
 	return dirTemp
 
+'''
+	=================================================================
+	Regresa el total de temporales enteras que han sido utilizadas
+	=================================================================
+'''
 def get_Total_Temp_Int():
 	return memIntTemp - memIntTempInicio
 
+'''
+	=================================================================
+	Regresa el total de temporales flotantes que han sido utilizadas
+	=================================================================
+'''
 def get_Total_Temp_Float():
 	return memFloatTemp - memFloatTempInicio
 
+'''
+	=================================================================
+	Regresa el total de temporales booleanas que han sido utilizadas
+	=================================================================
+'''
 def get_Total_Temp_Bool():
 	return memBoolTemp - memBoolTempInicio
 
+'''
+	=================================================================
+	Regresa el total de temporales tipo string que han sido utilizadas
+	=================================================================
+'''
 def get_Total_Temp_String():
 	return memStringTemp - memStringTempInicio
 '''

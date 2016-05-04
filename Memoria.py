@@ -1,3 +1,16 @@
+'''
+	=============================================================
+	Clase memoria que se utiliza para almacenar el tamano requerido
+	de la memoria global, la memoria temporal y memoria de constantes.
+	Recibe como parametros las cantidades de variables por tipo que
+	requiere el procedimiento y tabla de constantes. Genera como
+	resultado una estructura con listas de tamano de la cantidad de
+	memoria requerida por tipo de dato. Los modulos mas importantes
+	que hacen uso de esta clase son getValue que obtiene el valor
+	real de una direccion de memoria y setValue que guarda en 
+	una direccion un valor dado.
+	=============================================================
+'''
 class Memoria:
 	def __init__(self, ints_espacio, floats_espacio, strings_espacio, bools_espacio, tempInts_espacio, tempFloats_espacio, tempStrings_espacio, tempBools_espacio):
 		self.ints = [0] * ints_espacio

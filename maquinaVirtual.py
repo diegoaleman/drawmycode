@@ -91,7 +91,7 @@ def getValue(direccion):
 '''
 =============================================================
 	La funcion es llamada para guardar en una direccion 
-	de memoria dada un valor
+	de memoria un valor dado
 =============================================================
 '''
 def setValue(valor, direccion):
@@ -182,10 +182,20 @@ def getMetodo(op):
 
 
 '''
-=============================================================
-	Es llamado para asignar a la direccion c3 el valor 
-	guardado en la direccion c1
-=============================================================
+===================================================================
+	Es llamada para asignar a la direccion c3 el valor 
+	guardado en la direccion c1, que son recibidas como parametros
+	en la funcion. En caso de existir un valor de retorno, asigna 
+	ese valor de retorno a la direccion c3 que es la de una funcion.
+	Si no existe valor de retorno, entonces revisa si es un pointer
+	a una direccion que representa una direccion de una matriz. 
+	En caso de ser un pointer, obtiene la direccion real del pointer
+	y hace setValue a esa direccion.
+	Independientemente de si es un pointer o no, despues busca el 
+	rango de direccion al que corresponde y llama a getValue 
+	dependiendo el tipo para despues hacer la asignacion utilizando
+	setValue.
+===================================================================
 '''
 def asignacion(c1, c2, c3):
 	global existeRetorno
@@ -794,19 +804,41 @@ def square(c1, c2, c3):
 =============================================================
 '''
 def circle(c1, c2, c3):
+	m1 = str(c1[0])
+	m2 = str(c1[1])
+	m3 = str(c1[2])
+	if m1[0] == '(':
+		l = len(c1[0])
+		m1 = int(m1[1:l-1])
+		c1[0] = getValue(m1)
+	if m2[0] == '(':
+		l2 = len(m2)
+		m2 = int(m2[1:l2-1])
+		c1[1] = getValue(m2)
+	if m3[0] == '(':
+		l3 = len(m3)
+		m3 = int(m3[1:l3-1])
+		c1[2] = getValue(m3)
+
 	x = float(getValue(c1[0]))
 	y = float(getValue(c1[1]))
-	radio = float(getValue(c1[2]))
+	diametro = float(getValue(c1[2]))
 
 	glPushMatrix()
 
 	glTranslated(x, y, 0)
 	#glScalef(size, size, 0)
+	if not fill:
 
-	glBegin(GL_LINE_LOOP)
-	for i in range(100):
-		glVertex2f(x + (radio * math.cos(i * (2 * math.pi) / 100)), y + (radio * math.sin(i * (2 * math.pi) / 100)))
-	glEnd()
+		glBegin(GL_LINE_LOOP)
+		for i in range(100):
+			glVertex2f(x + (diametro * math.cos(i * (2 * math.pi) / 100)), y + (diametro * math.sin(i * (2 * math.pi) / 100)))
+		glEnd()
+	else:
+		glBegin(GL_POLYGON)
+		for i in range(100):
+			glVertex2f(x + (diametro * math.cos(i * (2 * math.pi) / 100)), y + (diametro * math.sin(i * (2 * math.pi) / 100)))
+		glEnd()
 	glPopMatrix()
 
 
@@ -1049,7 +1081,7 @@ def draw():
 
 '''
 =============================================================
-	Este es el el main del juego, en esta funcion se 
+	Este es el el main del output grafico, en esta funcion se 
 	inicializa opengl y su pantalla. Tambien se traversa
 	por cada uno de los cuadruplos con un for y se panda
 	a llamar la accion dependiendo a su respectivo op
