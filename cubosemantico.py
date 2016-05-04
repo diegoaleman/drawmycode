@@ -1,3 +1,14 @@
+'''
+    ======================================================
+    Cubo semantico para validar los tipos de los operandos
+    que se utilizan en las operaciones
+    La primer llave corresponde al operando izquierdo
+    La segunda llave corresponde al operando derecho
+    La tercer llave corresponde a la operacion
+    La cuarta llave corresponde al tipo del resultado
+    ====================================================
+'''
+
 cuboSemantico = {
     "int": {
         "int": {

@@ -1,8 +1,16 @@
 begin program test8;
 {
+	
+	func int dos(b:float,c:int)
+	{	
+		b = 1.0 + 1.0;
+		print (c);
+		return (2);
+	};
+	endfunc
 
 	main() 
-	var mat[1][2]:int; x:int;
+	var mat[4][3]:int; x:int;
 	{
 		mat[0][0] = 2;
 		mat[0][1] = mat[0][0]; 

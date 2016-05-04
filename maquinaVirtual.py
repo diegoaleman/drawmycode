@@ -57,7 +57,6 @@ def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 def getValue(direccion):
 	m = str(direccion)
 	if m[0] == '(':
-		print "entra"
 		l1 = len(direccion)
 		m = int(direccion[1:l1-1])
 		direccion = m
@@ -585,19 +584,41 @@ def square(c1, c2, c3):
 	glPopMatrix()
 
 def circle(c1, c2, c3):
+	m1 = str(c1[0])
+	m2 = str(c1[1])
+	m3 = str(c1[2])
+	if m1[0] == '(':
+		l = len(c1[0])
+		m1 = int(m1[1:l-1])
+		c1[0] = getValue(m1)
+	if m2[0] == '(':
+		l2 = len(m2)
+		m2 = int(m2[1:l2-1])
+		c1[1] = getValue(m2)
+	if m3[0] == '(':
+		l3 = len(m3)
+		m3 = int(m3[1:l3-1])
+		c1[2] = getValue(m3)
+
 	x = float(getValue(c1[0]))
 	y = float(getValue(c1[1]))
-	radio = float(getValue(c1[2]))
+	diametro = float(getValue(c1[2]))
 
 	glPushMatrix()
 
 	glTranslated(x, y, 0)
 	#glScalef(size, size, 0)
+	if not fill:
 
-	glBegin(GL_LINE_LOOP)
-	for i in range(100):
-		glVertex2f(x + (radio * math.cos(i * (2 * math.pi) / 100)), y + (radio * math.sin(i * (2 * math.pi) / 100)))
-	glEnd()
+		glBegin(GL_LINE_LOOP)
+		for i in range(100):
+			glVertex2f(x + (diametro * math.cos(i * (2 * math.pi) / 100)), y + (diametro * math.sin(i * (2 * math.pi) / 100)))
+		glEnd()
+	else:
+		glBegin(GL_POLYGON)
+		for i in range(100):
+			glVertex2f(x + (diametro * math.cos(i * (2 * math.pi) / 100)), y + (diametro * math.sin(i * (2 * math.pi) / 100)))
+		glEnd()
 	glPopMatrix()
 
 def triangle(c1, c2, c3):
@@ -780,7 +801,6 @@ def main():
 	refresh2d(width, height)                      
 	
 
-	print "----------------------"
 	cuadruplos_totales = len(cuadruplos)
 	while cuadruplo_actual < cuadruplos_totales:
 		currentCuad = cuadruplos[cuadruplo_actual]

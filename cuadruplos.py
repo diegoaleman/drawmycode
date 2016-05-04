@@ -5,24 +5,41 @@ from dmcparser import *
 from maquinaVirtual import *
 import sys
 
+'''
+	=======================================================
+	pilaO -> Almacena la direccion de los operandos 
+	pOper -> Almacena los operandos 
+	pTipos -> Almacena los tipos de los operandos
+	pSaltos -> Almacena los saltos de cuadruplos, 
+			   utilizada en las condiciones, ciclos y para 
+			   ir al cuadruplo inicialdel main
+	=======================================================
+'''
 pilaO = Stack()
 pOper = Stack()
 pTipos = Stack()
 pSaltos = Stack()
-pEjecucion = Stack()
 pDimensionada = Stack()
 
-# Inicia con el index 0
-cuadruplos = []
-
-# Inicia con el index 0
-contSaltos = 0
-actualAccessDIM = 1
-actualAccessMatrix = {}
-actualIDDim = None
-actualDirBaseMatrix = None
+cuadruplos = [] # Lista que almacena la lista de cuadruplos
 
 
+contSaltos = 0  # Contador de saltos que indica el numero del cuadruplo actual 
+actualAccessDIM = 1 # Dimension actual de la matriz a la que se esta accesando
+actualAccessMatrix = {} # Diccionario que contiene la descripcion de la matriz a la que actualmente se esta accesando
+actualIDDim = None # Guarda el nombre de la variable dimensionada
+actualDirBaseMatrix = None # Guarda la direccion base de la matriz actual
+
+'''
+	===========================================================================
+	La clase Cuadruplo se utiliza para crear objetos que representan los 
+	cuadruplos generados para luego ser almacenados en una lista de objetos.
+	El atributo 'op' guarda el operador del cuadruplo
+	El atributo 'opdoIzq' guarda el operando izquierdo del cuadruplo
+	El atributo 'opdoDer' guarda el operando derecho del cuadruplo
+	El atributo 'res' guarda el resultado de la operacion del cuadruplo
+	===========================================================================
+'''
 class Cuadruplo:
 
   def __init__(self, operador, operandoIzq, operandoDer, temp):
@@ -43,19 +60,31 @@ def push_cuadruplo(cuadruplo):
 	cuadruplos.append(cuadruplo)
 	contSaltos+=1
 
+'''
+	===========================================================
+	Genera cuadruplo GOTO al main y espera cuadruplo de inicio 
+	del main
+	===========================================================
+'''
 def goto_main_quad():
 	global pSaltos
 	genera_cuadruplo = Cuadruplo("GOTO","","","")
 	push_cuadruplo(genera_cuadruplo)
 	pSaltos.push(0);
 
+'''
+	===========================================================
+	Regresa el numero del cuadruplo en donde inicia el main
+	===========================================================
+'''
 def iniciaMain():
 	global pSaltos
 	inicioMain = pSaltos.pop()
 	cuadruplos[inicioMain].res = contSaltos
+
 ''' 
 	============================================
-	1. Meter direccion y tipo del ID en pilaO
+	Meter direccion y tipo del ID en pilaO
 	============================================
 ''' 
 def exp_1(dirvar,tipo):
@@ -68,7 +97,7 @@ def exp_1(dirvar,tipo):
 
 ''' 
 	============================================
-	2. Meter * o / en pOper
+	Si encuentra operador * o /, lo mete en pOper
 	============================================
 '''
 def exp_2(product_division):
@@ -78,7 +107,7 @@ def exp_2(product_division):
 
 ''' 
 	============================================
-	3. Meter + o - en pOper
+	Si encuentra operador + o -, lo mete en pOper
 	============================================
 '''
 def exp_3(plus_minus):
@@ -88,7 +117,7 @@ def exp_3(plus_minus):
 
 ''' 
 	============================================
-	4. Si top(pOper) == '*' o '/'
+	Si top(pOper) == '*' o '/'
 	============================================
 '''
 def exp_4():
@@ -120,7 +149,7 @@ def exp_4():
 
 '''
 	============================================
-	5. Si top(pOper) == '+' o '-'
+	Si top(pOper) == '+' o '-'
 	============================================
 '''
 def exp_5():
@@ -151,9 +180,9 @@ def exp_5():
 				sys.exit("Error. Tipos Incompatibles.")
 
 '''
-	============================================
-	6. Meter Fondo Falso en pOper
-	============================================
+	=======================================================
+	Meter Fondo Falso en pOper para el manejo de parentesis
+	=======================================================
 '''
 def exp_6():
 	global pOper
@@ -161,7 +190,7 @@ def exp_6():
 
 '''
 	============================================
-	7. Sacar Fondo Falso
+	Sacar Fondo Falso (parentesis)
 	============================================
 '''
 def exp_7():
@@ -170,7 +199,7 @@ def exp_7():
 
 '''
 	============================================
-	8. Meter AND/OR en pOper
+	Si encuentra operador and/or, lo mete en pOper
 	============================================
 '''
 def exp_8(and_or):
@@ -180,7 +209,7 @@ def exp_8(and_or):
 
 '''
 	=====================================================
-	9. Si top(pOper) es and o or , sacar and/or de pOper
+	Si top(pOper) es and o or , sacar and/or de pOper
 	=====================================================
 '''
 def exp_9():
@@ -211,9 +240,9 @@ def exp_9():
 				sys.exit("Error. Tipos Incompatibles.")
 
 '''
-	============================================
-	10. Meter < <= > >= <> == en pOper
-	============================================
+	======================================================================
+	Si encuentra operador de comparacion, meter < <= > >= <> == en pOper
+	======================================================================
 '''
 def exp_10(oper_logic):
 	global pOper
@@ -222,7 +251,7 @@ def exp_10(oper_logic):
 
 '''
 	=====================================================
-	11. Si top(pOper) es < <= > >= <> == , sacar de pOper
+	Si top(pOper) es < <= > >= <> == , sacar de pOper
 	====================================================
 '''
 def exp_11():
@@ -254,9 +283,9 @@ def exp_11():
 
 
 '''
-	============================================
-	12. Meter = en pOper
-	============================================
+	======================================================
+	Si encuentra operador de asignacion, meter = en pOper
+	======================================================
 '''
 def exp_12(asignOper):
 	global pOper
@@ -265,7 +294,7 @@ def exp_12(asignOper):
 
 '''
 	============================================
-	13. Si top(pOper) es = , sacar = de pOper
+	Si top(pOper) es = , sacar = de pOper
 	============================================
 '''
 def exp_13():
@@ -293,9 +322,9 @@ def exp_13():
 				sys.exit("Error. Tipos Incompatibles.")
 
 '''
-	============================================
-	Estatuto PRINT
-	============================================
+	============================================================
+	Estatuto PRINT, imprime en consola la expresion o constante
+	============================================================
 '''
 def estatuto_print():
 	global pilaO
@@ -308,9 +337,12 @@ def estatuto_print():
 
 
 '''
-	============================================
-	Estatuto IF 1
-	============================================
+	=============================================================
+	Estatuto IF , validacion semantica del tipo de la condicion
+	Si condicion es diferente de bool, marca error semantico.
+	Si es bool, genera cuadruplo GOTOF con la condicion y guarda
+	salto en falso
+	=============================================================
 '''
 def estatuto_if_1():
 	global pilaO
@@ -329,9 +361,10 @@ def estatuto_if_1():
 
 
 '''
-	============================================
-	Estatuto ELSE
-	============================================
+	================================================================
+	Estatuto ELSE, genera cuadruplo GOTO, saca salto en falso y 
+	rellena cuadruplo en falso. Guarda salto a fin de condicion
+	================================================================
 '''
 def estatuto_else():
 	global pilaO
@@ -346,9 +379,9 @@ def estatuto_else():
 	pSaltos.push(contSaltos-1)
 
 '''
-	============================================
-	Estatuto ENDIF
-	============================================
+	=========================================================
+	Estatuto ENDIF, rellena cuadruplo de fin de la condicion
+	=========================================================
 '''
 def estatuto_endif():
 	global pilaO
@@ -359,9 +392,10 @@ def estatuto_endif():
 	cuadruplos[fin].res = contSaltos
 
 '''
-	============================================
-	Estatuto WHILE 1
-	============================================
+	=====================================================
+	Estatuto WHILE 1, Guarda contador actual de saltos. 
+	Indica que inicia el while.
+	=====================================================
 '''
 def estatuto_while_1():
 	global pSaltos
@@ -369,9 +403,12 @@ def estatuto_while_1():
 	pSaltos.push(contSaltos)
 
 '''
-	============================================
-	Estatuto WHILE 2
-	============================================
+	======================================================
+	Estatuto WHILE 2, Valida la condicion del ciclo. 
+	Si el tipo no es bool, marca error semantico. 
+	Si es bool, genera GOTOF indicando el cuadruplo al 
+	que se dirige cuando la condicion es falsa.
+	======================================================
 '''
 def estatuto_while_2():
 	global pilaO
@@ -389,7 +426,9 @@ def estatuto_while_2():
 
 '''
 	============================================
-	Estatuto WHILE 3
+	Estatuto WHILE 3,  Obtiene el cuadruplo al 
+	que se tiene que regresar cuando la condicion 
+	del while se cumple. 
 	============================================
 '''
 def estatuto_while_3():
@@ -405,7 +444,7 @@ def estatuto_while_3():
 
 '''
 	=========================================================
-	Regresa numero del cuadruplo en el que inicia la funcion
+	Regresa numero del cuadruplo en el que inicia una funcion
 	=========================================================
 '''
 def altaInicioFunc():
@@ -414,7 +453,8 @@ def altaInicioFunc():
 
 '''
 	=========================================================
-	Genera Accion Retorno cuando termina una funcion
+	Genera Accion Retorno, indica cuando termina una funcion
+	Calcula el tamano de la funcion
 	=========================================================
 '''
 def generaAccionRetorno(funcActual):
@@ -429,7 +469,7 @@ def generaAccionRetorno(funcActual):
 
 '''
 	=========================================================
-	Genera Accion End al final de MAIN
+	Genera Accion End, indica el final del main
 	=========================================================
 '''
 def generaAccionEndMain():
@@ -439,7 +479,8 @@ def generaAccionEndMain():
 
 '''
 	=========================================================
-	Estatuto Llamada Funcion 2
+	Estatuto Llamada Funcion 2, Generar cuadruplo ERA, calcula 
+	el tamano de la funcion a llamar para trabajar en ella.
 	=========================================================
 '''
 def estatuto_llamadafunc_2(funcLlamada, tamMemoriaLocalLlamadaFunc):
@@ -447,9 +488,10 @@ def estatuto_llamadafunc_2(funcLlamada, tamMemoriaLocalLlamadaFunc):
 	push_cuadruplo(genera_cuadruplo)
 
 '''
-	=========================================================
-	Estatuto Llamada Funcion 3
-	=========================================================
+	============================================================
+	Estatuto Llamada Funcion 3, Genera cuadruplo PARAM, verifica
+	que el tipo del argumento y parametro coincidan
+	============================================================
 '''
 def estatuto_llamadafunc_3(dirParamActual, tipoParamActual):
 	global pilaO
@@ -463,17 +505,17 @@ def estatuto_llamadafunc_3(dirParamActual, tipoParamActual):
 		sys.exit('Error. Tipo de argumento y parametro no coinciden.')
 
 '''
-	=========================================================
-	Estatuto Llamada Funcion 6
-	=========================================================
+	==================================================================
+	Estatuto Llamada Funcion 6, Generar GOSUB al cuadruplo inicial de
+	la variable llamada. Si el tipo es diferente de 
+	void, iguala el  valor de retorno a la direccion de la funcion.
+	==================================================================
 '''
 def estatuto_llamadafunc_6(funcLlamada,quadInicioFuncLlamada,tipoFuncLlamada,dirFuncLlamada):
 	global contSaltos
-	global pEjecucion
 	global pilaO
 	global pTipos
 
-	pEjecucion.push(contSaltos)
 	genera_cuadruplo = Cuadruplo("GOSUB",funcLlamada,"",quadInicioFuncLlamada)
 	push_cuadruplo(genera_cuadruplo)
 
@@ -485,11 +527,13 @@ def estatuto_llamadafunc_6(funcLlamada,quadInicioFuncLlamada,tipoFuncLlamada,dir
 		pTipos.push(tipoFuncLlamada)
 	
 
-
 '''
-	============================================
-	Estatuto RETURN
-	============================================
+	===================================================================
+	Estatuto RETURN, Genera RETURN de la funcion actual con el 
+	valor de retorno e indica el fin de la funcion (RET). Si la 
+	funcion es void o no coincide el tipo de retorno con el de la 
+	funcion, marca error de semantica.
+	===================================================================
 '''
 def estatuto_return(funcActual, tipoFuncActual):
 	global pilaO
@@ -507,13 +551,22 @@ def estatuto_return(funcActual, tipoFuncActual):
 	elif (tipoFuncActual=='void') or (tipoVarRetorno!=tipoFunc):
 		sys.exit("Error. Tipo de valor retorno no coincide con tipo de la funcion.")
 
+'''
+	===================================================================
+	Regresa la lista de los cuadruplos. Se usa para mandarsela a la 
+	maquina virtual
+	===================================================================
+'''
 def getCuadruplos():
 	return cuadruplos
 
 '''
-	============================================
-	Estatuto Variable Dimensionada 2
-	============================================
+	==================================================================
+	Estatuto Variable Dimensionada 2, obtiene ID de la variable
+	dimensionada, inicializa DIM = 1, push ID y DIM en pDimensionada
+	para indicar en que matriz se encuentra y en que dimension. 
+	Marca fondo falso por si hay anidamiento
+	================================================================
 '''
 def acceso_dimvar_2(accessingMatrix):
 	global pilaO
@@ -530,9 +583,13 @@ def acceso_dimvar_2(accessingMatrix):
 	pOper.push('[')
 
 '''
-	============================================
-	Estatuto Variable Dimensionada 3
-	============================================
+	================================================================
+	Estatuto Variable Dimensionada 3, Genera cuadruplo VERIFICA
+	en el que revisa que el indice de la dimensioneste dentro 
+	de los valores limites. Si se encuentra en la primera dimension
+	genera cuadruplo para multiplicacion de s1 * m1. Si se encuentra
+	en la segunda dimension, genera cuadruplo para s1 * m1 + s2
+	===============================================================
 '''
 def acceso_dimvar_3():
 	global pilaO
@@ -562,9 +619,10 @@ def acceso_dimvar_3():
 		pilaO.push(temp)
 
 '''
-	============================================
-	Estatuto Variable Dimensionada 4
-	============================================
+	================================================================
+	Estatuto Variable Dimensionada 4, pasar a la siguiente dimension
+	y actualizar la pila dimensionada
+	================================================================
 '''
 def acceso_dimvar_4():
 	global actualAccessDIM
@@ -574,9 +632,10 @@ def acceso_dimvar_4():
 	pDimensionada.push([actualIDDim,actualAccessDIM])
 
 '''
-	============================================
-	Estatuto Variable Dimensionada 5
-	============================================
+	================================================================
+	Estatuto Variable Dimensionada 5, generar cuadruplo para
+	calcular la direccion que se va a accesar dirBase + s1 * m1 + s2
+	===============================================================
 '''
 def acceso_dimvar_5():
 	global pilaO
@@ -594,9 +653,10 @@ def acceso_dimvar_5():
 	pDimensionada.pop()
 
 '''
-	============================================
-	Funcion integrada RANDOM
-	============================================
+	============================================================
+	Funcion integrada RANDOM, genera numero random entre valor
+	limite inferior y superior
+	============================================================
 '''
 def opfunc_random():
 	global pilaO
@@ -614,9 +674,10 @@ def opfunc_random():
 	push_cuadruplo(genera_cuadruplo)
 
 '''
-	============================================
-	Line Width
-	============================================
+	============================================================
+	Line Width, genera cuadruplo LINEWIDTH para indicar el ancho
+	de la linea a dibujar.
+	============================================================
 '''
 def dibujafunc_linewidth():
 	global pilaO
@@ -632,9 +693,10 @@ def dibujafunc_linewidth():
 		sys.exit("Error. Argumentos de funcion lineWidth deben ser numericos.")
 
 '''
-	============================================
-	Line Color
-	============================================
+	============================================================
+	Line Color, genera cuadruplo LINECOLOR que indica el RGB con
+	el que se desea pintar la linea
+	============================================================
 '''
 def dibujafunc_linecolor():
 	global pilaO
@@ -655,9 +717,9 @@ def dibujafunc_linecolor():
 		sys.exit("Error. Argumentos de funcion lineColor deben ser de tipo entero.")
 
 '''
-	============================================
-	Dibuja una linea
-	============================================
+	=====================================================================
+	Dibuja una linea en las coordenadas definidas, genera cuadruplo LINE
+	=====================================================================
 '''
 def dibujafunc_line():
 	global pilaO
@@ -681,9 +743,11 @@ def dibujafunc_line():
 	else:
 		sys.exit("Error. Argumentos de funcion line deben ser numericos.")
 '''
-	============================================
-	Dibuja un cuadrado
-	============================================
+	============================================================
+	Dibuja un cuadrado en las coordenadas y con el tamano que se
+	pasan como argumentos.
+	Genera cuadruplo SQUARE
+	============================================================
 '''
 def dibujafunc_square():
 	global pilaO
@@ -705,16 +769,18 @@ def dibujafunc_square():
 		sys.exit("Error. Argumentos de funcion square deben ser numericos.")
 
 '''
-	============================================
-	Dibuja un circulo
-	============================================
+	============================================================
+	Dibuja un circulo en las coordenadas y con el diametro que se
+	pasan como argumentos.
+	Genera cuadruplo CIRCLE
+	============================================================
 '''
 def dibujafunc_circle():
 	global pilaO
 	global pTipos
 
-	radio = pilaO.pop()
-	tipoRadio = pTipos.pop()
+	diametro = pilaO.pop()
+	tipoDiametro = pTipos.pop()
 
 	cordY= pilaO.pop()
 	tipoCordY = pTipos.pop()
@@ -722,15 +788,17 @@ def dibujafunc_circle():
 	cordX = pilaO.pop()
 	tipoCordX = pTipos.pop()
 
-	if (tipoRadio == 'int' or tipoRadio == 'float') and (tipoCordY == 'int' or tipoCordY == 'float') and (tipoCordX == 'int' or tipoCordX == 'float'):
-		genera_cuadruplo = Cuadruplo("CIRCLE",[cordX,cordY,radio],"","")
+	if (tipoDiametro == 'int' or tipoDiametro == 'float') and (tipoCordY == 'int' or tipoCordY == 'float') and (tipoCordX == 'int' or tipoCordX == 'float'):
+		genera_cuadruplo = Cuadruplo("CIRCLE",[cordX,cordY,diametro],"","")
 		push_cuadruplo(genera_cuadruplo)
 	else:
 		sys.exit("Error. Argumentos de funcion circle deben ser numericos.")
 '''
-	============================================
-	Dibuja una estrella
-	============================================
+	============================================================
+	Dibuja una estrella en las coordenadas y con el tamano que 
+	se pasan como argumentos.
+	Genera cuadruplo STAR
+	============================================================
 '''
 def dibujafunc_star():
 	global pilaO
@@ -752,9 +820,11 @@ def dibujafunc_star():
 		sys.exit("Error. Argumentos de funcion star deben ser numericos.")
 
 '''
-	============================================
-	Dibuja un triangulo
-	============================================
+	============================================================
+	Dibuja un triangulo en las coordenadas y con el tamano que 
+	se pasan como argumentos.
+	Genera cuadruplo TRIANGLE
+	============================================================
 '''
 def dibujafunc_triangle():
 	global pilaO
@@ -775,9 +845,11 @@ def dibujafunc_triangle():
 	else:
 		sys.exit("Error. Argumentos de funcion triangle deben ser numericos.")
 '''
-	============================================
-	Dibuja un arco
-	============================================
+	============================================================
+	Dibuja un arco en las coordeanadas que se pasan como 
+	argumentos.
+	Genera cuadruplo ARC
+	============================================================
 '''
 def dibujafunc_arc():
 	global pilaO
@@ -802,9 +874,11 @@ def dibujafunc_arc():
 		sys.exit("Error. Argumentos de funcion arc deben ser numericos.")
 
 '''
-	============================================
-	Indice que comienza a rellenar figura
-	============================================
+	============================================================
+	Indice que comienza a rellenar figura con el valor RGB que 
+	se pasa como parametro
+	Genera cuadruplo STARTFILL
+	============================================================
 '''
 def dibujafunc_startfill():
 	global pilaO
@@ -826,9 +900,11 @@ def dibujafunc_startfill():
 		sys.exit("Error. Argumentos de funcion startFill deben ser de tipo entero.")
 
 '''
-	============================================
-	Indica que termina de rellenar figura
-	============================================
+	============================================================
+	Indica que termina de rellenar figura, reinicia valor RGB a
+	blanco
+	Genera cuadruplo STOPFILL
+	============================================================
 '''
 def dibujafunc_stopfill():
 
@@ -837,9 +913,9 @@ def dibujafunc_stopfill():
 
 
 '''
-	============================================
+	============================================================
 	Imprime las pilas
-	============================================
+	============================================================
 '''
 def printPilas():
 	print "pilaO ", pilaO.getElements()
@@ -850,9 +926,9 @@ def printPilas():
 	print_cuadruplos(cuadruplos)
 
 '''
-	============================================
+	============================================================
 	Imprime los cuadruplos
-	============================================
+	============================================================
 '''
 def print_cuadruplos(currentCuadList):
 	print "Tabla Cuadruplos"

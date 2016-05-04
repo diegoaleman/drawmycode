@@ -5,13 +5,13 @@
 
 # Run:
 # python dmclex.py
-# python dmcparser.py test1.txt
+# python dmcparser.py test/test1.txt
 
 # *Change the test filename to test other files
 # ------------------------------------------------------------
 import ply.lex as lex
 
-# List of token names.
+# Lista de palabras reservadas
 reserved = {
 	'if' : 'IF',
 	'else' : 'ELSE',
@@ -48,6 +48,7 @@ reserved = {
   'call' : 'CALL'
 }
 
+# Lista de tokens
 tokens = ( 'PROGRAM','CTESTRING','COLON', 'SEMICOLON','VAR', 'NOTEQUAL', 'LESSTHAN', 
            'GREATERTHAN', 'IF', 'LBRACKET', 'RBRACKET', 'PLUS', 'MINUS', 
            'PRODUCT', 'DIVISION', 'COMMA', 'EQUAL', 'PRINT', 'LPARENTHESIS', 
@@ -57,7 +58,7 @@ tokens = ( 'PROGRAM','CTESTRING','COLON', 'SEMICOLON','VAR', 'NOTEQUAL', 'LESSTH
            'LESSEQUAL','GREATEREQUAL','EQUALEQUAL','LSQUAREBRACKET','RSQUAREBRACKET',
            'AND','OR','TRUE','FALSE', 'ENDFUNC','CALL')
 
-# Regular expression rules for simple tokens
+# Expresiones regulares para los tokens sencillos
 t_ignore = ' \t'
 t_CTEINT = r'-?[0-9]+'
 t_CTEFLOAT = r'-?[0-9]+\.+[0-9]+'
@@ -82,23 +83,23 @@ t_RSQUAREBRACKET = r'\]'
 t_LBRACKET = r'{'
 t_RBRACKET = r'}'
 
-# Lookup in case of reserved words
+# Expresion regular para los IDs
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value,'ID')
     return t
 
-# Define a rule for ctestring
+# Expresion regular para las constantes tipo string
 def t_CTESTRING(t):  
   r'\".*\"'
   return t
 
-# Define a rule so we can track line numbers
+# Regla para identificar saltos de linea y llevar un conteo de la linea actual
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-# Error handling rule
+# Manejo de errores de lexico
 def t_error(t):
     print("Error de lexico %s" % t.value[0])
     exit(-1)

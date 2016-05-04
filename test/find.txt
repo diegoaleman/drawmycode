@@ -3,12 +3,36 @@ begin program find;
       func void findNumber (n:int, number:int) 
       var mat1[2][3]:int; j,i:int; found:bool;
       {
-            mat1[0][0] = 3;
-            mat1[0][1] = -2;
-            mat1[0][2] = 5;
-            mat1[1][0] = 3;
+            mat1[0][0] = -5;
+            startFill(201,84,20);
+            circle(mat1[0][0]*30,0,100);
+            stopFill();
+
+            mat1[0][1] = 2;
+            startFill(65,92,51);
+            circle(mat1[0][1]*30,0,100);
+            stopFill();
+
+            mat1[0][2] = 6;
+            startFill(30,116,114);
+            circle(mat1[0][2]*30,0,100);
+            stopFill();
+
+            mat1[1][0] = -3;
+            startFill(51,7,96);
+            circle(mat1[1][0]*30,0,100);
+            stopFill();
+
             mat1[1][1] = 0;
+            startFill(255,132,132);
+            circle(mat1[1][1]*30,0,100);
+            stopFill();
+
             mat1[1][2] = 4;
+            startFill(160,149,189);
+            circle(mat1[1][2]*30,0,100);
+            stopFill();
+
             found = False;
             i = 0;
             j = 0;
@@ -18,8 +42,10 @@ begin program find;
                   while(j<3)
                   {
                         if (mat1[i][j] == number){
-                              print ("Numero encontrado en posicion");
-                              print (i, j);
+                              print ("Numero encontrado");
+                              startFill(255,255,0);
+                              circle(mat1[i][j]*30,-100,100);
+                              stopFill();
                               found = True;
 
                         };

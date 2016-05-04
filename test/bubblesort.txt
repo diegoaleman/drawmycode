@@ -2,11 +2,32 @@ begin program bubblesortiterativo;
 {
       func void bubbleSort (n:int) 
       var arr[1][5]:int; notsorted:int; j,hold,i:int;
-      {
+      {     
             arr[0][0] = 5;
             arr[0][1] = 6;
             arr[0][2] = 1;
             arr[0][3] = 4;
+            
+            print ("Unsorted");
+            print (arr[0][0]);
+            print (arr[0][1]);
+            print (arr[0][2]);
+            print (arr[0][3]);
+            i = 0;
+            j = 0;
+            while(i < (n))
+            {
+                  j = 0;
+                  while(j< (n))
+                  {
+                        startFill(random(0,255),random(0,255),random(0,255));
+                        circle(j*60,0,arr[0][j]*10);
+                        stopFill();
+                        j = j + 1;
+                  };
+            i = i + 1;
+            };
+
             i = 0;
             j = 0;
             while(i < (n - 1))
@@ -24,6 +45,21 @@ begin program bubblesortiterativo;
                   i = i + 1;
             };
 
+            i = 0;
+            j = 0;
+            while(i < (n))
+            {
+                  j = 0;
+                  while(j< (n))
+                  {
+                        startFill(random(0,255),random(0,255),random(0,255));
+                        circle(j*60,100,arr[0][j]*10);
+                        stopFill();
+                        j = j + 1;
+                  };
+            i = i + 1;
+            };
+            print ("Sorted");
             print (arr[0][0]);
             print (arr[0][1]);
             print (arr[0][2]);

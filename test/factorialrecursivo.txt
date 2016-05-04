@@ -5,19 +5,18 @@ var a, f : int;
 	var result:int;
 	{
 
-		
 		if(n==1){
 	   		return 1;
 	   	};
 	    result = call factorial(n - 1) * n;
+	    print (result);
 	    return result;
 	};
 	endfunc
 
 	main () {
 	  a = 6;
-	  f = call factorial(a + 2);
-	  print(f);
+	  f = call factorial(a);
 	};
 	endfunc
 };
