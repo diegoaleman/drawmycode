@@ -39,6 +39,15 @@ fill = False
 posXPrint = -450
 posYPrint = 400
 
+
+'''
+=============================================================
+	La funcion es llamada por parte del dmcparser y 
+	trae como parametro el directorio de procesos,
+	la memoria global, la memoria local, la memoria de
+	constantes y todos los cuadruplos
+=============================================================
+'''
 def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	global memCtes
 	global memGlobal
@@ -53,11 +62,15 @@ def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 	main()
 
 
-
+'''
+=============================================================
+	La funcion es llamada para obtener el valor real 
+	que guarda una direccion. 
+=============================================================
+'''
 def getValue(direccion):
 	m = str(direccion)
 	if m[0] == '(':
-		print "entra"
 		l1 = len(direccion)
 		m = int(direccion[1:l1-1])
 		direccion = m
@@ -74,6 +87,13 @@ def getValue(direccion):
 		sys.exit()
 
 
+
+'''
+=============================================================
+	La funcion es llamada para guardar en una direccion 
+	de memoria dada un valor
+=============================================================
+'''
 def setValue(valor, direccion):
 	if direccion>=1 and direccion<4000: #GLOBAL
 		return memGlobal.set_valor_memoria(valor, direccion)
@@ -88,6 +108,14 @@ def setValue(valor, direccion):
 		sys.exit()
 
 
+
+'''
+=============================================================
+	Regresa la funcion accion que debe de ser ejecutada
+	tomando como parametro el primer elemento, el 
+	operador, del cuadruplo
+=============================================================
+'''
 def getMetodo(op):
 	if op == '=':
 		return asignacion 
@@ -152,13 +180,12 @@ def getMetodo(op):
 	if op == 'STAR':
 		return star
 
+
 '''
-=========================================================
-
-Corregir el valor que va a asignar, puede ser booleano, 
-cambiar el float
-
-=========================================================
+=============================================================
+	Es llamado para asignar a la direccion c3 el valor 
+	guardado en la direccion c1
+=============================================================
 '''
 def asignacion(c1, c2, c3):
 	global existeRetorno
@@ -224,6 +251,15 @@ def asignacion(c1, c2, c3):
 
 			setValue(value, c3)
 
+
+
+
+'''
+=============================================================
+	Suma los valores que se encuentran en la direccion c1 
+	y c2 y los guarda en la direccion temporal c3
+=============================================================
+'''
 def suma(c1, c2, c3):
 	global value
 	global existeVerifica
@@ -262,6 +298,12 @@ def suma(c1, c2, c3):
 
 
 
+'''
+=============================================================
+	Resta los valores que se encuentran en la direccion c1 
+	y c2 y los guarda en la direccion temporal c3
+=============================================================
+'''
 def resta(c1, c2, c3):
 	global value
 	m1 = str(c1)
@@ -279,6 +321,14 @@ def resta(c1, c2, c3):
 	setValue(value, c3)
 	
 
+
+
+'''
+=============================================================
+	Multiplica los valores que se encuentran en la direccion c1 
+	y c2 y los guarda en la direccion temporal c3
+=============================================================
+'''
 def multiplicacion(c1, c2, c3):
 	global value
 	global existeVerifica
@@ -304,6 +354,13 @@ def multiplicacion(c1, c2, c3):
 
 
 
+
+'''
+=============================================================
+	Divide los valores que se encuentran en la direccion c1 
+	y c2 y los guarda en la direccion temporal c3
+=============================================================
+'''
 def division(c1, c2, c3):
 	global value
 	m1 = str(c1)
@@ -320,6 +377,16 @@ def division(c1, c2, c3):
 	value = float(getValue(c1)) / float(getValue(c2))
 	setValue(value, c3)
 
+
+
+
+'''
+=============================================================
+	Compara con mayor que a los valores que se encuentran 
+	en la direccion c1 y c2 y los guarda en la direccion 
+	temporal c3
+=============================================================
+'''
 def greater_than(c1, c2, c3):
 	global value
 	m1 = str(c1)
@@ -336,6 +403,17 @@ def greater_than(c1, c2, c3):
 	value = float(getValue(c1)) > float(getValue(c2))
 	setValue(value, c3)
 
+
+
+
+
+'''
+=============================================================
+	Compara con menor que a los valores que se encuentran 
+	en la direccion c1 y c2 y los guarda en la direccion 
+	temporal c3
+=============================================================
+'''
 def less_than(c1, c2, c3):
 	global value
 	m1 = str(c1)
@@ -352,6 +430,18 @@ def less_than(c1, c2, c3):
 	value = float(getValue(c1)) < float(getValue(c2))
 	setValue(value, c3)
 
+
+
+
+
+
+'''
+=============================================================
+	Compara con mayor que a los valores que se encuentran 
+	en la direccion c1 y c2 y los guarda en la direccion 
+	temporal c3
+=============================================================
+'''
 def different(c1, c2, c3):
 	global value
 	m1 = str(c1)
@@ -368,6 +458,18 @@ def different(c1, c2, c3):
 	value = float(getValue(c1)) != float(getValue(c2))
 	setValue(value, c3)
 
+
+
+
+
+
+'''
+=============================================================
+	Compara con igualdad a los valores que se encuentran 
+	en la direccion c1 y c2 y los guarda en la direccion 
+	temporal c3
+=============================================================
+'''
 def equal(c1, c2, c3):
 	global value
 	m1 = str(c1)
@@ -394,6 +496,17 @@ def equal(c1, c2, c3):
 		value = float(getValue(c1)) == float(getValue(c2))
 		setValue(value, c3)
 
+
+
+
+
+'''
+=============================================================
+	Compara con mayor igual a los valores que se encuentran 
+	en la direccion c1 y c2 y los guarda en la direccion 
+	temporal c3
+=============================================================
+'''
 def greater_equal_than(c1, c2, c3):
 	global value
 	m1 = str(c1)
@@ -410,6 +523,18 @@ def greater_equal_than(c1, c2, c3):
 	value = float(getValue(c1)) >= float(getValue(c2))
 	setValue(value, c3)
 
+
+
+
+
+
+'''
+=============================================================
+	Compara con menor igual a los valores que se encuentran 
+	en la direccion c1 y c2 y los guarda en la direccion 
+	temporal c3
+=============================================================
+'''
 def less_equal_than(c1, c2, c3):
 	global value
 	m1 = str(c1)
@@ -426,16 +551,44 @@ def less_equal_than(c1, c2, c3):
 	value = float(getValue(c1)) <= float(getValue(c2))
 	setValue(value, c3)
 
+
+
+
+
+'''
+=============================================================
+	Al ser llamada la funcion revisa el valor que tiene 
+	en la direccion c1, en caso de ser falso salta a la
+	posicion que contiene c3, en caso de ser verdadera c1
+	sigue al sigueinte cuadruplo
+=============================================================
+'''
 def gotof(c1, c2, c3):
 	global value
 	global cuadruplo_actual
 	value = getValue(c1)
 	if value == False:
 		cuadruplo_actual = c3
+
+
+'''
+=============================================================
+	Al ser llamada la funcion salta al cuadruplo que se
+	encuentra en c3
+=============================================================
+'''
 def goto(c1, c2, c3):
 	global cuadruplo_actual
 	cuadruplo_actual = c3
 
+
+
+'''
+=============================================================
+	Al ser llamado, el era nos indica que se debe de ir 
+	preparando ya que pronto se llamara a otra funcion
+=============================================================
+'''
 def era(c1, c2, c3):
 	global pila
 	global cuadruplo_actual
@@ -452,6 +605,18 @@ def era(c1, c2, c3):
 	memNueva = Memoria(dirproc[c2]['Tamano']['ints'],dirproc[c2]['Tamano']['floats'],dirproc[c2]['Tamano']['strings'],dirproc[c2]['Tamano']['bools'],dirproc[c2]['Tamano']['tempInts'],dirproc[c2]['Tamano']['tempFloats'], dirproc[c2]['Tamano']['tempStrings'], dirproc[c2]['Tamano']['tempBools'])
 	funcionNueva = c2
 
+
+
+'''
+=============================================================
+	Al ser llamado el param nos indica que se debe de 
+	guardar el valor en la direccion c1 en la direccion 
+	c3. Pero la direccion c1 es de la memoria que va a
+	estar pronto en la pila y la direccion de c3 es de la
+	memoria de la nueva funcion, que acaba de ser cargada 
+	en era
+=============================================================
+'''
 def param(c1, c2, c3):
 	global params
 	global listaParamsMemActual
@@ -465,6 +630,16 @@ def param(c1, c2, c3):
 	#print listaParamsMemActual
 	#print listaParamsMemNueva
 
+
+
+'''
+=============================================================
+	Esta funcion es llamada cuando previamente se llamo 
+	al era y posiblemente param. En esta ya se hace el 
+	cambio de memoria y se cambia el cuadruplo actual
+	al inicio de la funcion llamada
+=============================================================
+'''
 def gosub(c1, c2, c3):
 	global params
 	global cuadruplo_actual
@@ -509,6 +684,12 @@ def gosub(c1, c2, c3):
 		sys.exit()
 
 
+'''
+=============================================================
+	Esta funcion es colocada al finalizar la funcion y 
+	se utiliza para regresar a la funcion que la llamo
+=============================================================
+'''
 def ret(c1, c2, c3):
 	global memActiva
 	global cuadruplo_actual
@@ -520,6 +701,14 @@ def ret(c1, c2, c3):
 	funcionActual = p[1]
 	cuadruplo_actual = p[0]
 
+
+
+'''
+=============================================================
+	Esta funcion se encarga de regresar a la funcion pasada
+	el valor que debe de ser regresado por la actual
+=============================================================
+'''
 def retorno(c1, c2, c3):
 	global valorRetorno
 	global existeRetorno
@@ -527,6 +716,14 @@ def retorno(c1, c2, c3):
 	existeRetorno = True
 	valorRetorno = getValue(c3)
 
+
+
+'''
+=============================================================
+	Esta funcion se encarga de verificar que el valor que
+	tiene direccion c1 se encuentre entre el rango de c2 y c3
+=============================================================
+'''
 def verifica(c1, c2, c3):
 	global value
 	global existeVerifica
@@ -543,12 +740,12 @@ def verifica(c1, c2, c3):
 
 
 
-'''
-============================================
-FUNCIONES ESPECIALES OpenGL
-============================================
-'''
 
+'''
+=============================================================
+	Funcion especial que dibuja linea
+=============================================================
+'''
 def line(c1, c2, c3):
 	x1 = getValue(c1[0])
 	y1 = getValue(c1[1])
@@ -560,6 +757,12 @@ def line(c1, c2, c3):
 	glVertex3f(float(x2), float(y2),0.0)
 	glEnd()
 
+
+'''
+=============================================================
+	Funcion especial que dibuja un cuadrado
+=============================================================
+'''
 def square(c1, c2, c3):
 	x1 = float(getValue(c1[0]))
 	y1 = float(getValue(c1[1]))
@@ -584,6 +787,12 @@ def square(c1, c2, c3):
 		glEnd()
 	glPopMatrix()
 
+
+'''
+=============================================================
+	Funcion especial que dibuja un circulo
+=============================================================
+'''
 def circle(c1, c2, c3):
 	x = float(getValue(c1[0]))
 	y = float(getValue(c1[1]))
@@ -600,6 +809,13 @@ def circle(c1, c2, c3):
 	glEnd()
 	glPopMatrix()
 
+
+
+'''
+=============================================================
+	Funcion especial que dibuja un triangulo
+=============================================================
+'''
 def triangle(c1, c2, c3):
 	x = float(getValue(c1[0]))
 	y = float(getValue(c1[1]))
@@ -616,6 +832,13 @@ def triangle(c1, c2, c3):
 	glEnd()
 	glPopMatrix()
 
+
+
+'''
+=============================================================
+	Funcion especial que dibuja un arco
+=============================================================
+'''
 def arc(c1, c2, c3):
 	x1=float(getValue(c1[0]))
 	y1=float(getValue(c1[1]))
@@ -633,16 +856,38 @@ def arc(c1, c2, c3):
 		angle+=step
 	glEnd()
 
+
+
+'''
+=============================================================
+	Funcion especial que dibuja el ancho de la linea 
+	de la figura a ser dibujada
+=============================================================
+'''
 def linewidth(c1, c2, c3):
 	width = float(getValue(c1))
 	glLineWidth(width)
 
+
+
+'''
+=============================================================
+	Funcion especial que colorea la linea del color req
+=============================================================
+'''
 def linecolor(c1, c2, c3):
 	red = int(getValue(c1[0]))
 	green = int(getValue(c1[1]))
 	blue = int(getValue(c1[2]))
 	glColor3ub(red,green,blue)
 
+
+
+'''
+=============================================================
+	Rellena la figura del color indicado
+=============================================================
+'''
 def startfill(c1, c2, c3):
 	global fill
 	red = int(getValue(c1[0]))
@@ -651,11 +896,26 @@ def startfill(c1, c2, c3):
 	glColor3ub(red,green,blue)
 	fill = True
 
+
+
+'''
+=============================================================
+	Detiene el rellenado de la figura
+=============================================================
+'''
 def stopfill(c1, c2, c3):
 	global fill
 	glColor3ub(0,0,0)
 	fill = False
 
+
+
+'''
+=============================================================
+	Regresa un valor random que se encuentre entre 
+	los valores de c1 y c2 y lo guarda en la direccion c3
+=============================================================
+'''
 def random(c1, c2, c3):
 	global fill
 	inf = int(getValue(c1))
@@ -664,6 +924,13 @@ def random(c1, c2, c3):
 	rand = randint(inf,sup)
 	setValue(rand, c3)
 
+
+
+'''
+=============================================================
+	Funcion especial que pinta una estrella 
+=============================================================
+'''
 def star(c1, c2, c3):
 
 	x = float(getValue(c1[0]))
@@ -709,6 +976,12 @@ def star(c1, c2, c3):
 	glPopMatrix()
 
 
+
+'''
+=============================================================
+	Imprime el valor el valor de c3 en c1 como x y c2 como y
+=============================================================
+'''
 def imprime(c1, c2, c3):
 	m = str(c3)
 	if m[0] == '(':
@@ -720,13 +993,16 @@ def imprime(c1, c2, c3):
 		print getValue(c3)
 		printWindow(getValue(c3))
 
+'''
+=============================================================
+	Funciones de OpenGl
+=============================================================
+'''
 def myKeyboard(key, x, y):
 	if key == 'q' or key == 'Q':
 		sys.exit()
 
-
 width, height = 500, 500   
-
 def printWindow(output):
 	global posYPrint
 	global posXPrint
@@ -744,7 +1020,7 @@ def printWindow(output):
 	else:
 		posYPrint = 400;
 		posXPrint = posXPrint + 100;
-	
+
 def refresh2d(width, height):
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	glClearColor(1.0,1.0,1.0,1.0)
@@ -768,6 +1044,17 @@ def reshape(w, h):
 def draw():                         
 	glutSwapBuffers() 
 
+
+
+
+'''
+=============================================================
+	Este es el el main del juego, en esta funcion se 
+	inicializa opengl y su pantalla. Tambien se traversa
+	por cada uno de los cuadruplos con un for y se panda
+	a llamar la accion dependiendo a su respectivo op
+=============================================================
+'''
 def main():
 	global cuadruplo_actual
 	glutInit(sys.argv)
@@ -780,7 +1067,6 @@ def main():
 	refresh2d(width, height)                      
 	
 
-	print "----------------------"
 	cuadruplos_totales = len(cuadruplos)
 	while cuadruplo_actual < cuadruplos_totales:
 		currentCuad = cuadruplos[cuadruplo_actual]

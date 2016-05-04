@@ -8,20 +8,43 @@ class Memoria:
 		self.tempFloats = [0.0] * tempFloats_espacio
 		self.tempStrings = [''] * tempStrings_espacio
 		self.tempBools = [False] * tempBools_espacio
-	
 
+
+
+	'''
+	=============================================================
+		La funcion obtiene la memoria que debe de accesar
+		y calcula la memoria real junto con el offser para 
+		despues asignar valor a la direccion 
+	=============================================================
+	'''
 	def set_valor_memoria(self, valor, direccion):
 		offset = self.get_offset(direccion)
 		memoria = self.get_memoria(direccion)
 		memoria[direccion - offset] = valor
 
+	'''
+	=============================================================
+		La funcion obtiene la memoria que debe de accesar
+		y calcula la memoria real junto con el offser para 
+		despues regresar el valor que se encuentra en esa dir
+	=============================================================
+	'''
 	def get_valor_memoria(self, direccion):
 		offset = self.get_offset(direccion)
 		memoria = self.get_memoria(direccion)
 		return memoria[direccion - offset]
 
 
-		
+	'''
+	=============================================================
+		En este caso se distingue entre memoria local, global,
+		temporal y constante. Despues se disntingue entre memoria
+		entra, flotante, string y booleana para despues regresar
+		un numero que se le debe de restar a la direccion que
+		se tiene para obtener la direccion real
+	=============================================================
+	'''
 	def get_offset(self, direccion):
 		if direccion>=1 and direccion<4000:
 			if direccion>=1 and direccion<1000:
@@ -60,8 +83,14 @@ class Memoria:
 			if direccion>=15000 and direccion<16000:
 				return 15000
 
-
-
+	'''
+	=============================================================
+		En este caso se distingue entre memoria normal y 
+		temporal. Despues se disntingue entre memoria
+		entra, flotante, string y booleana para despues regresar
+		el metodo de la memoria que se va a accesar
+	=============================================================
+	'''
 	def get_memoria(self, direccion):
 		if direccion >=8000 and direccion<12000:
 			if direccion>=8000 and direccion<9000:
