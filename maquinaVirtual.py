@@ -55,6 +55,12 @@ def initMaquinaVirtual(dProc, mGlobal, mActiva, mCtes, cuads):
 
 
 def getValue(direccion):
+	m = str(direccion)
+	if m[0] == '(':
+		print "entra"
+		l1 = len(direccion)
+		m = int(direccion[1:l1-1])
+		direccion = m
 	if direccion>=1 and direccion<4000: #LOCAL
 		return memGlobal.get_valor_memoria(direccion)
 	elif direccion>=4000 and direccion<8000: #GLOBAL

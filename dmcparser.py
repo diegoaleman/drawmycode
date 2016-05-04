@@ -72,6 +72,7 @@ def p_programa(p):
 def p_goto_main_quad(p):
 	'''goto_main_quad :'''
 	goto_main_quad()
+
 def p_createDirProc(p):
 	'''createDirProc :'''
 	dirproc = {}
@@ -131,10 +132,7 @@ def p_a(p):
 	for k in remove: del auxMatrixVarsDir[k]
 
 def p_vars(p):
-	'''vars : VAR createGlobalTable c'''
-
-def p_createGlobalTable(p):
-	'''createGlobalTable :'''
+	'''vars : VAR c'''
 
 def p_c(p):
 	'''c : f SEMICOLON e'''
@@ -577,6 +575,7 @@ def p_acceso_dimvar_4(p):
 def p_acceso_dimvar_5(p):
 	'''acceso_dimvar_5 :'''
 	acceso_dimvar_5()
+
 def p_expresion(p):
 	'''expresion : specialexp m exp_9 n'''
 
@@ -630,6 +629,7 @@ def p_exp(p):
 
 def p_exp_5(p):
 	'''exp_5 :'''
+	# Si top(pOper) es + o -
 	exp_5()
 
 def p_ab(p):
@@ -651,8 +651,8 @@ def p_termino(p):
 	'''termino : factor exp_4 ac'''
 
 def p_exp_4(p):
-	# Si top(pOper) es * o /
 	'''exp_4 :'''
+	# Si top(pOper) es * o /
 	exp_4()
 
 
@@ -726,7 +726,6 @@ def p_exp_cte_int(p):
 
 def p_exp_cte_float(p):
 	'''exp_cte_float :'''
-	'''exp_cte_int :'''
 	global memFloatCte
 	global totalCtesFloats
 
