@@ -12,11 +12,8 @@ begin program fibonaccirecursivo;
 	    	
 	    } else 
 	    {	
-	    	res = (call fibonacci(n - 1)) + (call fibonacci(n - 2));
-	    	startFill(250,128,114);
-			star(res,res,n);
-			stopFill();
-			return res;
+	    return (call fibonacci(n - 1)) + (call fibonacci(n - 2));
+			
 	    };
 	};
 	endfunc
@@ -25,7 +22,7 @@ begin program fibonaccirecursivo;
 	var x:int;
 	{	
 		x = 11;
-		x = call fibonacci(x+1);
+		x = call fibonacci(20);
 		print (x);
 	};
 	endfunc

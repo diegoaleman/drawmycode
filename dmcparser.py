@@ -1107,7 +1107,7 @@ if __name__ == '__main__':
 			# Parse the data
 			
 			if (dmcparser.parse(data, tracking=True) == 'Success'):
-				
+				'''
 				print "Valid"
 				
 				for key, value in dirproc.iteritems():
@@ -1117,7 +1117,7 @@ if __name__ == '__main__':
 				print "Tabla de Constantes"
 				print tablaConstantes
 				printPilas()
-				
+				'''
 				'''
 				============================================
 				Manda llamar a la maquina virtual
